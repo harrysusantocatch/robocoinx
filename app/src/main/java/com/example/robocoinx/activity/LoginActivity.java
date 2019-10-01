@@ -3,6 +3,7 @@ package com.example.robocoinx.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -60,15 +61,35 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                UserCache user = RoboHandler.parsingLoginResponse(email.getText().toString(), password.getText().toString());
+                new Content(email.getText().toString(),password.getText().toString()).execute((Void)null);
+            }
+
+        });
+    }
+
+    public class Content extends AsyncTask<Void, Void, Void> {
+
+        private final String mEmail;
+        private final String mPassword;
+
+        Content(String email, String password) {
+            mEmail = email;
+            mPassword = password;
+        }
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            try {
+                UserCache user = RoboHandler.parsingLoginResponse(mEmail, mPassword);
                 if(user == null){
                     Toast.makeText(getApplicationContext(), "Sorry login filed!!", Toast.LENGTH_SHORT).show();
                 }else {
                     Intent intent = new Intent(getBaseContext(), HomeActivity.class);
                     startActivity(intent);
-                }
+                };
+            }catch (Exception e){
             }
-
-        });
+            return null;
+        }
     }
 }
