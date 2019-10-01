@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">robocoinx</string>
+    <string name="label_email">email</string>
+    <string name="label_password">password</string>
+    <string name="label_login">Login</string>
+    <string name="label_signup">Sign Up</string>
+    <string name="label_forgot_pass">Forgot Password?</string>
+</resources>
