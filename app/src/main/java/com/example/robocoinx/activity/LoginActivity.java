@@ -2,6 +2,7 @@ package com.example.robocoinx.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,7 +15,11 @@ import android.widget.Toast;
 
 import com.example.robocoinx.R;
 import com.example.robocoinx.logic.RoboHandler;
+import com.example.robocoinx.model.StaticValues;
 import com.example.robocoinx.model.UserCache;
+import com.google.gson.Gson;
+
+import java.io.FileOutputStream;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -84,6 +89,15 @@ public class LoginActivity extends AppCompatActivity {
                 if(user == null){
                     Toast.makeText(getApplicationContext(), "Sorry login filed!!", Toast.LENGTH_SHORT).show();
                 }else {
+                    String userString = new Gson().toJson(user);
+                    FileOutputStream outputStream;
+                    try {
+                        outputStream = openFileOutput(StaticValues.USER_CACHE, Context.MODE_PRIVATE);
+                        outputStream.write(userString.getBytes());
+                        outputStream.close();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
                     Intent intent = new Intent(getBaseContext(), HomeActivity.class);
                     startActivity(intent);
                 };

@@ -6,15 +6,10 @@ public class UserCache {
     public String loginAuth;
     public String userID;
 
-    public UserCache(String response){
-        if(response != null || response.length() > 0){
-            String[] respArray = response.split(":");
-            if(respArray.length > 2){
-                setBtcAddress(respArray[1]);
-                setPassword(respArray[2]);
-                setUserID(respArray[3]);
-            }
-        }
+    public UserCache(String[] datas){
+        setBtcAddress(datas[1]);
+        setPassword(datas[2]);
+        setUserID(datas[3]);
     }
 
     public String getBtcAddress() {

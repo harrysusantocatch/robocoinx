@@ -8,6 +8,7 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 public class RoboHandler {
@@ -84,9 +85,24 @@ public class RoboHandler {
         Document doc;
         try {
             doc = response.parse();
+            UserCache userCache = null;
             if(response != null){
-                UserCache userCache = new UserCache(doc.body().html());
-                Cache.getInstance().getLru().put(StaticValues.USER_CACHE, userCache);
+                String data = doc.body().html();
+                if(response != null || data.length() > 0) {
+                    String[] respArray = data.split(":");
+                    if(respArray.length > 2){
+                        userCache = new UserCache(respArray);
+                        Map<String, String> firstHomeCookies = setForFirstHomeCookies(baseCookies, userCache);
+                        Connection.Response homeResponse = getFirstHomeResponse(firstHomeCookies);
+                        String loginAuth = homeResponse.cookie("login_auth");
+                        userCache.setLoginAuth(loginAuth);
+                        System.out.println("========== home loginAuth======== " +loginAuth);
+                        System.out.println("====================home page================");
+                        System.out.println(homeResponse.parse().html());
+                        System.out.println("====================home page================");
+                        Cache.getInstance().getLru().put(StaticValues.USER_CACHE, userCache);
+                    }
+                }
                 return userCache;
             }
         } catch (IOException e) {
@@ -96,4 +112,31 @@ public class RoboHandler {
         return null;
     }
 
+    private static Map<String, String> setForFirstHomeCookies(Map<String, String> baseCookies, UserCache userCache) {
+        Map<String, String> firstHomeCookies = new HashMap<>();
+        String btcAddress = userCache.getBtcAddress() != null ? userCache.getBtcAddress() : "";
+        String passwordEncoded = userCache.getPassword() != null ? userCache.getPassword() : "";
+        firstHomeCookies.put("__cfduid", baseCookies.get("__cfduid"));
+        firstHomeCookies.put("btc_address",btcAddress);
+        firstHomeCookies.put("password",passwordEncoded);
+        firstHomeCookies.put("have_account", "1");
+        return firstHomeCookies;
+    }
+
+    private static Connection.Response getFirstHomeResponse(Map<String, String> cookies) throws IOException {
+        Connection.Response response = Jsoup.connect(StaticValues.URL_HOME)
+                .userAgent(StaticValues.USER_AGENT)
+                .referrer("https://freebitco.in/?op=signup_page")
+                .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+                .header("Accept-Language", "en-ID")
+                .header("Upgrade-Insecure-Requests", "1")
+//                .header("Accept-Encoding", "gzip, deflate, br") // jadi html di encoded
+                .header("Host", "freebitco.in")
+                .header("Connection", "Keep-Alive")
+                .timeout(StaticValues.TIMEOUT)
+                .method(Connection.Method.GET)
+                .cookies(cookies)
+                .execute();
+        return response;
+    }
 }
