@@ -1,5 +1,8 @@
 package com.example.robocoinx.logic;
 
+import android.content.Context;
+
+import com.example.robocoinx.model.ProfileView;
 import com.example.robocoinx.model.StaticValues;
 import com.example.robocoinx.model.UserCache;
 
@@ -40,10 +43,10 @@ public class RoboHandler {
     }
 
     private static String csrfToken;
-    public static String getCsrfToken(){
+    public static String getCsrfToken(Context context){
         if(csrfToken == null){
             csrfToken = getBaseCookies().get("csrf_token");
-            Cache.getInstance().getLru().put(StaticValues.CSRF_TOKEN, csrfToken);
+            FileManager.getInstance().writeFile(context, StaticValues.CSRF_TOKEN, csrfToken);
         }
         return csrfToken;
     }
@@ -58,7 +61,7 @@ public class RoboHandler {
                     .header("Accept", "*/*")
                     .header("Accept-Language", "en-ID")
                     .header("Content-Type", "application/x-www-form-urlencoded")
-                    .header("x-csrf-token", getCsrfToken())
+                    .header("x-csrf-token", csrfToken)
     //                .header("X-Requested-With", "XMLHttpRequest")
     //                .header("Accept-Encoding", "gzip, deflate, br") jadi html di encoded
                     .header("Host", "freebitco.in")
@@ -80,31 +83,23 @@ public class RoboHandler {
         return response;
     }
 
-    public static UserCache parsingLoginResponse(String email, String password){
-        Connection.Response response = getLoginResponse(email, password);
-        Document doc;
+    public static Map<String, Object> parsingLoginResponse(String email, String password){
+        Map<String, Object> result = new HashMap<>();
+        Connection.Response loginResponse = getLoginResponse(email, password);
+        if (loginResponse == null) return null;
         try {
-            doc = response.parse();
-            UserCache userCache = null;
-            if(response != null){
-                String data = doc.body().html();
-                if(response != null || data.length() > 0) {
-                    String[] respArray = data.split(":");
-                    if(respArray.length > 2){
-                        userCache = new UserCache(respArray);
-                        Map<String, String> firstHomeCookies = setForFirstHomeCookies(baseCookies, userCache);
-                        Connection.Response homeResponse = getFirstHomeResponse(firstHomeCookies);
-                        String loginAuth = homeResponse.cookie("login_auth");
-                        userCache.setLoginAuth(loginAuth);
-                        System.out.println("========== home loginAuth======== " +loginAuth);
-                        System.out.println("====================home page================");
-                        System.out.println(homeResponse.parse().html());
-                        System.out.println("====================home page================");
-                        Cache.getInstance().getLru().put(StaticValues.USER_CACHE, userCache);
-                    }
-                }
-                return userCache;
-            }
+            Document docLogin = loginResponse.parse();
+            String contentBody = docLogin.body().html();
+            String[] dataLogin = contentBody.split(":");
+            if(dataLogin.length < 3) return null;
+            UserCache userCache = new UserCache(dataLogin);
+            Map<String, String> firstHomeCookies = setForFirstHomeCookies(baseCookies, userCache);
+            Connection.Response homeResponse = getFirstHomeResponse(firstHomeCookies);
+            if(homeResponse == null) return null;
+            String loginAuth = homeResponse.cookie("login_auth");
+            userCache.setLoginAuth(loginAuth);
+            ProfileView profileView = new ProfileView(homeResponse.parse());
+            Cache.getInstance().getLru().put(StaticValues.USER_CACHE, userCache);
         } catch (IOException e) {
             e.printStackTrace();
             return null;

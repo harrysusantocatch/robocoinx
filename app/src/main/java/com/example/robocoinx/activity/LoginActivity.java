@@ -1,8 +1,5 @@
 package com.example.robocoinx.activity;
 
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -13,21 +10,19 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.app.AppCompatActivity;
+
 import com.example.robocoinx.R;
+import com.example.robocoinx.logic.FileManager;
 import com.example.robocoinx.logic.RoboHandler;
 import com.example.robocoinx.model.StaticValues;
 import com.example.robocoinx.model.UserCache;
 import com.google.gson.Gson;
 
-import java.io.FileOutputStream;
-
 public class LoginActivity extends AppCompatActivity {
 
-    private TextView signupAction;
-    private TextView loginAction;
-    private LinearLayout layoutSignup;
+    private LinearLayout layoutSignUp;
     private LinearLayout layoutLogin;
-    private Button btnLogin;
     private EditText email;
     private EditText password;
 
@@ -39,11 +34,11 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void setUpView() {
-        signupAction = findViewById(R.id.textViewSignup);
-        loginAction = findViewById(R.id.textViewLogin);
+        TextView signupAction = findViewById(R.id.textViewSignup);
+        TextView loginAction = findViewById(R.id.textViewLogin);
+        Button btnLogin = findViewById(R.id.buttonLogin);
         layoutLogin = findViewById(R.id.layoutLogin);
-        layoutSignup = findViewById(R.id.layoutSignup);
-        btnLogin = findViewById(R.id.buttonLogin);
+        layoutSignUp = findViewById(R.id.layoutSignup);
         email = findViewById(R.id.editTextEmailLogin);
         password = findViewById(R.id.editTextPassLogin);
 
@@ -51,7 +46,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 layoutLogin.setVisibility(View.VISIBLE);
-                layoutSignup.setVisibility(View.INVISIBLE);
+                layoutSignUp.setVisibility(View.INVISIBLE);
             }
         });
 
@@ -59,7 +54,7 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 layoutLogin.setVisibility(View.INVISIBLE);
-                layoutSignup.setVisibility(View.VISIBLE);
+                layoutSignUp.setVisibility(View.VISIBLE);
             }
         });
 
@@ -84,24 +79,20 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            try {
-                UserCache user = RoboHandler.parsingLoginResponse(mEmail, mPassword);
-                if(user == null){
-                    Toast.makeText(getApplicationContext(), "Sorry login filed!!", Toast.LENGTH_SHORT).show();
-                }else {
-                    String userString = new Gson().toJson(user);
-                    FileOutputStream outputStream;
-                    try {
-                        outputStream = openFileOutput(StaticValues.USER_CACHE, Context.MODE_PRIVATE);
-                        outputStream.write(userString.getBytes());
-                        outputStream.close();
-                    } catch (Exception e) {
-                        e.printStackTrace();
+            UserCache user = RoboHandler.parsingLoginResponse(mEmail, mPassword);
+            if(user == null){
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Toast.makeText(getApplicationContext(), "Sorry login filed!!", Toast.LENGTH_SHORT).show();
                     }
-                    Intent intent = new Intent(getBaseContext(), HomeActivity.class);
-                    startActivity(intent);
-                };
-            }catch (Exception e){
+                });
+            }else {
+                String userString = new Gson().toJson(user);
+                FileManager.getInstance().writeFile(getApplicationContext(), StaticValues.USER_CACHE, userString);
+
+                Intent intent = new Intent(getBaseContext(), HomeActivity.class);
+                startActivity(intent);
             }
             return null;
         }
