@@ -5,6 +5,7 @@ import android.content.Context;
 import com.example.robocoinx.model.ProfileView;
 import com.example.robocoinx.model.StaticValues;
 import com.example.robocoinx.model.UserCache;
+import com.google.gson.Gson;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
@@ -83,7 +84,7 @@ public class RoboHandler {
         return response;
     }
 
-    public static Map<String, Object> parsingLoginResponse(String email, String password){
+    public static Map<String, Object> parsingLoginResponse(Context context, String email, String password){
         Map<String, Object> result = new HashMap<>();
         Connection.Response loginResponse = getLoginResponse(email, password);
         if (loginResponse == null) return null;
@@ -99,12 +100,15 @@ public class RoboHandler {
             String loginAuth = homeResponse.cookie("login_auth");
             userCache.setLoginAuth(loginAuth);
             ProfileView profileView = new ProfileView(homeResponse.parse());
-            Cache.getInstance().getLru().put(StaticValues.USER_CACHE, userCache);
+            String userString = new Gson().toJson(userCache);
+            FileManager.getInstance().writeFile(context, StaticValues.USER_CACHE, userString);
+            result.put(StaticValues.USER_CACHE, userCache);
+            result.put(StaticValues.PROFILE_VIEW, profileView);
+            return result;
         } catch (IOException e) {
             e.printStackTrace();
             return null;
         }
-        return null;
     }
 
     private static Map<String, String> setForFirstHomeCookies(Map<String, String> baseCookies, UserCache userCache) {
@@ -134,4 +138,39 @@ public class RoboHandler {
                 .execute();
         return response;
     }
+
+    private static Connection.Response getRefreshHomeResponse(Map<String, String> cookies) throws IOException {
+        Connection.Response response = Jsoup.connect(StaticValues.URL_HOME)
+                .userAgent(StaticValues.USER_AGENT)
+                .referrer("https://freebitco.in/?op=signup_page")
+                .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+                .header("Upgrade-Insecure-Requests", "1")
+                .header("Host", "freebitco.in")
+                .header("Connection", "Keep-Alive")
+                .timeout(StaticValues.TIMEOUT)
+                .method(Connection.Method.GET)
+                .cookies(cookies)
+                .execute();
+        return response;
+    }
+
+    public static ProfileView parsingHomeResponse(Context context){
+        String userString = FileManager.getInstance().readFile(context, StaticValues.USER_CACHE);
+        UserCache userCache = new Gson().fromJson(userString, UserCache.class);
+        Map<String, String> cookies = new HashMap<>();
+        cookies.put("login_auth", userCache.getLoginAuth());
+        cookies.put("btc_address",userCache.getBtcAddress());
+        cookies.put("password",userCache.getPassword());
+        cookies.put("have_account", "1");
+        try {
+            Connection.Response homeResponse = getRefreshHomeResponse(cookies);
+            if(homeResponse == null) return null;
+            ProfileView profileView = new ProfileView(homeResponse.parse());
+            return profileView;
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
 }

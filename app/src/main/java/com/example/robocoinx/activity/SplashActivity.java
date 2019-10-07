@@ -3,12 +3,20 @@ package com.example.robocoinx.activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.robocoinx.R;
 import com.example.robocoinx.logic.FileManager;
 import com.example.robocoinx.logic.RoboHandler;
+import com.example.robocoinx.model.ProfileView;
 import com.example.robocoinx.model.StaticValues;
+
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import java.io.IOException;
+import java.io.InputStream;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -18,6 +26,7 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.splash_main);
         new Content().execute((Void)null);
     }
+
     public class Content extends AsyncTask<Void, Void, Void>{
 
         @Override
@@ -40,7 +49,9 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         private void goToHome() {
+            ProfileView profileView = RoboHandler.parsingHomeResponse(getApplicationContext());
             Intent intent = new Intent(getBaseContext(), HomeActivity.class);
+            intent.putExtra(StaticValues.PROFILE_VIEW, profileView);
             startActivity(intent);
         }
 

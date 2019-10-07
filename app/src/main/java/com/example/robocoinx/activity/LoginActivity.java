@@ -15,9 +15,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.robocoinx.R;
 import com.example.robocoinx.logic.FileManager;
 import com.example.robocoinx.logic.RoboHandler;
+import com.example.robocoinx.model.ProfileView;
 import com.example.robocoinx.model.StaticValues;
 import com.example.robocoinx.model.UserCache;
 import com.google.gson.Gson;
+
+import java.util.Map;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -79,20 +82,22 @@ public class LoginActivity extends AppCompatActivity {
 
         @Override
         protected Void doInBackground(Void... voids) {
-            UserCache user = RoboHandler.parsingLoginResponse(mEmail, mPassword);
-            if(user == null){
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Toast.makeText(getApplicationContext(), "Sorry login filed!!", Toast.LENGTH_SHORT).show();
-                    }
-                });
-            }else {
-                String userString = new Gson().toJson(user);
-                FileManager.getInstance().writeFile(getApplicationContext(), StaticValues.USER_CACHE, userString);
-
-                Intent intent = new Intent(getBaseContext(), HomeActivity.class);
-                startActivity(intent);
+            try {
+                Map<String, Object> result = RoboHandler.parsingLoginResponse(getApplicationContext(), mEmail, mPassword);
+                if(result == null){
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Toast.makeText(getApplicationContext(), "Sorry login filed!!", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }else {
+                    Intent intent = new Intent(getBaseContext(), HomeActivity.class);
+                    intent.putExtra(StaticValues.PROFILE_VIEW, (ProfileView)result.get(StaticValues.PROFILE_VIEW));
+                    startActivity(intent);
+                }
+            }catch (Exception e){
+                e.getStackTrace();
             }
             return null;
         }

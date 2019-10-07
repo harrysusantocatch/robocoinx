@@ -4,10 +4,11 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.Serializable;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class ProfileView {
+public class ProfileView implements Serializable {
 
     public String userID;
     public String balance;
@@ -28,7 +29,12 @@ public class ProfileView {
     }
 
     public String getUserID(Document doc) {
-        // TODO
+        Elements elUserID = doc.getElementsByClass("left bold");
+        String userID = elUserID.text();
+        return userID;
+    }
+
+    public String getUserID() {
         return userID;
     }
 
