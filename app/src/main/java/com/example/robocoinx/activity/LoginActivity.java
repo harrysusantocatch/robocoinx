@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -32,8 +33,24 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        hideTitleBar();
         setContentView(R.layout.activity_login);
         setUpView();
+    }
+
+    private void hideTitleBar() {
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getSupportActionBar().hide();
+    }
+
+    private void showLoginForm() {
+        layoutLogin.setVisibility(View.VISIBLE);
+        layoutSignUp.setVisibility(View.INVISIBLE);
+    }
+
+    private void showSignUpForm(){
+        layoutLogin.setVisibility(View.INVISIBLE);
+        layoutSignUp.setVisibility(View.VISIBLE);
     }
 
     private void setUpView() {
@@ -45,19 +62,18 @@ public class LoginActivity extends AppCompatActivity {
         email = findViewById(R.id.editTextEmailLogin);
         password = findViewById(R.id.editTextPassLogin);
 
+        showLoginForm();
         loginAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                layoutLogin.setVisibility(View.VISIBLE);
-                layoutSignUp.setVisibility(View.INVISIBLE);
+                showLoginForm();
             }
         });
 
         signupAction.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                layoutLogin.setVisibility(View.INVISIBLE);
-                layoutSignUp.setVisibility(View.VISIBLE);
+                showSignUpForm();
             }
         });
 

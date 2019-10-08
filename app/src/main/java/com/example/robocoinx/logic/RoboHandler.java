@@ -36,9 +36,12 @@ public class RoboHandler {
     private static Map<String, String> baseCookies;
     private static Map<String, String> getBaseCookies(){
         if(baseCookies == null) {
+            long d1 = System.currentTimeMillis();
             if(getFirstResponse() != null) {
                 baseCookies = getFirstResponse().cookies();
             }
+            long d2 = System.currentTimeMillis();
+            System.out.println("1.----------------= "+(d2-d1));
         }
         return baseCookies;
     }
@@ -47,7 +50,11 @@ public class RoboHandler {
     public static String getCsrfToken(Context context){
         if(csrfToken == null){
             csrfToken = getBaseCookies().get("csrf_token");
+            long d1 = System.currentTimeMillis();
             FileManager.getInstance().writeFile(context, StaticValues.CSRF_TOKEN, csrfToken);
+            long d2 = System.currentTimeMillis();
+            System.out.println("2.----------------= "+(d2-d1));
+
         }
         return csrfToken;
     }
@@ -97,6 +104,7 @@ public class RoboHandler {
             Map<String, String> firstHomeCookies = setForFirstHomeCookies(baseCookies, userCache);
             Connection.Response homeResponse = getFirstHomeResponse(firstHomeCookies);
             if(homeResponse == null) return null;
+            updateCsrfToken(context, homeResponse);
             String loginAuth = homeResponse.cookie("login_auth");
             userCache.setLoginAuth(loginAuth);
             ProfileView profileView = new ProfileView(homeResponse.parse());
@@ -108,6 +116,14 @@ public class RoboHandler {
         } catch (IOException e) {
             e.printStackTrace();
             return null;
+        }
+    }
+
+    private static void updateCsrfToken(Context context, Connection.Response response) {
+        String csrfToken = response.cookie(StaticValues.CSRF_TOKEN);
+        if(csrfToken != null){
+            FileManager.getInstance().delete(context, StaticValues.CSRF_TOKEN);
+            FileManager.getInstance().writeFile(context, StaticValues.CSRF_TOKEN, csrfToken);
         }
     }
 
@@ -165,6 +181,7 @@ public class RoboHandler {
         try {
             Connection.Response homeResponse = getRefreshHomeResponse(cookies);
             if(homeResponse == null) return null;
+            updateCsrfToken(context, homeResponse);
             ProfileView profileView = new ProfileView(homeResponse.parse());
             return profileView;
         } catch (IOException e) {

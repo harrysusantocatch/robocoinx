@@ -1,10 +1,14 @@
 package com.example.robocoinx.model;
 
+import android.os.SystemClock;
+
+import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -19,12 +23,30 @@ public class ProfileView implements Serializable {
     public boolean hasCaptcha;
 
     public ProfileView(Document doc) {
+        long d1 = System.currentTimeMillis();
         setUserID(getUserID(doc));
+        long d2 = System.currentTimeMillis();
+        System.out.println("1-----------="+(d2-d1));
+        long d3 = System.currentTimeMillis();
         setBalance(getBalance(doc));
+        long d4 = System.currentTimeMillis();
+        System.out.println("2-----------="+(d4-d3));
+        long d5 = System.currentTimeMillis();
         setRewardPoint(getRewardPoint(doc));
+        long d6 = System.currentTimeMillis();
+        System.out.println("3-----------="+(d6-d5));
+        long d7 = System.currentTimeMillis();
         setNextRollTime(getNextRollTime(doc));
+        long d8 = System.currentTimeMillis();
+        System.out.println("4-----------="+(d8-d7));
+        long d9 = System.currentTimeMillis();
         setRpBonusTime(getRPBonusCountDown(doc));
+        long d10 = System.currentTimeMillis();
+        System.out.println("5-----------="+(d10-d9));
+        long d11 = System.currentTimeMillis();
         setBtcBonusTime(getBTCBonusCountDown(doc));
+        long d12 = System.currentTimeMillis();
+        System.out.println("6-----------="+(d12-d11));
         setHasCaptcha(false);
     }
 
@@ -91,24 +113,36 @@ public class ProfileView implements Serializable {
     }
 
     private int getRPBonusCountDown(Document doc) {
-        String[] split = doc.html().split("BonusEndCountdown\\(\"fp_bonus\",");
-        if(split.length > 1){
-            Pattern pattern = Pattern.compile("[0-9]*.\\)");
-            Matcher matcher = pattern.matcher(split[1]);
-            if(matcher.find()){
-                return Integer.parseInt(matcher.group().substring(0, matcher.group().length()-1));
+        Elements scripts = doc.getElementsByTag("script");
+        for (Element script: scripts) {
+            List<DataNode> dataNodes = script.dataNodes();
+            for (DataNode dataNode : dataNodes){
+                String data = dataNode.getWholeData();
+                if(data.contains("free_points")){
+                    Pattern pattern = Pattern.compile("[0-9]*.\\)");
+                    Matcher matcher = pattern.matcher(data);
+                    if(matcher.find()){
+                        return Integer.parseInt(matcher.group().substring(0, matcher.group().length()-1));
+                    }
+                }
             }
         }
         return 0;
     }
 
     private int getBTCBonusCountDown(Document doc) {
-        String[] split = doc.html().split("BonusEndCountdown\\(\"free_points\",");
-        if(split.length > 1){
-            Pattern pattern = Pattern.compile("[0-9]*.\\)");
-            Matcher matcher = pattern.matcher(split[1]);
-            if(matcher.find()){
-                return Integer.parseInt(matcher.group().substring(0, matcher.group().length()-1));
+        Elements scripts = doc.getElementsByTag("script");
+        for (Element script: scripts) {
+            List<DataNode> dataNodes = script.dataNodes();
+            for (DataNode dataNode : dataNodes){
+                String data = dataNode.getWholeData();
+                if(data.contains("fp_bonus")){
+                    Pattern pattern = Pattern.compile("[0-9]*.\\)");
+                    Matcher matcher = pattern.matcher(data);
+                    if(matcher.find()){
+                        return Integer.parseInt(matcher.group().substring(0, matcher.group().length()-1));
+                    }
+                }
             }
         }
         return 0;
@@ -127,13 +161,16 @@ public class ProfileView implements Serializable {
     }
 
     private int getNextRollTime(Document doc) {
-        String data = doc.html();
-        if(data.contains("free_play_time_remaining")){
-            String matcher = extractCountDownRollTime(data, "free_play_time_remaining");
-            if (matcher != null) return (Integer.parseInt(matcher));
-        }else if(data.contains("#time_remaining")){
-            String matcher = extractCountDownRollTime(data, "#time_remaining");
-            if (matcher != null) return (Integer.parseInt(matcher));
+        Elements scripts = doc.getElementsByTag("script");
+        for (Element script: scripts) {
+            List<DataNode> dataNodes = script.dataNodes();
+            for (DataNode dataNode : dataNodes){
+                String data = dataNode.getWholeData();
+                if(data.contains("#time_remaining")){
+                    String matcher = extractCountDownRollTime(data, "#time_remaining");
+                    if (matcher != null) return (Integer.parseInt(matcher));
+                }
+            }
         }
         return 0;
     }
