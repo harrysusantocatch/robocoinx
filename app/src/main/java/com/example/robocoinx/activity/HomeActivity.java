@@ -4,22 +4,45 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.webkit.WebSettings;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.TextView;
 
 import com.example.robocoinx.R;
 import com.example.robocoinx.model.ProfileView;
 import com.example.robocoinx.model.StaticValues;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.concurrent.TimeUnit;
 
 public class HomeActivity extends AppCompatActivity {
 
-    int counter;
+    private WebView webView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         setView();
+    }
+
+    private void injectJS(){
+        String content = null;
+
+        try {
+            InputStream stream = getAssets().open("roll.js");
+
+            int size = stream.available();
+            byte[] buffer = new byte[size];
+            stream.read(buffer);
+            stream.close();
+            content = new String(buffer);
+        } catch (IOException e) {
+            // Handle exceptions here
+        }
+        if(content != null) webView.loadUrl("javascript:("+content+")()");
     }
 
     private void setView() {
@@ -51,6 +74,7 @@ public class HomeActivity extends AppCompatActivity {
             @Override
             public void onFinish() {
                 nextRoll.setText("Roll");
+                doRoll();
             }
         }.start();
 
@@ -92,5 +116,21 @@ public class HomeActivity extends AppCompatActivity {
                 btcBonus.setText("Roll");
             }
         }.start();
+
+        doRoll();
+    }
+
+    private void doRoll() {
+        webView = findViewById(R.id.webView);
+        WebSettings setting = webView.getSettings();
+        setting.setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient(){
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                injectJS();
+            }
+        });
+        webView.loadUrl("https://freebitco.in/");
     }
 }

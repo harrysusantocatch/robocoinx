@@ -47,5 +47,12 @@
             android:layout_height="wrap_content"
             android:text="BTC bonus" />
 
+        <WebView
+            android:id="@+id/webView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:visibility="invisible"
+            tools:visibility="invisible" />
+
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
