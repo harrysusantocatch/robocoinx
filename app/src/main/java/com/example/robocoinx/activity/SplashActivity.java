@@ -41,13 +41,12 @@ public class SplashActivity extends AppCompatActivity {
             try {
                 checkUserCache();
             }catch (Exception e){
-                e.getStackTrace();
+                e.printStackTrace();
             }
             return null;
         }
 
         private void checkUserCache() {
-            FileManager.getInstance().delete(getApplicationContext(), StaticValues.USER_CACHE);
             long d1 = System.currentTimeMillis();
             boolean userExist = FileManager.getInstance().fileExists(getApplicationContext(), StaticValues.USER_CACHE);
             long d2 = System.currentTimeMillis();
