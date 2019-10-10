@@ -1,4 +1,5 @@
 function () {
+var fingerprint = $.fingerprint();
     $("#free_play_form_button").click(function(event) {
             event.preventDefault();
             $('#free_play_digits').show();
