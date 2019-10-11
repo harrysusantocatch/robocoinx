@@ -1,7 +1,9 @@
 package com.example.robocoinx.logic;
 
 import android.content.Context;
+import android.content.res.Resources;
 
+import com.example.robocoinx.R;
 import com.example.robocoinx.model.ProfileView;
 import com.example.robocoinx.model.StaticValues;
 import com.example.robocoinx.model.UserCache;
@@ -9,11 +11,22 @@ import com.google.gson.Gson;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.nodes.TextNode;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.Scriptable;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
+
+import io.webfolder.ui4j.api.browser.BrowserEngine;
+import io.webfolder.ui4j.api.browser.BrowserFactory;
+import io.webfolder.ui4j.api.browser.Page;
 
 public class RoboHandler {
 
@@ -182,7 +195,14 @@ public class RoboHandler {
             Connection.Response homeResponse = getRefreshHomeResponse(cookies);
             if(homeResponse == null) return null;
             updateCsrfToken(context, homeResponse);
-            ProfileView profileView = new ProfileView(homeResponse.parse());
+            Document doc = homeResponse.parse();
+            ProfileView profileView = new ProfileView(doc);
+            // get fingerprint
+            Element head = doc.head();
+            head.appendElement("script")
+                    .attr("type","text/javascript")
+                    .appendChild(new TextNode("document.getElementById(\"unconfirmed_deposits_table_rows\").innerHTML = \"kampret\""));
+            System.out.println(doc.html());
             return profileView;
         } catch (IOException e) {
             e.printStackTrace();
@@ -190,4 +210,69 @@ public class RoboHandler {
         }
     }
 
+    public static void getValueJS() {
+        BrowserEngine browser = BrowserFactory.getWebKit();
+        Page page = browser.navigate(StaticValues.URL_BASE);
+        page.show();
+        Object o1 = page.executeScript("$.fingerprint()");
+        System.out.println(o1.toString());
+
+        Object o2 = page.executeScript("new Fingerprint({canvas: true,screen_resolution: true,ie_activex: true}).get()");
+        System.out.println(o2.toString());
+    }
+
+    public static String runScript(Context androidContextObject) {
+        // Get the JavaScript in previous section
+        try {
+
+            Resources resources = androidContextObject.getResources();
+            InputStream rawResource = resources.openRawResource(R.raw.config);
+
+
+            Properties properties = new Properties();
+            properties.load(rawResource);
+
+            String source = properties.getProperty("jsExecute");
+            String functionName = "getRhinoHello";
+            Object[] functionParams = new Object[]{};
+            // Every Rhino VM begins with the enter()
+            // This Context is not Android's Context
+            org.mozilla.javascript.Context rhino = org.mozilla.javascript.Context.enter();
+
+            // Turn off optimization to make Rhino Android compatible
+            rhino.setOptimizationLevel(-1);
+
+            Scriptable scope = rhino.initStandardObjects();
+
+            // This line set the javaContext variable in JavaScript
+            //ScriptableObject.putProperty(scope, "javaContext", org.mozilla.javascript.Context.javaToJS(androidContextObject, scope));
+
+            // Note the forth argument is 1, which means the JavaScript source has
+            // been compressed to only one line using something like YUI
+            rhino.evaluateString(scope, source, "JavaScript", 1, null);
+
+            // We get the hello function defined in JavaScript
+            Object obj = scope.get(functionName, scope);
+
+            if (obj instanceof Function) {
+                Function function = (Function) obj;
+                // Call the hello function with params
+                Object result = function.call(rhino, scope, scope, functionParams);
+                // After the hello function is invoked, you will see logcat output
+
+                // Finally we want to print the result of hello function
+                String response = org.mozilla.javascript.Context.toString(result);
+                return response;
+            } else {
+                return null;
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        } finally {
+            // We must exit the Rhino VM
+            org.mozilla.javascript.Context.exit();
+        }
+
+        return null;
+    }
 }
