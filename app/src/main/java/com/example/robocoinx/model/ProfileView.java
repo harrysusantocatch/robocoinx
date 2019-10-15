@@ -1,7 +1,5 @@
 package com.example.robocoinx.model;
 
-import android.os.SystemClock;
-
 import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -23,37 +21,17 @@ public class ProfileView implements Serializable {
     public boolean hasCaptcha;
 
     public ProfileView(Document doc) {
-        long d1 = System.currentTimeMillis();
         setUserID(getUserID(doc));
-        long d2 = System.currentTimeMillis();
-        System.out.println("1-----------="+(d2-d1));
-        long d3 = System.currentTimeMillis();
         setBalance(getBalance(doc));
-        long d4 = System.currentTimeMillis();
-        System.out.println("2-----------="+(d4-d3));
-        long d5 = System.currentTimeMillis();
         setRewardPoint(getRewardPoint(doc));
-        long d6 = System.currentTimeMillis();
-        System.out.println("3-----------="+(d6-d5));
-        long d7 = System.currentTimeMillis();
         setNextRollTime(getNextRollTime(doc));
-        long d8 = System.currentTimeMillis();
-        System.out.println("4-----------="+(d8-d7));
-        long d9 = System.currentTimeMillis();
         setRpBonusTime(getRPBonusCountDown(doc));
-        long d10 = System.currentTimeMillis();
-        System.out.println("5-----------="+(d10-d9));
-        long d11 = System.currentTimeMillis();
         setBtcBonusTime(getBTCBonusCountDown(doc));
-        long d12 = System.currentTimeMillis();
-        System.out.println("6-----------="+(d12-d11));
-        setHasCaptcha(false);
     }
 
     public String getUserID(Document doc) {
         Elements elUserID = doc.getElementsByClass("left bold");
-        String userID = elUserID.text();
-        return userID;
+        return elUserID.text();
     }
 
     public String getUserID() {
@@ -150,14 +128,12 @@ public class ProfileView implements Serializable {
 
     private String getBalance(Document doc) {
         Element elBalance = doc.getElementById("balance");
-        String balance = elBalance.text();
-        return balance;
+        return elBalance.text();
     }
 
     private String getRewardPoint(Document doc) {
         Elements elRP = doc.getElementsByClass("reward_table_box br_0_0_5_5 user_reward_points font_bold");
-        String rp = elRP.text().replace(",", "");
-        return rp;
+        return elRP.text().replace(",", "");
     }
 
     private int getNextRollTime(Document doc) {

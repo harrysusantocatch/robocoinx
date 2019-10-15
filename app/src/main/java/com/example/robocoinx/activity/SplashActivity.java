@@ -1,24 +1,20 @@
 package com.example.robocoinx.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Window;
-import android.webkit.WebView;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.robocoinx.R;
+import com.example.robocoinx.logic.CryptEx;
 import com.example.robocoinx.logic.FileManager;
 import com.example.robocoinx.logic.RoboHandler;
 import com.example.robocoinx.model.ProfileView;
 import com.example.robocoinx.model.StaticValues;
 
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import java.io.IOException;
-import java.io.InputStream;
+import java.util.Objects;
 
 public class SplashActivity extends AppCompatActivity {
 
@@ -27,14 +23,23 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         hideTitleBar();
         setContentView(R.layout.splash_main);
-        new Content().execute((Void)null);
+        String encode1 = CryptEx.toBaseEncode(StaticValues.URL_BASE, StaticValues.KEY);
+        String encode2 = CryptEx.toBaseEncode(StaticValues.URL_HOME, StaticValues.KEY);
+        System.out.println("encode1="+encode1);
+        System.out.println("encode2="+encode2);
+        String decode1 = CryptEx.toBaseDecode(encode1, StaticValues.KEY);
+        String decode2 = CryptEx.toBaseDecode(encode2, StaticValues.KEY);
+        System.out.println("decode1="+decode1);
+        System.out.println("decode2="+decode2);
+//        new Content().execute((Void)null);
     }
 
     private void hideTitleBar() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
     }
 
+    @SuppressLint("StaticFieldLeak")
     public class Content extends AsyncTask<Void, Void, Void>{
 
         @Override
@@ -48,11 +53,7 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         private void checkUserCache() {
-            long d1 = System.currentTimeMillis();
-            boolean userExist = FileManager.getInstance().fileExists(getApplicationContext(), StaticValues.USER_CACHE);
-            long d2 = System.currentTimeMillis();
-            System.out.println("F.----------------= "+(d2-d1));
-            if(userExist){
+            if(FileManager.getInstance().fileExists(getApplicationContext(), StaticValues.USER_CACHE)){
                 goToHome();
             }else {
                 goToLogin();
@@ -60,10 +61,14 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         private void goToHome() {
-            ProfileView profileView = RoboHandler.parsingHomeResponse(getApplicationContext());
-            Intent intent = new Intent(getBaseContext(), HomeActivity.class);
-            intent.putExtra(StaticValues.PROFILE_VIEW, profileView);
-            startActivity(intent);
+            Object obj = RoboHandler.parsingHomeResponse(getApplicationContext());
+            if(obj instanceof ProfileView) {
+                Intent intent = new Intent(getBaseContext(), HomeActivity.class);
+                intent.putExtra(StaticValues.PROFILE_VIEW, (ProfileView)obj);
+                startActivity(intent);
+            }else {
+                // TODO show error
+            }
         }
 
         private void goToLogin() {
@@ -72,12 +77,9 @@ public class SplashActivity extends AppCompatActivity {
                 Intent intent = new Intent(getBaseContext(), LoginActivity.class);
                 startActivity(intent);
             }else {
-                runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        // ganti ke halaman error
-                        Toast.makeText(getApplicationContext(), "Sorry application under maintenance!!", Toast.LENGTH_SHORT).show();
-                    }
+                runOnUiThread(() -> {
+                    // TODO show error
+                    Toast.makeText(getApplicationContext(), "Sorry application under maintenance!!", Toast.LENGTH_SHORT).show();
                 });
             }
         }

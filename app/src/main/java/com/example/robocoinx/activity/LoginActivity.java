@@ -1,5 +1,6 @@
 package com.example.robocoinx.activity;
 
+import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,14 +15,11 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.robocoinx.R;
-import com.example.robocoinx.logic.FileManager;
 import com.example.robocoinx.logic.RoboHandler;
 import com.example.robocoinx.model.ProfileView;
 import com.example.robocoinx.model.StaticValues;
-import com.example.robocoinx.model.UserCache;
-import com.google.gson.Gson;
 
-import java.util.Map;
+import java.util.Objects;
 
 public class LoginActivity extends AppCompatActivity {
 
@@ -40,7 +38,7 @@ public class LoginActivity extends AppCompatActivity {
 
     private void hideTitleBar() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getSupportActionBar().hide();
+        Objects.requireNonNull(getSupportActionBar()).hide();
     }
 
     private void showLoginForm() {
@@ -63,29 +61,14 @@ public class LoginActivity extends AppCompatActivity {
         password = findViewById(R.id.editTextPassLogin);
 
         showLoginForm();
-        loginAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showLoginForm();
-            }
-        });
+        loginAction.setOnClickListener(v -> showLoginForm());
 
-        signupAction.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                showSignUpForm();
-            }
-        });
+        signupAction.setOnClickListener(v -> showSignUpForm());
 
-        btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                new Content(email.getText().toString(),password.getText().toString()).execute((Void)null);
-            }
-
-        });
+        btnLogin.setOnClickListener(v -> new Content(email.getText().toString(),password.getText().toString()).execute((Void)null));
     }
 
+    @SuppressLint("StaticFieldLeak")
     public class Content extends AsyncTask<Void, Void, Void> {
 
         private final String mEmail;
@@ -99,18 +82,15 @@ public class LoginActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                Map<String, Object> result = RoboHandler.parsingLoginResponse(getApplicationContext(), mEmail, mPassword);
-                if(result == null){
-                    runOnUiThread(new Runnable() {
-                        @Override
-                        public void run() {
-                            Toast.makeText(getApplicationContext(), "Sorry login filed!!", Toast.LENGTH_SHORT).show();
-                        }
-                    });
-                }else {
+                Object obj = RoboHandler.parsingLoginResponse(getApplicationContext(), mEmail, mPassword);
+                if(obj instanceof ProfileView){
+
                     Intent intent = new Intent(getBaseContext(), HomeActivity.class);
-                    intent.putExtra(StaticValues.PROFILE_VIEW, (ProfileView)result.get(StaticValues.PROFILE_VIEW));
+                    intent.putExtra(StaticValues.PROFILE_VIEW, (ProfileView)obj);
                     startActivity(intent);
+                }else {
+                    // TODO show error
+                    runOnUiThread(() -> Toast.makeText(getApplicationContext(), (String)obj, Toast.LENGTH_SHORT).show());
                 }
             }catch (Exception e){
                 e.getStackTrace();

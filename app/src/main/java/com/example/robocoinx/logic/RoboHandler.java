@@ -5,13 +5,14 @@ import android.content.res.Resources;
 
 import com.example.robocoinx.R;
 import com.example.robocoinx.model.ProfileView;
+import com.example.robocoinx.model.RollAttribute;
 import com.example.robocoinx.model.StaticValues;
 import com.example.robocoinx.model.UserCache;
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
-import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.nodes.TextNode;
@@ -20,6 +21,7 @@ import org.mozilla.javascript.Scriptable;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Properties;
@@ -49,12 +51,9 @@ public class RoboHandler {
     private static Map<String, String> baseCookies;
     private static Map<String, String> getBaseCookies(){
         if(baseCookies == null) {
-            long d1 = System.currentTimeMillis();
             if(getFirstResponse() != null) {
                 baseCookies = getFirstResponse().cookies();
             }
-            long d2 = System.currentTimeMillis();
-            System.out.println("1.----------------= "+(d2-d1));
         }
         return baseCookies;
     }
@@ -63,10 +62,7 @@ public class RoboHandler {
     public static String getCsrfToken(Context context){
         if(csrfToken == null){
             csrfToken = getBaseCookies().get("csrf_token");
-            long d1 = System.currentTimeMillis();
             FileManager.getInstance().writeFile(context, StaticValues.CSRF_TOKEN, csrfToken);
-            long d2 = System.currentTimeMillis();
-            System.out.println("2.----------------= "+(d2-d1));
 
         }
         return csrfToken;
@@ -83,8 +79,6 @@ public class RoboHandler {
                     .header("Accept-Language", "en-ID")
                     .header("Content-Type", "application/x-www-form-urlencoded")
                     .header("x-csrf-token", csrfToken)
-    //                .header("X-Requested-With", "XMLHttpRequest")
-    //                .header("Accept-Encoding", "gzip, deflate, br") jadi html di encoded
                     .header("Host", "freebitco.in")
                     .header("Connection", "Keep-Alive")
                     .header("Access-Control-Allow-Credentials", "true")
@@ -104,39 +98,37 @@ public class RoboHandler {
         return response;
     }
 
-    public static Map<String, Object> parsingLoginResponse(Context context, String email, String password){
-        Map<String, Object> result = new HashMap<>();
+    public static Object parsingLoginResponse(Context context, String email, String password){
         Connection.Response loginResponse = getLoginResponse(email, password);
-        if (loginResponse == null) return null;
+        if (loginResponse == null) return StaticValues.ERROR_GENERAL;
         try {
             Document docLogin = loginResponse.parse();
             String contentBody = docLogin.body().html();
             String[] dataLogin = contentBody.split(":");
-            if(dataLogin.length < 3) return null;
+            if(dataLogin.length < 3) return contentBody;
             UserCache userCache = new UserCache(dataLogin);
             Map<String, String> firstHomeCookies = setForFirstHomeCookies(baseCookies, userCache);
             Connection.Response homeResponse = getFirstHomeResponse(firstHomeCookies);
-            if(homeResponse == null) return null;
+            if(homeResponse == null) return StaticValues.ERROR_GENERAL;
             updateCsrfToken(context, homeResponse);
             String loginAuth = homeResponse.cookie("login_auth");
             userCache.setLoginAuth(loginAuth);
             ProfileView profileView = new ProfileView(homeResponse.parse());
             String userString = new Gson().toJson(userCache);
             FileManager.getInstance().writeFile(context, StaticValues.USER_CACHE, userString);
-            result.put(StaticValues.USER_CACHE, userCache);
-            result.put(StaticValues.PROFILE_VIEW, profileView);
-            return result;
+            return profileView;
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            return StaticValues.ERROR_GENERAL;
         }
     }
 
     private static void updateCsrfToken(Context context, Connection.Response response) {
-        String csrfToken = response.cookie(StaticValues.CSRF_TOKEN);
-        if(csrfToken != null){
+        String csrfTokenRes = response.cookie(StaticValues.CSRF_TOKEN);
+        if(csrfTokenRes != null){
+            csrfToken = csrfTokenRes;
             FileManager.getInstance().delete(context, StaticValues.CSRF_TOKEN);
-            FileManager.getInstance().writeFile(context, StaticValues.CSRF_TOKEN, csrfToken);
+            FileManager.getInstance().writeFile(context, StaticValues.CSRF_TOKEN, csrfTokenRes);
         }
     }
 
@@ -151,49 +143,130 @@ public class RoboHandler {
         return firstHomeCookies;
     }
 
-    private static Connection.Response getFirstHomeResponse(Map<String, String> cookies) throws IOException {
-        Connection.Response response = Jsoup.connect(StaticValues.URL_HOME)
-                .userAgent(StaticValues.USER_AGENT)
-                .referrer("https://freebitco.in/?op=signup_page")
-                .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-                .header("Accept-Language", "en-ID")
-                .header("Upgrade-Insecure-Requests", "1")
-//                .header("Accept-Encoding", "gzip, deflate, br") // jadi html di encoded
-                .header("Host", "freebitco.in")
-                .header("Connection", "Keep-Alive")
-                .timeout(StaticValues.TIMEOUT)
-                .method(Connection.Method.GET)
-                .cookies(cookies)
-                .execute();
+    private static Connection.Response getFirstHomeResponse(Map<String, String> cookies){
+        Connection.Response response = null;
+        try {
+            response = Jsoup.connect(StaticValues.URL_HOME)
+                    .userAgent(StaticValues.USER_AGENT)
+                    .referrer("https://freebitco.in/?op=signup_page")
+                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+                    .header("Accept-Language", "en-ID")
+                    .header("Upgrade-Insecure-Requests", "1")
+    //                .header("Accept-Encoding", "gzip, deflate, br") // jadi html di encoded
+                    .header("Host", "freebitco.in")
+                    .header("Connection", "Keep-Alive")
+                    .timeout(StaticValues.TIMEOUT)
+                    .method(Connection.Method.GET)
+                    .cookies(cookies)
+                    .execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return response;
     }
 
-    private static Connection.Response getRefreshHomeResponse(Map<String, String> cookies) throws IOException {
-        Connection.Response response = Jsoup.connect(StaticValues.URL_HOME)
-                .userAgent(StaticValues.USER_AGENT)
-                .referrer("https://freebitco.in/?op=signup_page")
-                .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
-                .header("Upgrade-Insecure-Requests", "1")
-                .header("Host", "freebitco.in")
-                .header("Connection", "Keep-Alive")
-                .timeout(StaticValues.TIMEOUT)
-                .method(Connection.Method.GET)
-                .cookies(cookies)
-                .execute();
+    private static Connection.Response getRefreshHomeResponse(Map<String, String> cookies){
+        Connection.Response response = null;
+        try {
+            response = Jsoup.connect(StaticValues.URL_HOME)
+                    .userAgent(StaticValues.USER_AGENT)
+                    .referrer("https://freebitco.in/?op=signup_page")
+                    .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
+                    .header("Upgrade-Insecure-Requests", "1")
+                    .header("Host", "freebitco.in")
+                    .header("Connection", "Keep-Alive")
+                    .timeout(StaticValues.TIMEOUT)
+                    .method(Connection.Method.GET)
+                    .cookies(cookies)
+                    .execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         return response;
     }
 
-    public static ProfileView parsingHomeResponse(Context context){
+    private static Connection.Response getRollResponse(Map<String, String> cookies, RollAttribute rollAttribute){
+        Connection.Response response = null;
+        try {
+            response = Jsoup.connect(StaticValues.URL_BASE)
+                    .userAgent(StaticValues.USER_AGENT)
+                    .header("Origin", "https://freebitco.in")
+                    .referrer("https://freebitco.in")
+                    .header("Accept", "*/*")
+                    .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                    .header("x-csrf-token", csrfToken)
+                    .header("x-requested-with", "XMLHttpRequest")
+                    .header("sec-fetch-mode", "cors")
+                    .header("sec-fetch-site", "same-origin")
+                    .timeout(StaticValues.TIMEOUT)
+                    .method(Connection.Method.POST)
+                    .data("csrf_token", csrfToken)
+                    .data("op", StaticValues.OP)
+                    .data("fingerprint", rollAttribute.getFingerprint())
+                    .data("client_seed", rollAttribute.getClientSeed())
+                    .data("fingerprint2", rollAttribute.getFingerprint2())
+                    .data("pwc", rollAttribute.getPwc())
+                    .data(rollAttribute.getTokenName(), rollAttribute.getTokenValue())
+                    .data(rollAttribute.getLastParam(), rollAttribute.getLastParamValue())
+                    .data("g_recaptcha_response", "")
+                    .cookies(cookies)
+                    .execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+    public static Object parsingRollResponse(Context context){
+        String cookiesStr = FileManager.getInstance().readFile(context, StaticValues.AUTH_COOKIES);
+        Type type = new TypeToken<Map<String, String>>(){}.getType();
+        Map<String, String> cookies = new Gson().fromJson(cookiesStr, type);
+        try {
+            Connection.Response homeResponse = getRefreshHomeResponse(cookies);
+            if(homeResponse == null) return StaticValues.ERROR_GENERAL;
+            updateCsrfToken(context, homeResponse);
+            Document doc = homeResponse.parse();
+            RollAttribute rollAttribute = new RollAttribute(context, doc);
+            cookies.put("csrf_token", csrfToken);
+            cookies.put("__cfduid", homeResponse.cookie("__cfduid"));
+            Connection.Response rollResponse = getRollResponse(cookies, rollAttribute);
+            if (rollResponse == null) return StaticValues.ERROR_GENERAL;
+            Document docRoll = rollResponse.parse();
+            String contentBody = docRoll.body().html();
+            String[] dataRoll = contentBody.split(":");
+            if(dataRoll.length == 0) return StaticValues.ERROR_GENERAL;
+            if(dataRoll[0].equals("s")){
+                return parsingHomeResponse(context);
+            }else if(dataRoll[0].equals("e")){
+                return dataRoll[1];
+            }else {
+                return StaticValues.ERROR_GENERAL;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return StaticValues.ERROR_GENERAL;
+        }
+    }
+
+    public static Object parsingHomeResponse(Context context){
         String userString = FileManager.getInstance().readFile(context, StaticValues.USER_CACHE);
         UserCache userCache = new Gson().fromJson(userString, UserCache.class);
         Map<String, String> cookies = new HashMap<>();
-        cookies.put("login_auth", userCache.getLoginAuth());
-        cookies.put("btc_address",userCache.getBtcAddress());
-        cookies.put("password",userCache.getPassword());
-        cookies.put("have_account", "1");
+        if(FileManager.getInstance().fileExists(context, StaticValues.AUTH_COOKIES)){
+            String cookiesStr =  FileManager.getInstance().readFile(context, StaticValues.AUTH_COOKIES);
+            Type type = new TypeToken<Map<String, String>>(){}.getType();
+            cookies = new Gson().fromJson(cookiesStr, type);
+        }else {
+            cookies.put("login_auth", userCache.getLoginAuth());
+            cookies.put("btc_address",userCache.getBtcAddress());
+            cookies.put("password",userCache.getPassword());
+            cookies.put("have_account", "1");
+            FileManager.getInstance().writeFile(context, StaticValues.AUTH_COOKIES, new Gson().toJson(cookies));
+        }
+
         try {
             Connection.Response homeResponse = getRefreshHomeResponse(cookies);
-            if(homeResponse == null) return null;
+            if(homeResponse == null) return StaticValues.ERROR_GENERAL;
             updateCsrfToken(context, homeResponse);
             Document doc = homeResponse.parse();
             ProfileView profileView = new ProfileView(doc);
@@ -206,10 +279,29 @@ public class RoboHandler {
             return profileView;
         } catch (IOException e) {
             e.printStackTrace();
-            return null;
+            return StaticValues.ERROR_GENERAL;
         }
     }
 
+    public static Connection.Response getLastParamValueResponse(String lastParam){
+        String url = "https://freebitco.in/cgi-bin/fp_check.pl?s=" + lastParam + "&csrf_token=" + csrfToken;
+        Connection.Response response = null;
+        try {
+            response = Jsoup.connect(url)
+                    .userAgent(StaticValues.USER_AGENT)
+                    .header("Access-Control-Allow-Credentials", "true")
+                    .header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+                    .timeout(StaticValues.TIMEOUT)
+                    .method(Connection.Method.GET)
+                    .execute();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return response;
+    }
+
+
+    /////////////////
     public static void getValueJS() {
         BrowserEngine browser = BrowserFactory.getWebKit();
         Page page = browser.navigate(StaticValues.URL_BASE);
