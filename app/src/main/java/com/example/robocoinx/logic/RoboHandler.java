@@ -35,7 +35,7 @@ public class RoboHandler {
     private static Connection.Response getFirstResponse(){
         Connection.Response response = null;
         try {
-            response = Jsoup.connect(StaticValues.URL_BASE)
+            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_B))
                     .userAgent(StaticValues.USER_AGENT)
                     .header("Access-Control-Allow-Credentials", "true")
                     .header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
@@ -71,7 +71,7 @@ public class RoboHandler {
     private static Connection.Response getLoginResponse(String email, String password){
         Connection.Response response = null;
         try {
-            response = Jsoup.connect(StaticValues.URL_BASE)
+            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_B))
                     .userAgent(StaticValues.USER_AGENT)
                     .header("Origin", "https://freebitco.in")
                     .referrer("https://freebitco.in/?op=signup_page")
@@ -146,7 +146,7 @@ public class RoboHandler {
     private static Connection.Response getFirstHomeResponse(Map<String, String> cookies){
         Connection.Response response = null;
         try {
-            response = Jsoup.connect(StaticValues.URL_HOME)
+            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_M))
                     .userAgent(StaticValues.USER_AGENT)
                     .referrer("https://freebitco.in/?op=signup_page")
                     .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
@@ -168,7 +168,7 @@ public class RoboHandler {
     private static Connection.Response getRefreshHomeResponse(Map<String, String> cookies){
         Connection.Response response = null;
         try {
-            response = Jsoup.connect(StaticValues.URL_HOME)
+            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_M))
                     .userAgent(StaticValues.USER_AGENT)
                     .referrer("https://freebitco.in/?op=signup_page")
                     .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
@@ -188,7 +188,7 @@ public class RoboHandler {
     private static Connection.Response getRollResponse(Map<String, String> cookies, RollAttribute rollAttribute){
         Connection.Response response = null;
         try {
-            response = Jsoup.connect(StaticValues.URL_BASE)
+            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_B))
                     .userAgent(StaticValues.USER_AGENT)
                     .header("Origin", "https://freebitco.in")
                     .referrer("https://freebitco.in")
@@ -304,7 +304,7 @@ public class RoboHandler {
     /////////////////
     public static void getValueJS() {
         BrowserEngine browser = BrowserFactory.getWebKit();
-        Page page = browser.navigate(StaticValues.URL_BASE);
+        Page page = browser.navigate(CryptEx.toBaseDecode(StaticValues.URL_KEY_B));
         page.show();
         Object o1 = page.executeScript("$.fingerprint()");
         System.out.println(o1.toString());

@@ -12,8 +12,15 @@ import com.example.robocoinx.logic.CryptEx;
 import com.example.robocoinx.logic.FileManager;
 import com.example.robocoinx.logic.RoboHandler;
 import com.example.robocoinx.model.ProfileView;
+import com.example.robocoinx.model.RollAttribute;
 import com.example.robocoinx.model.StaticValues;
 
+import org.jsoup.Jsoup;
+import org.jsoup.nodes.Document;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.Objects;
 
 public class SplashActivity extends AppCompatActivity {
@@ -23,15 +30,7 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         hideTitleBar();
         setContentView(R.layout.splash_main);
-        String encode1 = CryptEx.toBaseEncode(StaticValues.URL_BASE, StaticValues.KEY);
-        String encode2 = CryptEx.toBaseEncode(StaticValues.URL_HOME, StaticValues.KEY);
-        System.out.println("encode1="+encode1);
-        System.out.println("encode2="+encode2);
-        String decode1 = CryptEx.toBaseDecode(encode1, StaticValues.KEY);
-        String decode2 = CryptEx.toBaseDecode(encode2, StaticValues.KEY);
-        System.out.println("decode1="+decode1);
-        System.out.println("decode2="+decode2);
-//        new Content().execute((Void)null);
+        new Content().execute((Void)null);
     }
 
     private void hideTitleBar() {

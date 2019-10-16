@@ -30,8 +30,8 @@ public class RollAttribute {
     public RollAttribute(Context context, Document doc){
 
         setOp(StaticValues.OP);
-        setFingerprint(""); // TODO
-        setFingerprint2(""); // TODO
+        setFingerprint("3a9c7c414c5b85342084560cf69eec93"); // TODO
+        setFingerprint2("1457546166"); // TODO
         setClientSeed(getClientSeed());
         setPwc("1"); // TODO
         Elements scripts = doc.getElementsByTag("script");
@@ -59,7 +59,7 @@ public class RollAttribute {
                     Matcher matcher = pattern.matcher(data);
                     if(matcher.find()){
                         String tokenValueTemp = matcher.group();
-                        String strReplace = "(\"#"+tokenValueTemp+"\").val(\"";
+                        String strReplace = "(\"#"+getTokenName()+"\").val(\"";
                         setTokenValue(tokenValueTemp.replace(strReplace, ""));
                     }
                 }

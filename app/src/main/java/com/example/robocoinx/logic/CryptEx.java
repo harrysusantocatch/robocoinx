@@ -1,8 +1,11 @@
 package com.example.robocoinx.logic;
 
+import android.util.Base64;
+
 import org.apache.commons.codec.binary.Hex;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.security.InvalidKeyException;
 import java.security.Key;
 import java.security.MessageDigest;
@@ -27,39 +30,22 @@ public class CryptEx {
 
 //            shaHex = DatatypeConverter.printHexBinary(digest);
             // TODO check
-            shaHex = org.apache.commons.codec.binary.Hex.encodeHex(digest).toString();
+            shaHex = new String(org.apache.commons.codec.binary.Hex.encodeHex(digest));
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException ex) {
             ex.printStackTrace();
         }
         return shaHex.toLowerCase();
     }
 
-    public static String toBaseEncode(String text, String key){
-        String encoded = null;
-        Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
-        Cipher cipher = null;
-        try {
-            cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.ENCRYPT_MODE, aesKey);
-            byte[] encrypted = cipher.doFinal(text.getBytes());
-            encoded = new String(encrypted);
-        } catch (NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e) {
-            e.printStackTrace();
-        }
-        return encoded;
+    public static String toBaseEncode(String text){
+        byte[] dataVal = text.getBytes(StandardCharsets.UTF_8);
+        String base64 = Base64.encodeToString(dataVal, Base64.DEFAULT);
+        return base64;
     }
 
-    public static String toBaseDecode(String text, String key){
-        String decoded = null;
-        Key aesKey = new SecretKeySpec(key.getBytes(), "AES");
-        Cipher cipher = null;
-        try {
-            cipher = Cipher.getInstance("AES");
-            cipher.init(Cipher.DECRYPT_MODE, aesKey);
-            decoded = new String(cipher.doFinal(text.getBytes()));
-        } catch (NoSuchAlgorithmException | InvalidKeyException | BadPaddingException | IllegalBlockSizeException | NoSuchPaddingException e) {
-            e.printStackTrace();
-        }
-        return decoded;
+    public static String toBaseDecode(String base64){
+        byte[] dataVal = Base64.decode(base64, Base64.DEFAULT);
+        String text = new String(dataVal, StandardCharsets.UTF_8);
+        return text;
     }
 }
