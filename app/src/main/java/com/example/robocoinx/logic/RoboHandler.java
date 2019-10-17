@@ -6,6 +6,8 @@ import android.content.res.Resources;
 import com.example.robocoinx.R;
 import com.example.robocoinx.model.ProfileView;
 import com.example.robocoinx.model.RollAttribute;
+import com.example.robocoinx.model.RollErrorResponse;
+import com.example.robocoinx.model.RollSuccessResponse;
 import com.example.robocoinx.model.StaticValues;
 import com.example.robocoinx.model.UserCache;
 import com.google.gson.Gson;
@@ -14,8 +16,6 @@ import com.google.gson.reflect.TypeToken;
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
-import org.jsoup.nodes.TextNode;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 
@@ -43,7 +43,7 @@ public class RoboHandler {
                     .method(Connection.Method.GET)
                     .execute();
         } catch (IOException e) {
-            e.printStackTrace();
+//            FileManager.getInstance().appendLog(e);
         }
         return  response;
     }
@@ -73,13 +73,13 @@ public class RoboHandler {
         try {
             response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_B))
                     .userAgent(StaticValues.USER_AGENT)
-                    .header("Origin", "https://freebitco.in")
-                    .referrer("https://freebitco.in/?op=signup_page")
+                    .header("Origin", CryptEx.toBaseDecode(StaticValues.URL_KEY_A))
+                    .referrer(CryptEx.toBaseDecode(StaticValues.URL_KEY_S))
                     .header("Accept", "*/*")
                     .header("Accept-Language", "en-ID")
                     .header("Content-Type", "application/x-www-form-urlencoded")
                     .header("x-csrf-token", csrfToken)
-                    .header("Host", "freebitco.in")
+                    .header("Host", CryptEx.toBaseDecode(StaticValues.URL_KEY_O))
                     .header("Connection", "Keep-Alive")
                     .header("Access-Control-Allow-Credentials", "true")
                     .header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
@@ -93,7 +93,7 @@ public class RoboHandler {
                     .cookies(getBaseCookies())
                     .execute();
         } catch (IOException e) {
-            e.printStackTrace();
+//            FileManager.getInstance().appendLog(e);
         }
         return response;
     }
@@ -116,9 +116,15 @@ public class RoboHandler {
             ProfileView profileView = new ProfileView(homeResponse.parse());
             String userString = new Gson().toJson(userCache);
             FileManager.getInstance().writeFile(context, StaticValues.USER_CACHE, userString);
+            Map<String, String> cookies = new HashMap<>();
+            cookies.put("login_auth", userCache.getLoginAuth());
+            cookies.put("btc_address",userCache.getBtcAddress());
+            cookies.put("password",userCache.getPassword());
+            cookies.put("have_account", "1");
+            FileManager.getInstance().writeFile(context, StaticValues.AUTH_COOKIES, new Gson().toJson(cookies));
             return profileView;
         } catch (IOException e) {
-            e.printStackTrace();
+//            FileManager.getInstance().appendLog(e);
             return StaticValues.ERROR_GENERAL;
         }
     }
@@ -146,21 +152,21 @@ public class RoboHandler {
     private static Connection.Response getFirstHomeResponse(Map<String, String> cookies){
         Connection.Response response = null;
         try {
-            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_M))
+            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_H))
                     .userAgent(StaticValues.USER_AGENT)
-                    .referrer("https://freebitco.in/?op=signup_page")
+                    .referrer(CryptEx.toBaseDecode(StaticValues.URL_KEY_S))
                     .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
                     .header("Accept-Language", "en-ID")
                     .header("Upgrade-Insecure-Requests", "1")
     //                .header("Accept-Encoding", "gzip, deflate, br") // jadi html di encoded
-                    .header("Host", "freebitco.in")
+                    .header("Host", CryptEx.toBaseDecode(StaticValues.URL_KEY_O))
                     .header("Connection", "Keep-Alive")
                     .timeout(StaticValues.TIMEOUT)
                     .method(Connection.Method.GET)
                     .cookies(cookies)
                     .execute();
         } catch (IOException e) {
-            e.printStackTrace();
+//            FileManager.getInstance().appendLog(e);
         }
         return response;
     }
@@ -168,19 +174,19 @@ public class RoboHandler {
     private static Connection.Response getRefreshHomeResponse(Map<String, String> cookies){
         Connection.Response response = null;
         try {
-            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_M))
+            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_H))
                     .userAgent(StaticValues.USER_AGENT)
-                    .referrer("https://freebitco.in/?op=signup_page")
+                    .referrer(CryptEx.toBaseDecode(StaticValues.URL_KEY_S))
                     .header("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8")
                     .header("Upgrade-Insecure-Requests", "1")
-                    .header("Host", "freebitco.in")
+                    .header("Host", CryptEx.toBaseDecode(StaticValues.URL_KEY_O))
                     .header("Connection", "Keep-Alive")
                     .timeout(StaticValues.TIMEOUT)
                     .method(Connection.Method.GET)
                     .cookies(cookies)
                     .execute();
         } catch (IOException e) {
-            e.printStackTrace();
+//            FileManager.getInstance().appendLog(e);
         }
         return response;
     }
@@ -190,8 +196,8 @@ public class RoboHandler {
         try {
             response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_B))
                     .userAgent(StaticValues.USER_AGENT)
-                    .header("Origin", "https://freebitco.in")
-                    .referrer("https://freebitco.in")
+                    .header("Origin", CryptEx.toBaseDecode(StaticValues.URL_KEY_A))
+                    .referrer(CryptEx.toBaseDecode(StaticValues.URL_KEY_A))
                     .header("Accept", "*/*")
                     .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
                     .header("x-csrf-token", csrfToken)
@@ -212,7 +218,7 @@ public class RoboHandler {
                     .cookies(cookies)
                     .execute();
         } catch (IOException e) {
-            e.printStackTrace();
+//            FileManager.getInstance().appendLog(e);
         }
         return response;
     }
@@ -236,14 +242,14 @@ public class RoboHandler {
             String[] dataRoll = contentBody.split(":");
             if(dataRoll.length == 0) return StaticValues.ERROR_GENERAL;
             if(dataRoll[0].equals("s")){
-                return parsingHomeResponse(context);
+                return new RollSuccessResponse(dataRoll[2], dataRoll[3]);
             }else if(dataRoll[0].equals("e")){
-                return dataRoll[1];
+                return new RollErrorResponse(dataRoll[1], Integer.parseInt(dataRoll[2]));
             }else {
                 return StaticValues.ERROR_GENERAL;
             }
         } catch (IOException e) {
-            e.printStackTrace();
+//            FileManager.getInstance().appendLog(e);
             return StaticValues.ERROR_GENERAL;
         }
     }
@@ -269,22 +275,15 @@ public class RoboHandler {
             if(homeResponse == null) return StaticValues.ERROR_GENERAL;
             updateCsrfToken(context, homeResponse);
             Document doc = homeResponse.parse();
-            ProfileView profileView = new ProfileView(doc);
-            // get fingerprint
-            Element head = doc.head();
-            head.appendElement("script")
-                    .attr("type","text/javascript")
-                    .appendChild(new TextNode("document.getElementById(\"unconfirmed_deposits_table_rows\").innerHTML = \"kampret\""));
-            System.out.println(doc.html());
-            return profileView;
+            return new ProfileView(doc);
         } catch (IOException e) {
-            e.printStackTrace();
+//            FileManager.getInstance().appendLog(e);
             return StaticValues.ERROR_GENERAL;
         }
     }
 
     public static Connection.Response getLastParamValueResponse(String lastParam){
-        String url = "https://freebitco.in/cgi-bin/fp_check.pl?s=" + lastParam + "&csrf_token=" + csrfToken;
+        String url = CryptEx.toBaseDecode(StaticValues.URL_KEY_C) + lastParam + "&csrf_token=" + csrfToken;
         Connection.Response response = null;
         try {
             response = Jsoup.connect(url)
@@ -295,7 +294,7 @@ public class RoboHandler {
                     .method(Connection.Method.GET)
                     .execute();
         } catch (IOException e) {
-            e.printStackTrace();
+//            FileManager.getInstance().appendLog(e);
         }
         return response;
     }

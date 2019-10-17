@@ -8,19 +8,10 @@ import android.view.Window;
 import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 import com.example.robocoinx.R;
-import com.example.robocoinx.logic.CryptEx;
 import com.example.robocoinx.logic.FileManager;
 import com.example.robocoinx.logic.RoboHandler;
 import com.example.robocoinx.model.ProfileView;
-import com.example.robocoinx.model.RollAttribute;
 import com.example.robocoinx.model.StaticValues;
-
-import org.jsoup.Jsoup;
-import org.jsoup.nodes.Document;
-
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.Objects;
 
 public class SplashActivity extends AppCompatActivity {
@@ -46,7 +37,7 @@ public class SplashActivity extends AppCompatActivity {
             try {
                 checkUserCache();
             }catch (Exception e){
-                e.printStackTrace();
+//                FileManager.getInstance().appendLog(e);
             }
             return null;
         }

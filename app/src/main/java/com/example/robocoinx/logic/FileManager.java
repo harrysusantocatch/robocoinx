@@ -1,10 +1,16 @@
 package com.example.robocoinx.logic;
 
 import android.content.Context;
+import android.os.Environment;
 
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 
 public class FileManager {
 
@@ -52,5 +58,35 @@ public class FileManager {
             return false;
         }
         return true;
+    }
+
+    public void appendLog(Exception ex)
+    {
+        File logFile = new File(Environment.getExternalStorageDirectory()+"/robocoinxlog.file");
+        if (!logFile.exists())
+        {
+            try
+            {
+                logFile.createNewFile();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        try
+        {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            ex.printStackTrace(pw);
+            BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
+            buf.append(sw.toString());
+            buf.newLine();
+            buf.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
     }
 }

@@ -4,13 +4,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 
-public class BootBroadcastReceiver extends BroadcastReceiver {
+import com.example.robocoinx.model.StaticValues;
 
-    static final String ACTION = "android.intent.action.BOOT_COMPLETED";
+public class ServiceBroadcastReceiver extends android.content.BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
-        if (intent.getAction().equals(ACTION)) {
+
+        if (intent.getAction().equals(StaticValues.BOOT_COMPLETED) ||
+                intent.getAction().equals(StaticValues.START_SERVICE)) {
             Intent serviceIntent = new Intent(context, BackgroundService.class);
             context.startService(serviceIntent);
         }

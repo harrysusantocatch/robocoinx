@@ -1,11 +1,7 @@
 package com.example.robocoinx.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.NotificationCompat;
 
-import android.app.NotificationManager;
-import android.app.PendingIntent;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -16,8 +12,11 @@ import android.widget.TextView;
 
 import com.example.robocoinx.R;
 import com.example.robocoinx.logic.BackgroundService;
+import com.example.robocoinx.logic.FileManager;
 import com.example.robocoinx.logic.RoboHandler;
 import com.example.robocoinx.model.ProfileView;
+import com.example.robocoinx.model.RollErrorResponse;
+import com.example.robocoinx.model.RollSuccessResponse;
 import com.example.robocoinx.model.StaticValues;
 
 import java.util.Locale;
@@ -37,22 +36,6 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         setView();
-    }
-
-    private void sendNotif() {
-        NotificationCompat.Builder builder =
-                new NotificationCompat.Builder(this, "test")
-                        .setSmallIcon(R.drawable.ic_launcher_foreground)
-                        .setContentTitle("Notifications")
-                        .setContentText("This is a test notification from background");
-
-        Intent notificationIntent = new Intent();
-        PendingIntent contentIntent = PendingIntent.getActivity(this, 0, notificationIntent,
-                PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.setContentIntent(contentIntent);
-
-        NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        manager.notify(0, builder.build());
     }
 
     private void setView() {
@@ -77,7 +60,6 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getBaseContext(), BackgroundService.class);
                 startService(intent);
-//                sendNotif();
             }
         });
 
@@ -169,16 +151,26 @@ public class HomeActivity extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             try {
                 Object obj = RoboHandler.parsingRollResponse(getApplicationContext());
-                if(obj instanceof ProfileView){
-                    ProfileView profileView = (ProfileView) obj;
-                    setValueUI(profileView);
-                }else {
+                if(obj instanceof RollSuccessResponse){
+                    Object result = RoboHandler.parsingHomeResponse(getApplicationContext());
+                    if(result instanceof ProfileView) {
+                        ProfileView profileView = (ProfileView) obj;
+                        setValueUI(profileView);
+                    }else {
+                        String message = (String) obj;
+                        // TODO show message error
+                    }
+                }else if(obj instanceof RollErrorResponse){
+                    String message = ((RollErrorResponse) obj).getMessage();
+                    // TODO show message error
+                }
+                else {
                     String message = (String) obj;
                     // TODO show message error
                 }
 
             }catch (Exception e){
-                e.printStackTrace();
+//                FileManager.getInstance().appendLog(e);
             }
             return null;
         }
