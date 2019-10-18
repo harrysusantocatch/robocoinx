@@ -161,7 +161,7 @@ public class HomeActivity extends AppCompatActivity {
                         // TODO show message error
                     }
                 }else if(obj instanceof RollErrorResponse){
-                    String message = ((RollErrorResponse) obj).getMessage();
+                    String message = ((RollErrorResponse) obj).message;
                     // TODO show message error
                 }
                 else {

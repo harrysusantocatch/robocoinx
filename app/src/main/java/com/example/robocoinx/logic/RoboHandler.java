@@ -15,7 +15,10 @@ import com.google.gson.reflect.TypeToken;
 
 import org.jsoup.Connection;
 import org.jsoup.Jsoup;
+import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 
@@ -23,8 +26,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.lang.reflect.Type;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import io.webfolder.ui4j.api.browser.BrowserEngine;
 import io.webfolder.ui4j.api.browser.BrowserFactory;
@@ -223,6 +229,32 @@ public class RoboHandler {
         return response;
     }
 
+    private static int getNextRollTime(Document doc) {
+        Elements scripts = doc.getElementsByTag("script");
+        for (Element script: scripts) {
+            List<DataNode> dataNodes = script.dataNodes();
+            for (DataNode dataNode : dataNodes){
+                String data = dataNode.getWholeData();
+                if(data.contains("#time_remaining")){
+                    String matcher = extractCountDownRollTime(data, "#time_remaining");
+                    if (matcher != null) return (Integer.parseInt(matcher));
+                }
+            }
+        }
+        return 0;
+    }
+
+    private static String extractCountDownRollTime(String data, String regex) {
+        String[] array = data.split(regex);
+        String input = array[1];
+        Pattern pattern = Pattern.compile("\\+.[0-9]*.\\,");
+        Matcher matcher = pattern.matcher(input);
+        if(matcher.find()){
+            return matcher.group().substring(1, matcher.group().length()-1);
+        }
+        return null;
+    }
+
     public static Object parsingRollResponse(Context context){
         String cookiesStr = FileManager.getInstance().readFile(context, StaticValues.AUTH_COOKIES);
         Type type = new TypeToken<Map<String, String>>(){}.getType();
@@ -232,6 +264,8 @@ public class RoboHandler {
             if(homeResponse == null) return StaticValues.ERROR_GENERAL;
             updateCsrfToken(context, homeResponse);
             Document doc = homeResponse.parse();
+            int nextRollTime = getNextRollTime(doc);
+            if(nextRollTime > 0) return new RollErrorResponse("",nextRollTime);
             RollAttribute rollAttribute = new RollAttribute(context, doc);
             cookies.put("csrf_token", csrfToken);
             cookies.put("__cfduid", homeResponse.cookie("__cfduid"));

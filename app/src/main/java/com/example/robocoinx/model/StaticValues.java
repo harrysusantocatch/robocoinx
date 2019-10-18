@@ -5,6 +5,7 @@ public class StaticValues {
     public static final String OP = "free_play";
     public static final String AUTH_COOKIES = "auth_cookies";
     public static final String ERROR_GENERAL = "General Error";
+    public static final String NOTIFICATION_ROLL = "notification_roll";
     public static String URL_KEY_B = "aHR0cHM6Ly9mcmVlYml0Y28uaW4v";
     public static String URL_KEY_H = "aHR0cHM6Ly9mcmVlYml0Y28uaW4vP29wPWhvbWU=";
     public static String URL_KEY_S = "aHR0cHM6Ly9mcmVlYml0Y28uaW4vP29wPXNpZ251cF9wYWdl";
@@ -17,6 +18,7 @@ public class StaticValues {
     public static final String PROFILE_VIEW = "profile_view";
     public static final String START_SERVICE = "start_service";
     public static final String STOP_SERVICE = "stop_service";
+    public static final String CREATE_SERVICE = "create_service";
     public static final String BOOT_COMPLETED = "boot_completed";
     public static int TIMEOUT = 100000;
 }

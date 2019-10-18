@@ -27,6 +27,7 @@
                 <action android:name="boot_completed" />
                 <action android:name="start_service"/>
                 <action android:name="stop_service"/>
+                <action android:name="create_service"/>
             </intent-filter>
         </receiver>
         <service
