@@ -7,18 +7,26 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TableLayout;
+import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.robocoinx.R;
 import com.example.robocoinx.logic.BackgroundService;
 import com.example.robocoinx.logic.FileManager;
 import com.example.robocoinx.logic.RoboHandler;
+import com.example.robocoinx.model.ClaimHistory;
+import com.example.robocoinx.model.ClaimHistoryHandler;
 import com.example.robocoinx.model.ProfileView;
 import com.example.robocoinx.model.RollErrorResponse;
 import com.example.robocoinx.model.RollSuccessResponse;
 import com.example.robocoinx.model.StaticValues;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -30,6 +38,7 @@ public class HomeActivity extends AppCompatActivity {
     private TextView rpBonus;
     private TextView btcBonus;
     private TextView userID;
+    private TableLayout tableLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,6 +48,7 @@ public class HomeActivity extends AppCompatActivity {
     }
 
     private void setView() {
+        tableLayout = findViewById(R.id.tableLayout);
         userID = findViewById(R.id.textViewUserId);
         balance = findViewById(R.id.textViewBalance);
         nextRoll = findViewById(R.id.textViewnextRoll);
@@ -138,6 +148,25 @@ public class HomeActivity extends AppCompatActivity {
                         btcBonus.setText("finish");
                     }
                 }.start();
+
+                // table
+                String currentTime = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date());
+                ArrayList<ClaimHistory> claimHistories = ClaimHistoryHandler.getInstance(getApplicationContext()).getClaimHistories();
+                for (ClaimHistory cl: claimHistories) {
+                    TableRow row= new TableRow(getApplicationContext());
+                    TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT);
+                    row.setLayoutParams(lp);
+                    TextView t1 = new TextView(getApplicationContext());
+                    TextView t2 = new TextView(getApplicationContext());
+                    TextView t3 = new TextView(getApplicationContext());
+                    t1.setText("  "+cl.date);
+                    t2.setText("  "+cl.claim);
+                    t3.setText("  "+cl.balance);
+                    row.addView(t1);
+                    row.addView(t2);
+                    row.addView(t3);
+                    tableLayout.addView(row);
+                }
             }
         });
     }

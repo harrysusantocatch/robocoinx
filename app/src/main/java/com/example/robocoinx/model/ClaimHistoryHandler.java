@@ -9,19 +9,25 @@ import android.database.sqlite.SQLiteOpenHelper;
 import androidx.annotation.Nullable;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 
 public class ClaimHistoryHandler extends SQLiteOpenHelper {
 
     private static final int DB_VERSION = 1;
-    private static final String DB_NAME = "usersdb";
-    private static final String TABLE_NAME = "userdetails";
-    private static final String KEY_ID = "id";
-    private static final String KEY_DATE = "date";
-    private static final String KEY_CLAIM = "claim";
-    private static final String KEY_BALANCE = "balance";
+    private static final String DB_NAME = "db_robocoinx";
+    private static final String TABLE_NAME = "claim_history";
+    private static final String KEY_ID = "c_id";
+    private static final String KEY_DATE = "c_date";
+    private static final String KEY_CLAIM = "c_claim";
+    private static final String KEY_BALANCE = "c_balance";
+    private static ClaimHistoryHandler instance;
+    public static ClaimHistoryHandler getInstance(Context context){
+        if(instance == null){
+            instance = new ClaimHistoryHandler(context);
+        }
+        return instance;
+    }
 
-    public ClaimHistoryHandler(@Nullable Context context) {
+    private ClaimHistoryHandler(@Nullable Context context) {
         super(context, DB_NAME, null, DB_VERSION);
     }
 
@@ -54,18 +60,18 @@ public class ClaimHistoryHandler extends SQLiteOpenHelper {
         return newRowId;
     }
 
-    public ArrayList<HashMap<String, String>> getClaimHistories(){
+    public ArrayList<ClaimHistory> getClaimHistories(){
         SQLiteDatabase db = this.getWritableDatabase();
-        ArrayList<HashMap<String, String>> result = new ArrayList<>();
+        ArrayList<ClaimHistory> result = new ArrayList<>();
         String query = "SELECT "+KEY_DATE+", "+KEY_CLAIM+", "+KEY_BALANCE
                 +" FROM "+TABLE_NAME+" ORDER BY "+KEY_ID+" DESC";
         Cursor cursor = db.rawQuery(query,null);
         while (cursor.moveToNext()){
-            HashMap<String,String> claims = new HashMap<>();
-            claims.put(KEY_DATE,cursor.getString(cursor.getColumnIndex(KEY_DATE)));
-            claims.put(KEY_CLAIM,cursor.getString(cursor.getColumnIndex(KEY_CLAIM)));
-            claims.put(KEY_BALANCE,cursor.getString(cursor.getColumnIndex(KEY_BALANCE)));
-            result.add(claims);
+            ClaimHistory claim = new ClaimHistory();
+            claim.date = cursor.getString(cursor.getColumnIndex(KEY_DATE));
+            claim.claim = cursor.getString(cursor.getColumnIndex(KEY_CLAIM));
+            claim.balance = cursor.getString(cursor.getColumnIndex(KEY_BALANCE));
+            result.add(claim);
         }
         return  result;
     }

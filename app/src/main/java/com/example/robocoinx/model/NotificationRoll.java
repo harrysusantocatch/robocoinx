@@ -133,7 +133,7 @@ public class NotificationRoll {
                     balance = rollSuccessResponse.getBalance();
                     claim = rollSuccessResponse.getClaim();
                     String currentTime = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date());
-                    new ClaimHistoryHandler(context).insert(currentTime, claim, balance);
+                    ClaimHistoryHandler.getInstance(context).insert(currentTime, claim, balance);
                     startNotificationListener(context);
                 }else if(obj instanceof RollErrorResponse){
                     RollErrorResponse err = (RollErrorResponse) obj;
