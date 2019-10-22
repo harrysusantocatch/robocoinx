@@ -19,6 +19,7 @@ public class BackgroundService extends Service {
     public void onCreate() {
         new NotificationRoll(getApplicationContext());
         NotificationRoll.executeMainTask(getApplicationContext());
+        FileManager.getInstance().appendLog("start service & execute main task");
         super.onCreate();
     }
 
@@ -26,6 +27,7 @@ public class BackgroundService extends Service {
     public void onDestroy() {
         if(NotificationRoll.getAlarmManager() != null) NotificationRoll.getAlarmManager().cancel(NotificationRoll.getPendingIntent());
         NotificationRoll.stopNotificationListener(getApplicationContext());
+        FileManager.getInstance().appendLog("stop service");
         super.onDestroy();
     }
 

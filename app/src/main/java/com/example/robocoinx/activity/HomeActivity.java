@@ -2,6 +2,8 @@ package com.example.robocoinx.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.ActivityManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -14,12 +16,10 @@ import android.widget.TextView;
 
 import com.example.robocoinx.R;
 import com.example.robocoinx.logic.BackgroundService;
-import com.example.robocoinx.logic.RoboHandler;
+import com.example.robocoinx.logic.FileManager;
 import com.example.robocoinx.model.db.ClaimHistory;
 import com.example.robocoinx.logic.ClaimHistoryHandler;
 import com.example.robocoinx.model.view.ProfileView;
-import com.example.robocoinx.model.response.RollErrorResponse;
-import com.example.robocoinx.model.response.RollSuccessResponse;
 import com.example.robocoinx.model.StaticValues;
 
 import java.text.SimpleDateFormat;
@@ -36,6 +36,7 @@ public class HomeActivity extends AppCompatActivity {
     private TextView rpBonus;
     private TextView btcBonus;
     private TextView userID;
+    private TextView status;
     private TableLayout tableLayout;
 
     @Override
@@ -43,6 +44,16 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         setView();
+    }
+
+    private boolean isMyServiceRunning(Class<?> serviceClass) {
+        ActivityManager manager = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+        for (ActivityManager.RunningServiceInfo service : manager.getRunningServices(Integer.MAX_VALUE)) {
+            if (serviceClass.getName().equals(service.service.getClassName())) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private void setView() {
@@ -53,15 +64,13 @@ public class HomeActivity extends AppCompatActivity {
         rp = findViewById(R.id.textViewRP);
         rpBonus = findViewById(R.id.textViewRPBonus);
         btcBonus = findViewById(R.id.textViewBTCBonus);
+        status = findViewById(R.id.textViewService);
         Button btnStart = findViewById(R.id.buttonStart);
         Button btnStop = findViewById(R.id.buttonStop);
 
         ProfileView pp = (ProfileView) getIntent().getSerializableExtra(StaticValues.PROFILE_VIEW);
         if(pp != null) {
             setValueUI(pp);
-            if(pp.disableLottery == false || pp.disableInterest == true){
-                new Content(pp).execute((Void)null);
-            }
         }else {
             // TODO back to login
         }
@@ -81,6 +90,9 @@ public class HomeActivity extends AppCompatActivity {
                 stopService(intent);
             }
         });
+
+        boolean running = isMyServiceRunning(BackgroundService.class);
+        if(running) status.setText("RUNNING");
     }
 
     private void setValueUI(final ProfileView pp) {
@@ -181,24 +193,13 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                executeTaskBackground(profileView);
+//                executeTaskBackground(profileView);
             }catch (Exception e){
-//                FileManager.getInstance().appendLog(e);
+                FileManager.getInstance().appendLog(e);
             }
             return null;
         }
     }
 
-    private void executeTaskBackground(ProfileView profileView) {
-        if(profileView.disableInterest){
-            // enable
-
-        }
-
-        if(!profileView.disableLottery){
-            // disable
-
-        }
-    }
 
 }

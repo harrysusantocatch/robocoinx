@@ -2,22 +2,26 @@ package com.example.robocoinx.activity;
 
 import android.annotation.SuppressLint;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.Window;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+
 import com.example.robocoinx.R;
 import com.example.robocoinx.logic.FileManager;
 import com.example.robocoinx.logic.RoboHandler;
-import com.example.robocoinx.model.request.RollAttribute;
+import com.example.robocoinx.model.request.SignupRequest;
 import com.example.robocoinx.model.view.ProfileView;
 import com.example.robocoinx.model.StaticValues;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.Objects;
 
@@ -28,12 +32,27 @@ public class SplashActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         hideTitleBar();
         setContentView(R.layout.splash_main);
+        if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
+            ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 10);
         new Content().execute((Void)null);
     }
 
     private void hideTitleBar() {
         requestWindowFeature(Window.FEATURE_NO_TITLE);
         Objects.requireNonNull(getSupportActionBar()).hide();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        switch (requestCode) {
+            case 10: {
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    //do here
+                    FileManager.getInstance().appendLog("first....");
+                }
+            }
+        }
     }
 
     @SuppressLint("StaticFieldLeak")
@@ -43,13 +62,13 @@ public class SplashActivity extends AppCompatActivity {
         protected Void doInBackground(Void... voids) {
             try {
                 checkUserCache();
-//                InputStream inputStream = getAssets().open("home.html");
+//                InputStream inputStream = getAssets().open("signup.html");
 //                Document document = Jsoup.parse(inputStream, "UTF-8", "");
-//                RollAttribute x = new RollAttribute(getApplicationContext(), document);
+//                SignupRequest x = new SignupRequest(document);
 //                System.out.println(x);
             }catch (Exception e){
                 e.printStackTrace();
-//                FileManager.getInstance().appendLog(e);
+                FileManager.getInstance().appendLog(e);
             }
             return null;
         }

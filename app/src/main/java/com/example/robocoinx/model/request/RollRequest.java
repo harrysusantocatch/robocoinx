@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class RollAttribute {
+public class RollRequest {
     public String op;
     public String fingerprint;
     public String clientSeed;
@@ -28,7 +28,7 @@ public class RollAttribute {
     public String lastParam;
     public String lastParamValue;
 
-    public RollAttribute(Context context, Document doc){
+    public RollRequest(Document doc){
 
         op = StaticValues.OP;
         fingerprint = "3a9c7c414c5b85342084560cf69eec93"; // TODO

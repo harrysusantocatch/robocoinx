@@ -4,8 +4,9 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.example.robocoinx.R;
+import com.example.robocoinx.model.request.RollRequest;
+import com.example.robocoinx.model.request.SignupRequest;
 import com.example.robocoinx.model.view.ProfileView;
-import com.example.robocoinx.model.request.RollAttribute;
 import com.example.robocoinx.model.response.RollErrorResponse;
 import com.example.robocoinx.model.response.RollSuccessResponse;
 import com.example.robocoinx.model.StaticValues;
@@ -49,7 +50,7 @@ public class RoboHandler {
                     .method(Connection.Method.GET)
                     .execute();
         } catch (IOException e) {
-//            FileManager.getInstance().appendLog(e);
+            FileManager.getInstance().appendLog(e);
         }
         return  response;
     }
@@ -82,7 +83,6 @@ public class RoboHandler {
                     .header("Origin", CryptEx.toBaseDecode(StaticValues.URL_KEY_A))
                     .referrer(CryptEx.toBaseDecode(StaticValues.URL_KEY_S))
                     .header("Accept", "*/*")
-                    .header("Accept-Language", "en-ID")
                     .header("Content-Type", "application/x-www-form-urlencoded")
                     .header("x-csrf-token", csrfToken)
                     .header("Host", CryptEx.toBaseDecode(StaticValues.URL_KEY_O))
@@ -99,7 +99,7 @@ public class RoboHandler {
                     .cookies(getBaseCookies())
                     .execute();
         } catch (IOException e) {
-//            FileManager.getInstance().appendLog(e);
+            FileManager.getInstance().appendLog(e);
         }
         return response;
     }
@@ -128,11 +128,69 @@ public class RoboHandler {
             cookies.put("password",userCache.getPassword());
             cookies.put("have_account", "1");
             FileManager.getInstance().writeFile(context, StaticValues.AUTH_COOKIES, new Gson().toJson(cookies));
+
+            if (setInterestAndLottery(profileView, cookies, homeResponse)) return StaticValues.ERROR_GENERAL;
+
             return profileView;
         } catch (IOException e) {
-//            FileManager.getInstance().appendLog(e);
+            FileManager.getInstance().appendLog(e);
             return StaticValues.ERROR_GENERAL;
         }
+    }
+
+    public static Object parsingSignUpResponse(Context context, SignupRequest request){
+        Connection.Response signUpResponse = getSignUpResponse(request);
+        if(signUpResponse == null) return StaticValues.ERROR_GENERAL;
+        try {
+            Document doc = signUpResponse.parse();
+            String contentBody = doc.body().html();
+            String[] result = contentBody.split(":");
+            if(result.length == 0) return StaticValues.ERROR_GENERAL;
+            if(result[0].equalsIgnoreCase("s")){
+                return parsingLoginResponse(context, request.email, request.password);
+            }else if(result[0].equalsIgnoreCase("e")){
+                return result[1];
+            }else return StaticValues.ERROR_GENERAL;
+        }catch (Exception e){
+            e.printStackTrace();
+            FileManager.getInstance().appendLog(e);
+            return StaticValues.ERROR_GENERAL;
+        }
+    }
+
+    private static boolean setInterestAndLottery(ProfileView profileView, Map<String, String> authCookies, Connection.Response homeResponse){
+        authCookies.put("csrf_token", csrfToken);
+        authCookies.put("__cfduid", homeResponse.cookie("__cfduid"));
+        if(!profileView.enableInterest){
+            // enable
+            Connection.Response response = getEnableInterestResponse(authCookies);
+            if(response == null) return true;
+            Document doc = null;
+            try {
+                doc = response.parse();
+                String content = doc.body().html();
+                if(content.toLowerCase().contains("successfully")) profileView.enableInterest = true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                FileManager.getInstance().appendLog(e);
+            }
+        }
+
+        if(!profileView.disableLottery){
+            // disable
+            Connection.Response response = getDisableLotteryResponse(authCookies);
+            if(response == null) return true;
+            Document doc = null;
+            try {
+                doc = response.parse();
+                String content = doc.body().html();
+                if(content.toLowerCase().contains("successfully")) profileView.disableLottery = true;
+            } catch (IOException e) {
+                e.printStackTrace();
+                FileManager.getInstance().appendLog(e);
+            }
+        }
+        return false;
     }
 
     private static void updateCsrfToken(Context context, Connection.Response response) {
@@ -172,7 +230,7 @@ public class RoboHandler {
                     .cookies(cookies)
                     .execute();
         } catch (IOException e) {
-//            FileManager.getInstance().appendLog(e);
+            FileManager.getInstance().appendLog(e);
         }
         return response;
     }
@@ -192,12 +250,12 @@ public class RoboHandler {
                     .cookies(cookies)
                     .execute();
         } catch (IOException e) {
-//            FileManager.getInstance().appendLog(e);
+            FileManager.getInstance().appendLog(e);
         }
         return response;
     }
 
-    private static Connection.Response getRollResponse(Map<String, String> cookies, RollAttribute rollAttribute){
+    private static Connection.Response getRollResponse(Map<String, String> cookies, RollRequest rollRequest){
         Connection.Response response = null;
         try {
             response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_B))
@@ -214,17 +272,17 @@ public class RoboHandler {
                     .method(Connection.Method.POST)
                     .data("csrf_token", csrfToken)
                     .data("op", StaticValues.OP)
-                    .data("fingerprint", rollAttribute.fingerprint)
-                    .data("client_seed", rollAttribute.clientSeed)
-                    .data("fingerprint2", rollAttribute.fingerprint2)
-                    .data("pwc", rollAttribute.pwc)
-                    .data(rollAttribute.tokenName, rollAttribute.tokenValue)
-                    .data(rollAttribute.lastParam, rollAttribute.lastParamValue)
+                    .data("fingerprint", rollRequest.fingerprint)
+                    .data("client_seed", rollRequest.clientSeed)
+                    .data("fingerprint2", rollRequest.fingerprint2)
+                    .data("pwc", rollRequest.pwc)
+                    .data(rollRequest.tokenName, rollRequest.tokenValue)
+                    .data(rollRequest.lastParam, rollRequest.lastParamValue)
                     .data("g_recaptcha_response", "")
                     .cookies(cookies)
                     .execute();
         } catch (IOException e) {
-//            FileManager.getInstance().appendLog(e);
+            FileManager.getInstance().appendLog(e);
         }
         return response;
     }
@@ -266,10 +324,10 @@ public class RoboHandler {
             Document doc = homeResponse.parse();
             int nextRollTime = getNextRollTime(doc);
             if(nextRollTime > 0) return new RollErrorResponse("",nextRollTime);
-            RollAttribute rollAttribute = new RollAttribute(context, doc);
+            RollRequest rollRequest = new RollRequest(doc);
             cookies.put("csrf_token", csrfToken);
             cookies.put("__cfduid", homeResponse.cookie("__cfduid"));
-            Connection.Response rollResponse = getRollResponse(cookies, rollAttribute);
+            Connection.Response rollResponse = getRollResponse(cookies, rollRequest);
             if (rollResponse == null) return StaticValues.ERROR_GENERAL;
             Document docRoll = rollResponse.parse();
             String contentBody = docRoll.body().html();
@@ -283,7 +341,7 @@ public class RoboHandler {
                 return StaticValues.ERROR_GENERAL;
             }
         } catch (IOException e) {
-//            FileManager.getInstance().appendLog(e);
+            FileManager.getInstance().appendLog(e);
             return StaticValues.ERROR_GENERAL;
         }
     }
@@ -309,9 +367,11 @@ public class RoboHandler {
             if(homeResponse == null) return StaticValues.ERROR_GENERAL;
             updateCsrfToken(context, homeResponse);
             Document doc = homeResponse.parse();
-            return new ProfileView(doc);
+            ProfileView profileView = new ProfileView(doc);
+            if (setInterestAndLottery(profileView, cookies, homeResponse)) return StaticValues.ERROR_GENERAL;
+            return profileView;
         } catch (IOException e) {
-//            FileManager.getInstance().appendLog(e);
+            FileManager.getInstance().appendLog(e);
             return StaticValues.ERROR_GENERAL;
         }
     }
@@ -328,11 +388,84 @@ public class RoboHandler {
                     .method(Connection.Method.GET)
                     .execute();
         } catch (IOException e) {
-//            FileManager.getInstance().appendLog(e);
+            FileManager.getInstance().appendLog(e);
         }
         return response;
     }
 
+    private static Connection.Response getEnableInterestResponse(Map<String, String> cookies){
+        Connection.Response response = null;
+        try {
+            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_IN)+"&csrf_token="+csrfToken)
+                    .userAgent(StaticValues.USER_AGENT)
+                    .referrer(CryptEx.toBaseDecode(StaticValues.URL_KEY_H))
+                    .header("Accept", "*/*")
+                    .header("x-csrf-token", csrfToken)
+                    .header("x-requested-with", "XMLHttpRequest")
+                    .header("sec-fetch-mode", "cors")
+                    .header("sec-fetch-site", "same-origin")
+                    .timeout(StaticValues.TIMEOUT)
+                    .method(Connection.Method.GET)
+                    .cookies(cookies)
+                    .execute();
+        } catch (IOException e) {
+            FileManager.getInstance().appendLog(e);
+        }
+        return  response;
+    }
+
+    private static Connection.Response getDisableLotteryResponse(Map<String, String> cookies){
+        Connection.Response response = null;
+        try {
+            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_LT)+"&csrf_token="+csrfToken)
+                    .userAgent(StaticValues.USER_AGENT)
+                    .referrer(CryptEx.toBaseDecode(StaticValues.URL_KEY_H))
+                    .header("Accept", "*/*")
+                    .header("x-csrf-token", csrfToken)
+                    .header("x-requested-with", "XMLHttpRequest")
+                    .header("sec-fetch-mode", "cors")
+                    .header("sec-fetch-site", "same-origin")
+                    .timeout(StaticValues.TIMEOUT)
+                    .method(Connection.Method.GET)
+                    .cookies(cookies)
+                    .execute();
+        } catch (IOException e) {
+            FileManager.getInstance().appendLog(e);
+        }
+        return  response;
+    }
+
+    private static Connection.Response getSignUpResponse(SignupRequest request){
+        Connection.Response response = null;
+        try {
+            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_B))
+                    .userAgent(StaticValues.USER_AGENT)
+                    .header("Origin", CryptEx.toBaseDecode(StaticValues.URL_KEY_A))
+                    .referrer(CryptEx.toBaseDecode(StaticValues.URL_KEY_S))
+                    .header("Accept", "*/*")
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .header("x-csrf-token", csrfToken)
+                    .header("Host", CryptEx.toBaseDecode(StaticValues.URL_KEY_O))
+                    .header("Connection", "Keep-Alive")
+                    .header("Access-Control-Allow-Credentials", "true")
+                    .header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+                    .timeout(StaticValues.TIMEOUT)
+                    .method(Connection.Method.POST)
+                    .data("op", request.op)
+                    .data("btc_address", request.btcAddress)
+                    .data("password", request.password)
+                    .data("email", request.email)
+                    .data("fingerprint", request.fingerprint)
+                    .data("referrer", request.referrer)
+                    .data("tag", request.tag)
+                    .data("token", request.token)
+                    .cookies(getBaseCookies())
+                    .execute();
+        } catch (IOException e) {
+            FileManager.getInstance().appendLog(e);
+        }
+        return response;
+    }
 
     /////////////////
     public static void getValueJS() {

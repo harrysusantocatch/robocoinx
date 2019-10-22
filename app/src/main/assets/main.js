@@ -24,6 +24,8 @@ var user_stats_loaded = 0;
 var fingerprint = $.fingerprint();
 var daily_jp_countup_stop = 0;
 var user_daily_jp_rank = 0;
+var user_daily_jp_wagered = 0;
+var rp_rewards_list_loaded = 0;
 $.ajaxSetup({
     data: {
         csrf_token: $.cookie('csrf_token')
@@ -42,22 +44,26 @@ $.extend({
         $('<form action="' + location + '" method="POST">' + form + '</form>').appendTo('body').submit();
     }
 });
-(function(p, u, s, h, x) {
-    p.pushpad = p.pushpad || function() {
-        (p.pushpad.q = p.pushpad.q || []).push(arguments)
-    }
-    ;
-    h = u.getElementsByTagName('head')[0];
-    x = u.createElement('script');
-    x.async = 1;
-    x.src = s;
-    h.appendChild(x);
-}
-)(window, document, 'https://pushpad.xyz/pushpad.js');
-pushpad('init', 6483, {
-    hostname: "freebitco.in"
-});
 $(document).ready(function() {
+    (function(p, u, s, h, x) {
+        p.pushpad = p.pushpad || function() {
+            (p.pushpad.q = p.pushpad.q || []).push(arguments)
+        }
+        ;
+        h = u.getElementsByTagName('head')[0];
+        x = u.createElement('script');
+        x.async = 1;
+        x.src = s;
+        h.appendChild(x);
+    }
+    )(window, document, 'https://pushpad.xyz/pushpad.js');
+    pushpad('init', 6483, {
+        hostname: "freebitco.in"
+    });
+    if (pushpad_hash != 0) {
+        pushpad('uid', userid, pushpad_hash);
+    }
+    var time_offset = new Date().getTimezoneOffset();
     fingerprint = $.fingerprint();
     var referrer_in_url = getParameterByName('r');
     if (typeof referrer_in_url != 'undefined') {
@@ -73,6 +79,7 @@ $(document).ready(function() {
     $(".homepage_play_now_button").click(function(event) {
         window.location.replace("https://freebitco.in/static/html/one_click_signup.html?r=" + referrer_in_url + "&tag=" + referrer_tag);
     });
+    $('.push_modal_image').attr("src", "https://static1.freebitco.in/images/100.png");
     if (!Date.now) {
         Date.now = function() {
             return new Date().getTime();
@@ -81,7 +88,6 @@ $(document).ready(function() {
     }
     if (userid > 0) {
         InitialUserStats();
-        PreviousContestWinners(wagering_contest_winners_round_display);
         grecaptcha.ready(function() {
             grecaptcha.execute('6Lc1kXIUAAAAAPP7OeuycKWZ-t4br4Rh3XvqWUGd', {
                 action: 'all'
@@ -97,16 +103,25 @@ $(document).ready(function() {
                 clearInterval(user_loaded_interval);
             }
         }, 100);
+        pushpad('tags', ['registered', time_offset]);
+        $.get('/cgi-bin/api.pl?op=record_user_data&type=time_offset&value=' + time_offset);
+        $.get('/cgi-bin/fp_check.pl?s=' + tcGiQefA, function(data) {
+            var hash = CryptoJS.SHA256(data).toString(CryptoJS.enc.Hex);
+            window[tcGiQefA] = hash;
+        });
+        $('#golden_ticket_lambo_main_image').attr("src", "https://static1.freebitco.in/images/sirv_backup/1556279099_rIYDQiLw.png");
+        $('#golden_ticket_step1').attr("src", "https://static1.freebitco.in/images/golden_ticket/step_1.png");
+        $('#golden_ticket_step2').attr("src", "https://static1.freebitco.in/images/golden_ticket/step_2.png");
+        $('#golden_ticket_step3').attr("src", "https://static1.freebitco.in/images/golden_ticket/step_3.png");
+        $('#logout_image').attr("src", "https://static1.freebitco.in/images/logout.png");
+        $('#myModal22').css('background-image', 'url(https://static1.freebitco.in/images/mp1.jpg)');
     } else {
         UpdateStats();
+        pushpad('tags', ['unregistered', time_offset]);
     }
     balanceChanged();
     RenewCookies();
     $('#wager_contest_round_display').html(wagering_contest_winners_round_display);
-    $.get('/cgi-bin/fp_check.pl?s=' + tcGiQefA, function(data) {
-        var hash = CryptoJS.SHA256(data).toString(CryptoJS.enc.Hex);
-        window[tcGiQefA] = hash;
-    });
     $("#hide_site_message").click(function() {
         $('#common_site_message').hide();
         $.get('/?op=hide_site_message');
@@ -1854,20 +1869,6 @@ $(document).ready(function() {
     });
     $("#earn_btc_acc_balance").val($('#balance').html());
     $("#earn_btc_acc_balance").keyup();
-    if (userid > 0) {
-        $.get('/stats_new_private/?u=' + socket_userid + '&p=' + socket_password + '&f=interest_history', function(data) {
-            if (data.length > 0) {
-                var mobile_class = "";
-                if (mobile_device == 1) {
-                    mobile_class = " lottery_table_mobile_style ";
-                }
-                for (var i = 0; i < data.length; i++) {
-                    $("#interest_history_table").append('<div class="large-12 small-12 columns center lottery_winner_table_box_container effect2"><div class="large-4 small-4 columns center lottery_winner_table_box lottery_winner_table_first_last_cell' + mobile_class + '">' + data[i].date + '</div><div class="large-4 small-4 columns center lottery_winner_table_box lottery_winner_table_third_cell' + mobile_class + '">' + data[i].balance + '</div><div class="large-4 small-4 columns center lottery_winner_table_box lottery_winner_table_first_last_cell' + mobile_class + '">' + data[i].interest + '</div> </div>');
-                }
-                $("#interest_history_table_row").show();
-            }
-        });
-    }
     $("#hide_pending_payouts_table").click(function() {
         hide_pending_payments = 1;
         $('#pending_payouts_table_new').hide();
@@ -2066,6 +2067,131 @@ $(document).ready(function() {
                 parimutuel_bet_history_json = user_data;
             }
         });
+    }
+    if (captcha_type == 11) {
+        var default_captcha = $.cookie('default_captcha');
+        if (default_captcha === 'recaptcha' || default_captcha === 'double_captchas') {
+            SwitchCaptchas(default_captcha);
+        }
+    }
+    if ($('body').innerWidth() < 768) {
+        $.cookie.raw = true;
+        $.cookie('mobile', 1, {
+            expires: 3650,
+            secure: true
+        });
+        if (mobile_device != 1) {
+            if (userid > 0) {
+                window.location.reload();
+            }
+        }
+    } else {
+        $.cookie.raw = true;
+        $.removeCookie('mobile');
+    }
+    if (userid > 0) {
+        var tab = getParameterByName('tab');
+        if (typeof tab != 'undefined') {
+            $("#" + tab + "_link").click();
+            $("." + tab + "_link").click();
+            if (typeof tab != 'undefined' && tab == 'deposit_btc') {
+                $("#main_deposit_button_top").click();
+            }
+        }
+        var tab2 = getParameterByName('tab2');
+        if (typeof tab2 != 'undefined' && tab2 != '' && tab2 != 0) {
+            if (tab2 == "enable_2fa") {
+                $("#enable_2fa_msg").click();
+            }
+        }
+        if (free_play < 1) {
+            if (multi_acct_same_ip > 0) {
+                $('#multi_acct_same_ip').show();
+            }
+        }
+        $("#mob_ver_country_code").find("#" + country + "_dcode").attr("selected", true);
+        if (show_sky == 1 && $('body').innerWidth() < 1201) {
+            $("#free_play_tab").css({
+                'margin-left': '50px'
+            });
+        }
+        if (rp_promo_active != 0) {
+            if (parseInt(rp_promo_start) > 0) {
+                rp_promo_active = 2;
+            } else if (parseInt(rp_promo_end) > 0) {
+                rp_promo_active = 1;
+            } else {
+                rp_promo_active = 0;
+            }
+            if (rp_promo_active == 2) {
+                $("#rp_promo_" + rp_promo_counter + "_" + rp_promo_active2 + "_text").html("<b>" + rp_multiplier + "x reward points (RP) promotion starts in <span id='bonus_span_rp_promo_" + rp_promo_counter + "_" + rp_promo_active2 + "'></span></b> (" + free_rp + " RP/free roll, " + ref_rp + " RP/referral free roll, " + multiply_rp + " RP/multiply roll).<BR>Follow us on <b><a href='https://twitter.com/freebitco' target=_blank>twitter</a></b> to be notified before the promotion starts!");
+                BonusEndCountdown('rp_promo_' + rp_promo_counter + '_' + rp_promo_active2, parseInt(rp_promo_start));
+            } else if (rp_promo_active == 1) {
+                $("#rp_promo_" + rp_promo_counter + "_" + rp_promo_active2 + "_text").html("<b>" + rp_multiplier + "x reward points (RP) promotion currently running and ends in <span id='bonus_span_rp_promo_" + rp_promo_counter + "_" + rp_promo_active2 + "'></span></b> (" + free_rp + " RP/free roll, " + ref_rp + " RP/referral free roll, " + multiply_rp + " RP/multiply roll).<BR>Follow us on <b><a href='https://twitter.com/freebitco' target=_blank>twitter</a></b> to be notified in advance about our future promotions!");
+                $(".multiply_rp_amount").html(multiply_rp);
+                $(".free_rp_amount").html(free_rp);
+                $(".ref_rp_amount").html(ref_rp);
+                BonusEndCountdown('rp_promo_' + rp_promo_counter + '_' + rp_promo_active2, parseInt(rp_promo_end));
+                $("#bonus_weekend_msg_div").show();
+                $("#bonus_weekend_rp_multiplier").html(rp_multiplier);
+            }
+            if ($.cookie("rp_promo_" + rp_promo_counter + "_" + rp_promo_active2) != 1) {
+                $("#rp_promo_" + rp_promo_counter + "_" + rp_promo_active2).show();
+            }
+            $("#hide_rp_promo_" + rp_promo_counter + "_" + rp_promo_active2).click(function() {
+                $("#rp_promo_" + rp_promo_counter + "_" + rp_promo_active2).hide();
+                $.cookie.raw = true;
+                $.cookie('rp_promo_' + rp_promo_counter + '_' + rp_promo_active2, 1, {
+                    expires: 3,
+                    secure: true
+                });
+            });
+        }
+        if (dep_bonus_eligible == 1) {
+            $('.dep_bonus_max').html(max_deposit_bonus + " BTC");
+            $('#bonus_eligible_msg').show();
+        } else if (dep_bonus_eligible == 2) {
+            $('#bonus_not_eligible_msg').show();
+        }
+        if (auto_withdraw == 1) {
+            $('#earn_btc_msg').show();
+            $('#hide_earn_btc_msg').hide();
+        } else if (auto_withdraw == 0) {
+            if ($.cookie('hide_earn_btc_msg') != 1) {
+                $('#earn_btc_msg').show();
+            }
+        }
+        if (bonus_locked_balance > 0 || bonus_wagering_remaining > 0) {
+            $('#bonus_account_table').show();
+            $('#user_claimed_deposit_bonus').show();
+            $('#bonus_account_balance').html(bonus_locked_balance + " BTC");
+            $('#bonus_account_wager').html(bonus_wagering_remaining + " BTC");
+        }
+        if (show_2fa_msg == 1) {
+            if ($.cookie('hide_enable_2fa_msg_alert') != 1) {
+                $('#enable_2fa_msg_alert').show();
+            }
+        }
+        ScreeSizeCSSChanges();
+        $(window).resize(ScreeSizeCSSChanges);
+        $("#withdraw_delay_message4").hide();
+        $("#" + token_name).val(token1);
+        if (mobile_device == 1) {
+            $("#show_referrals_mobile").click(function() {
+                $("#referral_list_table").show();
+                $("#show_more_refs_options").show();
+                $("#show_referrals_mobile").html("YOUR REFERRALS");
+            });
+        }
+        $(".hide_menu").click(function() {
+            $("#menu_drop").click();
+        });
+        $("#menu_drop").click(function() {
+            $(".top-bar-section").hide();
+        });
+    } else {
+        $("#signup_token").val(signup_token);
+        GenerateCaptchasNetCaptcha('captchasnet_forgot_password_captcha', 0);
     }
 });
 function BetErrors(code) {
@@ -2355,7 +2481,7 @@ function DeleteAdCampaign(id) {
     }
 }
 function StartAdCampaign(id) {
-    $('#start_pause_ad_campaign_icon_' + id).html('<a href="javascript:void(0);" onclick="PauseAdCampaign(' + id + ');"><img src="//static6.freebitco.in/images/pause3.png" border=0 alt="PAUSE"></a>');
+    $('#start_pause_ad_campaign_icon_' + id).html('<a href="javascript:void(0);" onclick="PauseAdCampaign(' + id + ');"><img src="//static1.freebitco.in/images/pause3.png" border=0 alt="PAUSE"></a>');
     $('#ad_campaign_status_' + id).html('<span style="color:#006600;">RUNNING</span>');
     $.get('/?op=start_ad_campaign&id=' + id, function(data) {
         if (data == "e2") {
@@ -2365,7 +2491,7 @@ function StartAdCampaign(id) {
     });
 }
 function PauseAdCampaign(id) {
-    $('#start_pause_ad_campaign_icon_' + id).html('<a href="javascript:void(0);" onclick="StartAdCampaign(' + id + ');"><img src="//static6.freebitco.in/images/start4.png" border=0 alt="START"></a>');
+    $('#start_pause_ad_campaign_icon_' + id).html('<a href="javascript:void(0);" onclick="StartAdCampaign(' + id + ');"><img src="//static1.freebitco.in/images/start4.png" border=0 alt="START"></a>');
     $('#ad_campaign_status_' + id).html('<span style="color:red;">PAUSED</span>');
     $.get('/?op=pause_ad_campaign&id=' + id, function() {});
 }
@@ -2432,22 +2558,22 @@ function UpdateAdStats() {
                 $('#start_pause_ad_campaign_icon_' + elements[0]).html("");
             } else if (elements[1] == 2) {
                 $('#ad_campaign_status_' + elements[0]).html("<span style='color:#006600;'>APPROVED</span>");
-                $('#start_pause_ad_campaign_icon_' + elements[0]).html("<a href='javascript:void(0);' onclick='StartAdCampaign(" + elements[0] + ");'><img src='//static6.freebitco.in/images/start4.png' border=0 alt='START'></a>");
+                $('#start_pause_ad_campaign_icon_' + elements[0]).html("<a href='javascript:void(0);' onclick='StartAdCampaign(" + elements[0] + ");'><img src='//static1.freebitco.in/images/start4.png' border=0 alt='START'></a>");
             } else if (elements[1] == 3) {
                 $('#ad_campaign_status_' + elements[0]).html("<span style='color:#006600;'>RUNNING</span>");
-                $('#start_pause_ad_campaign_icon_' + elements[0]).html("<a href='javascript:void(0);' onclick='PauseAdCampaign(" + elements[0] + ");'><img src='//static6.freebitco.in/images/pause3.png' border=0 alt='PAUSE'></a>");
+                $('#start_pause_ad_campaign_icon_' + elements[0]).html("<a href='javascript:void(0);' onclick='PauseAdCampaign(" + elements[0] + ");'><img src='//static1.freebitco.in/images/pause3.png' border=0 alt='PAUSE'></a>");
             } else if (elements[1] == 4) {
                 $('#ad_campaign_status_' + elements[0]).html("<span style='color:red;'>PAUSED</span>");
-                $('#start_pause_ad_campaign_icon_' + elements[0]).html("<a href='javascript:void(0);' onclick='StartAdCampaign(" + elements[0] + ");'><img src='//static6.freebitco.in/images/start4.png' border=0 alt='START'></a>");
+                $('#start_pause_ad_campaign_icon_' + elements[0]).html("<a href='javascript:void(0);' onclick='StartAdCampaign(" + elements[0] + ");'><img src='//static1.freebitco.in/images/start4.png' border=0 alt='START'></a>");
             } else if (elements[1] == 5) {
                 $('#ad_campaign_status_' + elements[0]).html("<span style='color:red;'>REJECTED&nbsp;<a href='javascript:void(0);' onclick='GetAdRejectedReason(" + elements[0] + ", " + elements[5] + ");'>?</a></span>");
                 $('#start_pause_ad_campaign_icon_' + elements[0]).html("");
             } else if (elements[1] == 6) {
                 $('#ad_campaign_status_' + elements[0]).html("<span style='color:red;'>EXCEEDED DAILY BUDGET</span>");
-                $('#start_pause_ad_campaign_icon_' + elements[0]).html("<a href='javascript:void(0);' onclick='PauseAdCampaign(" + elements[0] + ");'><img src='//static6.freebitco.in/images/pause3.png' border=0 alt='PAUSE'></a>");
+                $('#start_pause_ad_campaign_icon_' + elements[0]).html("<a href='javascript:void(0);' onclick='PauseAdCampaign(" + elements[0] + ");'><img src='//static1.freebitco.in/images/pause3.png' border=0 alt='PAUSE'></a>");
             } else if (elements[1] == 7) {
                 $('#ad_campaign_status_' + elements[0]).html("<span style='color:red;'>EXCEEDED TOTAL BUDGET</span>");
-                $('#start_pause_ad_campaign_icon_' + elements[0]).html("<a href='javascript:void(0);' onclick='PauseAdCampaign(" + elements[0] + ");'><img src='//static6.freebitco.in/images/pause3.png' border=0 alt='PAUSE'></a>");
+                $('#start_pause_ad_campaign_icon_' + elements[0]).html("<a href='javascript:void(0);' onclick='PauseAdCampaign(" + elements[0] + ");'><img src='//static1.freebitco.in/images/pause3.png' border=0 alt='PAUSE'></a>");
             } else if (elements[1] == 8) {
                 $('#ad_campaign_status_' + elements[0]).html("<span style='color:red;'>REFILL ADVERTISING ACCOUNT</span>");
                 $('#start_pause_ad_campaign_icon_' + elements[0]).html("");
@@ -2865,9 +2991,12 @@ function UpdateUserStats() {
                 if (typeof data.wager_contest.ref_contest_personal !== "undefined") {
                     $('#ref_wager_for_contest').html(parseFloat(data.wager_contest.ref_contest_personal / 100000000).toFixed(8));
                 }
-                if (typeof data.daily_jp_rank !== "undefined") {
-                    user_daily_jp_rank = data.daily_jp_rank;
-                    $('#daily_jp_user_rank').html('#' + data.daily_jp_rank);
+                if (typeof data.user_daily_jp !== "undefined" && data.user_daily_jp != null) {
+                    user_daily_jp_rank = data.user_daily_jp.rank;
+                    $('#daily_jp_user_rank').html('#' + user_daily_jp_rank);
+                    $('#daily_jackpot_user_rank').html(ReplaceNumberWithCommas(user_daily_jp_rank));
+                    user_daily_jp_wagered = parseFloat(data.user_daily_jp.wagered / 100000000).toFixed(8);
+                    $('#daily_jackpot_user_wagered').html(user_daily_jp_wagered);
                 }
             }
         });
@@ -2982,6 +3111,23 @@ function GetNewsContent(location, id, pos) {
         $(pos).parent().after('<div class="large-11 small-12 large-centered columns ' + location + 'news_content" style="text-align:left;" id="news_content_' + id + '">' + data + '</div>');
     });
 }
+function GetInterestHistory() {
+    if (userid > 0) {
+        $.get('/stats_new_private/?u=' + socket_userid + '&p=' + socket_password + '&f=interest_history', function(data) {
+            if (data.length > 0) {
+                var mobile_class = "";
+                if (mobile_device == 1) {
+                    mobile_class = " lottery_table_mobile_style ";
+                }
+                $("#interest_history_table").html('<div class="large-12 small-12 columns center lottery_winner_table_box table_header_background br_5_5"><div class="center" style="margin:auto;">RECENT INTEREST PAYMENTS</div></div><div class="large-12 small-12 columns center lottery_winner_table_box_container effect2"><div class="large-4 small-4 columns center lottery_winner_table_box lottery_winner_table_first_last_cell ' + mobile_class + '"> <span class="bold">DATE</span> </div><div class="large-4 small-4 columns center lottery_winner_table_box lottery_winner_table_third_cell ' + mobile_class + '"> <span class="bold">BALANCE</span> </div><div class="large-4 small-4 columns center lottery_winner_table_box lottery_winner_table_first_last_cell ' + mobile_class + '"> <span class="bold">INTEREST</span> </div></div>');
+                for (var i = 0; i < data.length; i++) {
+                    $("#interest_history_table").append('<div class="large-12 small-12 columns center lottery_winner_table_box_container effect2"><div class="large-4 small-4 columns center lottery_winner_table_box lottery_winner_table_first_last_cell' + mobile_class + '">' + data[i].date + '</div><div class="large-4 small-4 columns center lottery_winner_table_box lottery_winner_table_third_cell' + mobile_class + '">' + data[i].balance + '</div><div class="large-4 small-4 columns center lottery_winner_table_box lottery_winner_table_first_last_cell' + mobile_class + '">' + data[i].interest + '</div> </div>');
+                }
+                $("#interest_history_table_row").show();
+            }
+        });
+    }
+}
 function GetBetHistory(page) {
     if (page >= 0) {
         bet_history_page = page;
@@ -3074,6 +3220,7 @@ function SwitchPageTabs(tab_name) {
     }
     if (tab_name == "earn_btc") {
         $("#myModal15").foundation('reveal', 'close');
+        GetInterestHistory();
     }
     if (tab_name == "betting") {
         changeContainerDiv_parimutuel();
@@ -3086,6 +3233,9 @@ function SwitchPageTabs(tab_name) {
     }
     if (tab_name == "stats" || tab_name == "rewards") {
         InitialStatsLoad();
+    }
+    if (tab_name == "wager_promotion") {
+        PreviousContestWinners(wagering_contest_winners_round_display);
     }
 }
 function insertBitcoinMore(div_name, position) {
@@ -3270,31 +3420,6 @@ function Reset2FAQuestions(response) {
         $('#forgot_2fa_question_text').html('DO YOU HAVE THE 2FA SECRET KEY?');
         $('#forgot_2fa_secret_key_container_div').hide();
     }
-}
-function GenerateCaptchasNetCaptcha(parent_div, type, rand) {
-    if (typeof rand !== "undefined" && rand.length > 5 && rand.length < 100) {
-        GenCaptchasNetCaptcha(parent_div, type, rand);
-    } else {
-        $.get('/cgi-bin/api.pl?op=generate_captchasnet&f=' + fingerprint, function(data) {
-            if (data.length < 100) {
-                GenCaptchasNetCaptcha(parent_div, type, data);
-            }
-        });
-    }
-}
-function GenCaptchasNetCaptcha(parent_div, type, random_string) {
-    parent_div = parent_div.replace(/\s/g, '');
-    var image_url = "//captchas.freebitco.in/cgi-bin/captcha_generator?client=freebitcoin&random=" + random_string;
-    if (type == 2) {
-        image_url = "//captchas.freebitco.in/securimage/securimage/securimage_show.php?random=" + random_string;
-    } else if (type == 3) {
-        image_url = "//captchas.freebitco.in/botdetect/e/live/index.php?random=" + random_string;
-    }
-    $('#' + parent_div + ' .captchasnet_captcha_content').html('<img src="' + image_url + '" onerror="GenerateCaptchasNetCaptcha(\'' + parent_div + '\', ' + type + ', \'' + random_string + '\');">');
-    $('#' + parent_div + ' .captchasnet_captcha_random').val(random_string);
-    $('#' + parent_div + ' .captchasnet_captcha_refresh').attr("onclick", "GenerateCaptchasNetCaptcha('" + parent_div + "', " + type + ")");
-    $('#' + parent_div + ' .captchasnet_captcha_audio').attr("onclick", "PlayCaptchasNetAudioCaptcha('" + random_string + "')");
-    $('#' + parent_div + ' .captchasnet_captcha_input_box').val('');
 }
 function PlayCaptchasNetAudioCaptcha(captcha_random) {
     var audioElement = document.createElement('audio');
@@ -3567,6 +3692,7 @@ function UpdateStats() {
                             daily_jp_ranks_table_content = daily_jp_ranks_table_content + '<div id="leaderboard_table_header" style="width: 260px; display: block; margin: auto; clear: both;"><div class="leaderboard_table_columns" style="width: 50px;font-size:12px;">' + data.daily_jackpot_ranks[i].rank + '</div><div class="leaderboard_table_columns" style="width: 90px;font-size:12px;">' + data.daily_jackpot_ranks[i].userid + '</div><div class="leaderboard_table_columns" style="width: 120px;font-size:12px;">' + data.daily_jackpot_ranks[i].wagered + '</div></div>';
                         }
                     }
+                    daily_jp_ranks_table_content = daily_jp_ranks_table_content + '<div class="daily_jackpot_your_stats_container_div"><div class="daily_jackpot_your_stats_header gold">YOUR STATS</div><div class="daily_jackpot_your_stats_rows"><div class="daily_jackpot_your_stats_rank_wagered_columns">RANK</div><div class="daily_jackpot_your_stats_rank_wagered_values_columns" id="daily_jackpot_user_rank">' + user_daily_jp_rank + '</div></div><div class="daily_jackpot_your_stats_rows" style="display:block; width:100%;"><div class="daily_jackpot_your_stats_rank_wagered_columns" style="border-top: 1px solid transparent;border-radius: 0 0 0 5px;">WAGERED</div><div class="daily_jackpot_your_stats_rank_wagered_values_columns" id="daily_jackpot_user_wagered" style="border-top: 1px solid transparent;border-radius:0 0 5px 0;">' + user_daily_jp_wagered + '</div></div></div>';
                     $("#daily_jackpot_leaderboard_modal_content").html(daily_jp_ranks_table_content);
                     var jp_countdown_iter = update_interval * 60 * 10;
                     var daily_jp_banner_content = '<div class="close_daily_jackpot_main_container_div" onclick="CloseDailyJPBanner();"><i class="fa fa-times-circle" aria-hidden="true"></i></div><div class="black_background_div"><div class="daily_jackpot_prize_div"><div class="background_span"><div class="left_marker"></div><i class="fa fa-btc fa-btc-900"></i><div class="right_marker"></div></div>';
@@ -3575,7 +3701,7 @@ function UpdateStats() {
                         daily_jp_banner_content = daily_jp_banner_content + '<div class="background_span"><div class="left_marker"></div><p id="daily_jp_pot_digit_' + i + '"></p><div class="right_marker"></div></div>';
                     }
                     daily_jp_banner_content = daily_jp_banner_content + '</div><div class="daily_jackpot_your_rank_div">YOUR RANK&nbsp;<span id="daily_jp_user_rank">#' + user_daily_jp_rank + '</span></div></div>';
-                    daily_jp_banner_content = daily_jp_banner_content + '<div class="yellow_background"><h1>WIN DAILY JACKPOT</h1><p>HIGHEST DAILY WAGERER / BETTOR WILL WIN THE JACKPOT!</p></div><div class="daily_jackpot_text_for_extra_small"><p>HIGHEST DAILY WAGERER / BETTOR WILL WIN THE JACKPOT!</p></div><div class="daily_jackpot_text_for_small"><p>HIGHEST DAILY WAGERER / BETTOR WILL WIN THE JACKPOT!</p></div><div class="leaderboard_button_timer_container_div"><div class="leaderboard_button" data-reveal-id="daily_jackpot_leaderboard_modal"><img src="https://sirv.freebitco.in/1566561624_xUklV3EW.png"><span>LEADERBOARD</span></div><div class="timer_div_daily_jackpot"></div></div></div>';
+                    daily_jp_banner_content = daily_jp_banner_content + '<div class="yellow_background"><h1>WIN DAILY JACKPOT</h1><p>HIGHEST DAILY WAGERER / BETTOR WILL WIN THE JACKPOT!</p></div><div class="daily_jackpot_text_for_extra_small"><p>HIGHEST DAILY WAGERER / BETTOR WILL WIN THE JACKPOT!</p></div><div class="daily_jackpot_text_for_small"><p>HIGHEST DAILY WAGERER / BETTOR WILL WIN THE JACKPOT!</p></div><div class="leaderboard_button_timer_container_div"><div class="leaderboard_winner_button_container_div"><div class="leaderboard_button" data-reveal-id="daily_jackpot_leaderboard_modal"><img src="https://sirv.freebitco.in/1566561624_xUklV3EW.png"><span>LEADERBOARD</span></div><div class="winners_button" data-reveal-id="daily_jackpot_winners_modal"><i class="fa fa-trophy trophy_winners_button" aria-hidden="true"></i><span>WINNERS</span></div></div><div class="timer_div_daily_jackpot"></div></div></div>';
                     $(".daily_jackpot_main_container_div").html(daily_jp_banner_content);
                     if (data.daily_jackpot_end > 0) {
                         $('.timer_div_daily_jackpot').countdown('destroy');
@@ -3593,6 +3719,14 @@ function UpdateStats() {
                         daily_jp_countup_stop = 0;
                         CountupDailyJPPot(data.daily_jp_starting_pot, data.daily_jackpot_pot, data.daily_jackpot_end);
                     }, 1000);
+                }
+                if (typeof data.daily_jackpot_winners !== 'undefined') {
+                    var daily_jp_winners_table = '<h1 style="color:#008235;font-size:20px;text-align: center;margin:0;font-family: \x27Hepta Slab\x27, serif;">DAILY JACKPOT</h1><h3 style="color:#000;text-align: center;font-size:18px;margin:0;">WINNERS</h3><div id="leaderboard_table_header" style="width: 260px; display: block; margin: auto; clear: both; background-image: linear-gradient(to bottom, #ff7c1a, #ff6d00 90%);border-radius: 5px 5px 0 0;height:32px;"><div class="leaderboard_table_header_columns" style="width: 90px;">DATE</div><div class="leaderboard_table_header_columns" style="width: 70px;">USER ID</div><div class="leaderboard_table_header_columns" style="width: 100px;">PRIZE</div></div>';
+                    for (var i = 0; i < data.daily_jackpot_winners.length; i++) {
+                        data.daily_jackpot_winners[i].prize = parseFloat(data.daily_jackpot_winners[i].prize / 100000000).toFixed(8);
+                        daily_jp_winners_table = daily_jp_winners_table + '<div id="leaderboard_table_header" style="width: 260px; display: block; margin: auto; clear: both;"><div class="leaderboard_table_columns" style="width: 90px;">' + data.daily_jackpot_winners[i].date + '</div><div class="leaderboard_table_columns" style="width: 70px;">' + data.daily_jackpot_winners[i].userid + '</div><div class="leaderboard_table_columns" style="width: 100px;">' + data.daily_jackpot_winners[i].prize + '</div></div>';
+                    }
+                    $("#daily_jackpot_winners_modal_content").html(daily_jp_winners_table);
                 }
             }
         }
@@ -3723,14 +3857,17 @@ function InitialStatsLoad() {
                         chart.draw(data2, options);
                     }
                 }
-                var mobile_class_one = "";
-                var mobile_class_two = "";
-                if (mobile_device == 1) {
-                    mobile_class_one = " reward_link_redeem_button_mobile ";
-                    mobile_class_two = " reward_link_redeem_button_mobile_last ";
-                }
-                for (var i = 0; i < data.rp_prizes.length; i++) {
-                    $("#" + data.rp_prizes[i].category + "_rewards").append('<div class="effect2" style="margin: 0; border-radius: 3px; margin-top: 20px;"><div class="row reward_product_name">' + data.rp_prizes[i].product_name + '</div><div class="row" style="margin:0; padding: 10px 0; border: 1px solid #bdbcb8; border-radius: 0 0 3px 3px; background:#fff;"><div class="large-3 small-12 columns"><div class="reward_link_redeem_button_style' + mobile_class_one + '" onclick="VisitLink(\x27' + data.rp_prizes[i].product_link + '\x27)">LINK</div></div><div class="large-6 small-12 columns"><div class="reward_dollar_value_style' + mobile_class_one + '">' + data.rp_prizes[i].points + ' RP</div></div><div class="large-3 small-12 columns"><button class="reward_link_redeem_button_style ' + mobile_class_two + '" onclick="RedeemRPProduct(\x27' + data.rp_prizes[i].product_type + '\x27)">REDEEM</button></div></div></div>');
+                if (rp_rewards_list_loaded == 0) {
+                    var mobile_class_one = "";
+                    var mobile_class_two = "";
+                    if (mobile_device == 1) {
+                        mobile_class_one = " reward_link_redeem_button_mobile ";
+                        mobile_class_two = " reward_link_redeem_button_mobile_last ";
+                    }
+                    for (var i = 0; i < data.rp_prizes.length; i++) {
+                        $("#" + data.rp_prizes[i].category + "_rewards").append('<div class="effect2" style="margin: 0; border-radius: 3px; margin-top: 20px;"><div class="row reward_product_name">' + data.rp_prizes[i].product_name + '</div><div class="row" style="margin:0; padding: 10px 0; border: 1px solid #bdbcb8; border-radius: 0 0 3px 3px; background:#fff;"><div class="large-3 small-12 columns"><div class="reward_link_redeem_button_style' + mobile_class_one + '" onclick="VisitLink(\x27' + data.rp_prizes[i].product_link + '\x27)">LINK</div></div><div class="large-6 small-12 columns"><div class="reward_dollar_value_style' + mobile_class_one + '">' + data.rp_prizes[i].points + ' RP</div></div><div class="large-3 small-12 columns"><button class="reward_link_redeem_button_style ' + mobile_class_two + '" onclick="RedeemRPProduct(\x27' + data.rp_prizes[i].product_type + '\x27)">REDEEM</button></div></div></div>');
+                    }
+                    rp_rewards_list_loaded = 1;
                 }
                 GenerateStatsTables('TOP 10 JACKPOT WINNERS', 'ADDRESS', 'JACKPOT AMOUNT', 'FREE ROLLS', 'MULTIPLY ROLLS', data.jackpot_winners, 'stats_page_tables');
                 GenerateStatsTables('TOP 10 OVERALL WINNERS', 'ADDRESS', 'TOTAL WON', 'FREE ROLLS', 'MULTIPLY ROLLS', data.top_10_winners, 'stats_page_tables');
@@ -3934,7 +4071,7 @@ function OpenParimutuelGame(game_id) {
                     } else if (popularity > 74) {
                         bar_colour = "green";
                     }
-                    to_append = to_append + '<li style="padding: 10px;" id="parimutuel_outcome_' + parimutuel_all_events_json.details[x].game_id + '_' + parimutuel_all_events_json.details[x].outcomes[i].outcome + '_li"><div style="height: auto; border: 2px solid white; box-shadow: 0 0 5px black; padding-bottom:20px; background: transparent;"><div class="center reward_table_box table_header_background" style="padding: 10px; font-size: 15px; font-weight: 900;">' + parimutuel_all_events_json.details[x].outcomes[i].name + '</div><div class="large-12 large-centered small-12 small-centered columns" style="margin: 20px 0;"><div class="reward_table_box gold br_5_5 bold" style="border-bottom: 1px solid #f3cd00; font-weight: bold; text-align: center; padding: 5px;">BETS COUNT</div><div class="reward_table_box br_0_0_5_5 parimutuel_outcome_bets_count" style="border-top:none; padding: 10px;">' + commaSeparateNumber(parseInt(parimutuel_all_events_json.details[x].outcomes[i].bets_count)) + '</div></div><div class="large-12 large-centered small-12 small-centered columns" style="margin: 20px 0;"><div class="reward_table_box gold br_5_5 bold" style="border-bottom: 1px solid #f3cd00; font-weight: bold; text-align: center; padding: 5px;">OUTCOME ODDS<a class="auto_bet_setting_span" style="float: right; margin-top: 3px; color: black; border: 1px solid #000;">?<span style="right: 15px; max-width: 280px; font-weight: normal;">Estimated odds for this outcome. Actual odds will be calculated after betting ends for this event.</span></a></div><div class="reward_table_box br_0_0_5_5 parimutuel_outcome_bet_odds" style="border-top:none; padding: 10px;">' + parimutuel_all_events_json.details[x].outcomes[i].odds + '</div></div><div class="large-10 large-centered small-12 small-centered progress_bar_container_div"><p class="' + bar_colour + '_progress_bar" style="width: ' + popularity + '%;"> </p><span style="width: 100%; position: absolute; top:0; left: 0; background-color: transparent; text-align: center; padding-top: 4px; font-weight: 900;">' + popularity + '%</span></div><div class="large-12 small-12 columns center reward_table_box reward_table_box_container" style="margin: 9px 0; border:none; background: transparent;" ><div class="large-12 small-12 columns center reward_table_box reward_table_box_left_mobile bronze" style="border: 1px solid #d87310;padding: 7px 0;">BET AMOUNT</div><div class="row" style="margin:0; padding:0;"><div class="large-12 small-12 columns center reward_table_input reward_table_box_right_mobile" style="background: transparent;"><div class="large-2 small-4 columns" style="background: #f2f2f2; height: 2.3125em; padding: 4px; border: 1px solid #ccc; border-right: none;"><i class="fa fa-btc" style="text-align: center;"></i></div><div class="large-10 small-8 columns" style="padding: 0;"><input type="text" style="text-align: center; color: #000; border-radius:0 0 3px 3px;" class="parimutuel_bet_amount" placeholder="Enter Bet Amount" onfocus="javascript:ParimutuelFocus(\x27' + parimutuel_all_events_json.details[x].game_id + '\x27,\x27' + parimutuel_all_events_json.details[x].outcomes[i].outcome + '\x27);" onkeypress="javascript:ParimutuelFocus(\x27' + parimutuel_all_events_json.details[x].game_id + '\x27,\x27' + parimutuel_all_events_json.details[x].outcomes[i].outcome + '\x27);" onkeydown="javascript:ParimutuelFocus(\x27' + parimutuel_all_events_json.details[x].game_id + '\x27,\x27' + parimutuel_all_events_json.details[x].outcomes[i].outcome + '\x27);" onkeyup="javascript:ParimutuelFocus(\x27' + parimutuel_all_events_json.details[x].game_id + '\x27,\x27' + parimutuel_all_events_json.details[x].outcomes[i].outcome + '\x27);" onfocusout="javascript:ParimutuelBlur(\x27' + parimutuel_all_events_json.details[x].game_id + '\x27,\x27' + parimutuel_all_events_json.details[x].outcomes[i].outcome + '\x27);"></div> </div></div><div class="row parimutuel_estimated_winnings" style="margin-top: 1px; padding:0;"><div class="large-12 small-12 columns large-centered small-centered center" style="width:auto;"><p class="odd_win_chance_message" style="display: block;">Estimated winnings:&nbsp;<span style="overflow: hidden;white-space: nowrap;"><i class="fa fa-btc"></i>0.00000000</span></p></div></div></div><button class="auto_bet_start_stop_button" id="got_play_now" style="padding:10px;" onclick="javascript:ParimutuelPlaceBet(\x27' + parimutuel_all_events_json.details[x].game_id + '\x27,\x27' + parimutuel_all_events_json.details[x].outcomes[i].outcome + '\x27);">&nbsp;&nbsp;&nbsp;BET&nbsp;&nbsp;&nbsp;</button></div></li> ';
+                    to_append = to_append + '<li style="padding: 10px;" id="parimutuel_outcome_' + parimutuel_all_events_json.details[x].game_id + '_' + parimutuel_all_events_json.details[x].outcomes[i].outcome + '_li"><div style="height: auto; border: 2px solid white; box-shadow: 0 0 5px black; padding-bottom:20px; background: transparent;"><div class="center reward_table_box table_header_background" style="padding: 10px; font-size: 15px; font-weight: 900;">' + parimutuel_all_events_json.details[x].outcomes[i].name + '</div><div class="large-12 large-centered small-12 small-centered columns" style="margin: 20px 0;"><div class="reward_table_box gold br_5_5 bold" style="border-bottom: 1px solid #f3cd00; font-weight: bold; text-align: center; padding: 5px;">BETS COUNT</div><div class="reward_table_box br_0_0_5_5 parimutuel_outcome_bets_count" style="border-top:none; padding: 10px;">' + commaSeparateNumber(parseInt(parimutuel_all_events_json.details[x].outcomes[i].bets_count)) + '</div></div><div class="large-12 large-centered small-12 small-centered columns" style="margin: 20px 0;"><div class="reward_table_box gold br_5_5 bold" style="border-bottom: 1px solid #f3cd00; font-weight: bold; text-align: center; padding: 5px;">OUTCOME ODDS<a class="auto_bet_setting_span" style="float: right; margin-top: 3px; color: black; border: 1px solid #000;">?<span style="right: 15px; max-width: 280px; font-weight: normal;">Estimated odds for this outcome. Actual odds will be calculated after betting ends for this event.</span></a></div><div class="reward_table_box br_0_0_5_5 parimutuel_outcome_bet_odds" style="border-top:none; padding: 10px;">' + parimutuel_all_events_json.details[x].outcomes[i].odds + '</div></div><div class="large-10 large-centered small-12 small-centered progress_bar_container_div"><p class="' + bar_colour + '_progress_bar" style="width: ' + popularity + '%;"> </p><span style="width: 100%; position: absolute; top:0; left: 0; background-color: transparent; text-align: center; padding-top: 4px; font-weight: 900;">' + popularity + '%</span></div><div class="large-12 small-12 columns center reward_table_box reward_table_box_container" style="margin: 9px 0; border:none; background: transparent;" ><div class="large-12 small-12 columns center reward_table_box reward_table_box_left_mobile bronze" style="border: 1px solid #d87310;padding: 7px 0;">BET AMOUNT</div><div class="row" style="margin:0; padding:0;"><div class="large-12 small-12 columns center reward_table_input reward_table_box_right_mobile" style="background: transparent;"><div class="large-2 small-4 columns" style="background: #f2f2f2; height: 2.3125em; padding: 4px; border: 1px solid #ccc; border-right: none;"><i class="fa fa-btc" style="text-align: center;"></i></div><div class="large-10 small-8 columns" style="padding: 0;"><input type="text" style="text-align: center; color: #000; border-radius:0 0 3px 3px;" class="parimutuel_bet_amount" placeholder="Enter Bet Amount" onfocus="javascript:ParimutuelFocus(\x27' + parimutuel_all_events_json.details[x].game_id + '\x27,\x27' + parimutuel_all_events_json.details[x].outcomes[i].outcome + '\x27);" onkeypress="javascript:ParimutuelFocus(\x27' + parimutuel_all_events_json.details[x].game_id + '\x27,\x27' + parimutuel_all_events_json.details[x].outcomes[i].outcome + '\x27);" onkeydown="javascript:ParimutuelFocus(\x27' + parimutuel_all_events_json.details[x].game_id + '\x27,\x27' + parimutuel_all_events_json.details[x].outcomes[i].outcome + '\x27);" onkeyup="javascript:ParimutuelFocus(\x27' + parimutuel_all_events_json.details[x].game_id + '\x27,\x27' + parimutuel_all_events_json.details[x].outcomes[i].outcome + '\x27);"></div> </div></div><div class="row parimutuel_estimated_winnings" style="margin-top: 1px; padding:0;"><div class="large-12 small-12 columns large-centered small-centered center" style="width:auto;"><p class="odd_win_chance_message" style="display: block;">Estimated winnings:&nbsp;<span style="overflow: hidden;white-space: nowrap;"><i class="fa fa-btc"></i>0.00000000</span></p></div></div></div><button class="auto_bet_start_stop_button" id="got_play_now" style="padding:10px;" onclick="javascript:ParimutuelPlaceBet(\x27' + parimutuel_all_events_json.details[x].game_id + '\x27,\x27' + parimutuel_all_events_json.details[x].outcomes[i].outcome + '\x27);">&nbsp;&nbsp;&nbsp;BET&nbsp;&nbsp;&nbsp;</button></div></li> ';
                 }
                 to_append = to_append + '</ul> </div></div>';
                 to_append = to_append + '<div class="large-7 large-centered small-12 small-centered columns" style="margin-top: 20px;"><div class="reward_table_box gold br_5_5 bold" style="border-bottom: 1px solid #f3cd00; font-weight: bold; text-align: left; padding-left: 10px;">DECISION LOGIC</div><div class="reward_table_box br_0_0_5_5 font_bold" style="border-top:none; padding: 10px;">';
@@ -4126,6 +4263,31 @@ function ClosePromoBanner() {
 }
 function CloseDailyJPBanner() {
     $('.daily_jackpot_main_container_div').hide();
+}
+function GenerateCaptchasNetCaptcha(parent_div, type, rand) {
+    if (typeof rand !== "undefined" && rand.length > 5 && rand.length < 100) {
+        GenCaptchasNetCaptcha(parent_div, type, rand);
+    } else {
+        $.get('/cgi-bin/api.pl?op=generate_captchasnet&f=' + fingerprint, function(data) {
+            if (data.length < 100) {
+                GenCaptchasNetCaptcha(parent_div, type, data);
+            }
+        });
+    }
+}
+function GenCaptchasNetCaptcha(parent_div, type, random_string) {
+    parent_div = parent_div.replace(/\s/g, '');
+    var image_url = "//captchas.freebitco.in/cgi-bin/captcha_generator?client=freebitcoin&random=" + random_string;
+    if (type == 2) {
+        image_url = "//captchas.freebitco.in/securimage/securimage/securimage_show.php?random=" + random_string;
+    } else if (type == 3) {
+        image_url = "//captchas.freebitco.in/botdetect/e/live/index.php?random=" + random_string;
+    }
+    $('#' + parent_div + ' .captchasnet_captcha_content').html('<img src="' + image_url + '" onerror="GenerateCaptchasNetCaptcha(\'' + parent_div + '\', ' + type + ', \'' + random_string + '\');">');
+    $('#' + parent_div + ' .captchasnet_captcha_random').val(random_string);
+    $('#' + parent_div + ' .captchasnet_captcha_refresh').attr("onclick", "GenerateCaptchasNetCaptcha('" + parent_div + "', " + type + ")");
+    $('#' + parent_div + ' .captchasnet_captcha_audio').attr("onclick", "PlayCaptchasNetAudioCaptcha('" + random_string + "')");
+    $('#' + parent_div + ' .captchasnet_captcha_input_box').val('');
 }
 function getParameterByName(name, url) {
     if (!url)

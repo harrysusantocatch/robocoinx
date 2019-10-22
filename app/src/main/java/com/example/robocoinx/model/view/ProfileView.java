@@ -1,7 +1,5 @@
 package com.example.robocoinx.model.view;
 
-import android.content.Intent;
-
 import org.jsoup.nodes.Attribute;
 import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.DataNode;
@@ -23,7 +21,7 @@ public class ProfileView implements Serializable {
     public int rpBonusTime;
     public int btcBonusTime;
     public boolean disableLottery;
-    public boolean disableInterest;
+    public boolean enableInterest;
     public boolean hasCaptcha;
 
     public ProfileView(Document doc) {
@@ -34,18 +32,18 @@ public class ProfileView implements Serializable {
         rpBonusTime = getRPBonusCountDown(doc);
         btcBonusTime = getBTCBonusCountDown(doc);
         disableLottery = getDisableLottery(doc);
-        disableInterest = getDisableInteres(doc);
+        enableInterest = getEnableInterest(doc);
     }
 
-    private boolean getDisableInteres(Document doc) {
+    private boolean getEnableInterest(Document doc) {
         Element element = doc.getElementById("disable_interest_checkbox");
         Attributes attributes = element.attributes();
         for (Attribute atr : attributes ) {
             if(atr.getKey().equalsIgnoreCase("checked")){
-                return true;
+                return false;
             }
         }
-        return false;
+        return true;
     }
 
     private boolean getDisableLottery(Document doc) {

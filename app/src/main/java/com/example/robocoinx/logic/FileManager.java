@@ -11,6 +11,9 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class FileManager {
 
@@ -62,7 +65,9 @@ public class FileManager {
 
     public void appendLog(Exception ex)
     {
-        File logFile = new File(Environment.getExternalStorageDirectory()+"/robocoinxlog.file");
+        File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File dir = new File(folder.getAbsolutePath());
+        File logFile = new File(dir, "robocoinxlog.txt");
         if (!logFile.exists())
         {
             try
@@ -88,5 +93,43 @@ public class FileManager {
         {
             e.printStackTrace();
         }
+    }
+
+    public void appendLog(String msg)
+    {
+        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date(System.currentTimeMillis()));
+        File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);
+        File dir = new File(folder.getAbsolutePath());
+        File logFile = new File(dir, "robocoinxlog.txt");
+        if (!logFile.exists())
+        {
+            try
+            {
+                logFile.createNewFile();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        try
+        {
+            BufferedWriter buf = new BufferedWriter(new FileWriter(logFile, true));
+            buf.append(currentTime + " " + msg);
+            buf.newLine();
+            buf.close();
+        }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
+    public boolean canWriteOnExternalStorage() {
+        String state = Environment.getExternalStorageState();
+        if (Environment.MEDIA_MOUNTED.equals(state)) {
+            return true;
+        }
+        return false;
     }
 }

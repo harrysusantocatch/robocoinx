@@ -15,6 +15,7 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.robocoinx.R;
+import com.example.robocoinx.logic.FileManager;
 import com.example.robocoinx.logic.RoboHandler;
 import com.example.robocoinx.model.view.ProfileView;
 import com.example.robocoinx.model.StaticValues;
@@ -93,7 +94,7 @@ public class LoginActivity extends AppCompatActivity {
                     runOnUiThread(() -> Toast.makeText(getApplicationContext(), (String)obj, Toast.LENGTH_SHORT).show());
                 }
             }catch (Exception e){
-//                FileManager.getInstance().appendLog(e);
+                FileManager.getInstance().appendLog(e);
             }
             return null;
         }

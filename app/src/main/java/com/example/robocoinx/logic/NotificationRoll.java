@@ -136,22 +136,26 @@ public class NotificationRoll {
                     String currentTime = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date());
                     ClaimHistoryHandler.getInstance(context).insert(currentTime, claim, balance);
                     startNotificationListener(context);
+                    FileManager.getInstance().appendLog("claim success");
                 }else if(obj instanceof RollErrorResponse){
                     RollErrorResponse err = (RollErrorResponse) obj;
-                    interval = (err.countDown + 5) * 1000;
+                    interval = (err.countDown) * 1000;
                     restartNotificationListener(context);
+                    FileManager.getInstance().appendLog("claim wait "+(interval/60000)+ " minutes");
                 }else {
                     interval = 30000;
+                    FileManager.getInstance().appendLog("claim wait "+(interval/1000)+" seconds");
                 }
             } catch (Exception e){
-//                FileManager.getInstance().appendLog(e);
+                FileManager.getInstance().appendLog("claim wait "+(interval/1000)+" seconds with error!");
                 interval = 30000;
+                FileManager.getInstance().appendLog(e);
             }
             finally {
                 if(alarmManager != null) alarmManager.cancel(pendingIntent);
                 Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(System.currentTimeMillis()+ interval);
-                alarmManager.setRepeating(AlarmManager.RTC_WAKEUP,
+                alarmManager.setInexactRepeating(AlarmManager.RTC_WAKEUP,
                         calendar.getTimeInMillis(), defaultInterval, pendingIntent);
             }
         }).start();

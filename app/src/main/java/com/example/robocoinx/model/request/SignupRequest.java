@@ -1,0 +1,47 @@
+package com.example.robocoinx.model.request;
+
+import com.example.robocoinx.model.StaticValues;
+
+import org.jsoup.nodes.DataNode;
+import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
+import org.jsoup.select.Elements;
+
+import java.util.List;
+
+public class SignupRequest {
+    public String op;
+    public String btcAddress;
+    public String password;
+    public String email;
+    public String fingerprint; // todo
+    public String referrer;
+    public String tag;
+    public String token;
+
+    public SignupRequest(Document doc){
+        op = StaticValues.OP_SIGNUP;
+        token = getToken(doc);
+    }
+
+    private String getToken(Document doc) {
+        Elements scripts = doc.getElementsByTag("script");
+        for (Element script: scripts) {
+            List<DataNode> dataNodes = script.dataNodes();
+            for (DataNode dataNode : dataNodes){
+                String data = dataNode.getWholeData();
+                if(data.contains("signup_token")){
+                    // token name
+                    String[] dataSplit = data.split(";");
+                    for (String datas : dataSplit) {
+                        if(datas.contains("signup_token")){
+                            String[] tokenNameSplit = datas.split(" ");
+                            return tokenNameSplit[3].replace("'", "");
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+}
