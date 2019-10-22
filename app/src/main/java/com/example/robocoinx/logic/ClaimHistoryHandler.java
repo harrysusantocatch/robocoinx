@@ -1,4 +1,4 @@
-package com.example.robocoinx.model;
+package com.example.robocoinx.logic;
 
 import android.content.ContentValues;
 import android.content.Context;
@@ -7,6 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
 import androidx.annotation.Nullable;
+
+import com.example.robocoinx.model.db.ClaimHistory;
 
 import java.util.ArrayList;
 

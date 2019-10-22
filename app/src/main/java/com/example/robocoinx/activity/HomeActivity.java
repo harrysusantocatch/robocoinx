@@ -7,7 +7,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -15,13 +14,12 @@ import android.widget.TextView;
 
 import com.example.robocoinx.R;
 import com.example.robocoinx.logic.BackgroundService;
-import com.example.robocoinx.logic.FileManager;
 import com.example.robocoinx.logic.RoboHandler;
-import com.example.robocoinx.model.ClaimHistory;
-import com.example.robocoinx.model.ClaimHistoryHandler;
-import com.example.robocoinx.model.ProfileView;
-import com.example.robocoinx.model.RollErrorResponse;
-import com.example.robocoinx.model.RollSuccessResponse;
+import com.example.robocoinx.model.db.ClaimHistory;
+import com.example.robocoinx.logic.ClaimHistoryHandler;
+import com.example.robocoinx.model.view.ProfileView;
+import com.example.robocoinx.model.response.RollErrorResponse;
+import com.example.robocoinx.model.response.RollSuccessResponse;
 import com.example.robocoinx.model.StaticValues;
 
 import java.text.SimpleDateFormat;
@@ -61,6 +59,9 @@ public class HomeActivity extends AppCompatActivity {
         ProfileView pp = (ProfileView) getIntent().getSerializableExtra(StaticValues.PROFILE_VIEW);
         if(pp != null) {
             setValueUI(pp);
+            if(pp.disableLottery == false || pp.disableInterest == true){
+                new Content(pp).execute((Void)null);
+            }
         }else {
             // TODO back to login
         }
@@ -86,9 +87,9 @@ public class HomeActivity extends AppCompatActivity {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                userID.setText(pp.getUserID());
-                balance.setText(pp.getBalance());
-                rp.setText(pp.getRewardPoint());
+                userID.setText(pp.userID);
+                balance.setText(pp.balance);
+                rp.setText(pp.rewardPoint);
 
                 // next roll
                 new CountDownTimer((pp.nextRollTime)*1000, 1000){
@@ -171,37 +172,32 @@ public class HomeActivity extends AppCompatActivity {
         });
     }
 
-    private void doRoll() {
-        new Content().execute((Void)null);
-    }
-
     public  class Content extends AsyncTask<Void, Void, Void>{
+        private ProfileView profileView;
+        public Content(ProfileView _profileView) {
+            profileView = _profileView;
+        }
+
         @Override
         protected Void doInBackground(Void... voids) {
             try {
-                Object obj = RoboHandler.parsingRollResponse(getApplicationContext());
-                if(obj instanceof RollSuccessResponse){
-                    Object result = RoboHandler.parsingHomeResponse(getApplicationContext());
-                    if(result instanceof ProfileView) {
-                        ProfileView profileView = (ProfileView) obj;
-                        setValueUI(profileView);
-                    }else {
-                        String message = (String) obj;
-                        // TODO show message error
-                    }
-                }else if(obj instanceof RollErrorResponse){
-                    String message = ((RollErrorResponse) obj).message;
-                    // TODO show message error
-                }
-                else {
-                    String message = (String) obj;
-                    // TODO show message error
-                }
-
+                executeTaskBackground(profileView);
             }catch (Exception e){
 //                FileManager.getInstance().appendLog(e);
             }
             return null;
+        }
+    }
+
+    private void executeTaskBackground(ProfileView profileView) {
+        if(profileView.disableInterest){
+            // enable
+
+        }
+
+        if(!profileView.disableLottery){
+            // disable
+
         }
     }
 

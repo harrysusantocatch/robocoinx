@@ -3,7 +3,6 @@ package com.example.robocoinx.logic;
 import android.content.Context;
 import android.content.Intent;
 
-import com.example.robocoinx.model.NotificationRoll;
 import com.example.robocoinx.model.StaticValues;
 
 public class ServiceBroadcastReceiver extends android.content.BroadcastReceiver {

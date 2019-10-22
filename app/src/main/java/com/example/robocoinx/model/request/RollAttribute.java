@@ -1,10 +1,11 @@
-package com.example.robocoinx.model;
+package com.example.robocoinx.model.request;
 
 import android.content.Context;
 
 import com.example.robocoinx.logic.CryptEx;
 import com.example.robocoinx.logic.FileManager;
 import com.example.robocoinx.logic.RoboHandler;
+import com.example.robocoinx.model.StaticValues;
 
 import org.jsoup.Connection;
 import org.jsoup.nodes.DataNode;
@@ -29,11 +30,11 @@ public class RollAttribute {
 
     public RollAttribute(Context context, Document doc){
 
-        setOp(StaticValues.OP);
-        setFingerprint("3a9c7c414c5b85342084560cf69eec93"); // TODO
-        setFingerprint2("1457546166"); // TODO
-        setClientSeed(getClientSeed());
-        setPwc("1"); // TODO
+        op = StaticValues.OP;
+        fingerprint = "3a9c7c414c5b85342084560cf69eec93"; // TODO
+        fingerprint2 = "1457546166"; // TODO
+        clientSeed = getClientSeed();
+        pwc = "1"; // TODO
         Elements scripts = doc.getElementsByTag("script");
         for (Element script: scripts) {
             List<DataNode> dataNodes = script.dataNodes();
@@ -44,44 +45,21 @@ public class RollAttribute {
                     String[] dataSplit = data.split(";");
                     String varTokenName = dataSplit[1];
                     String[] tokenNameSplit = varTokenName.split(" ");
-                    setTokenName(tokenNameSplit[3].replace("'", ""));
+                    tokenName = tokenNameSplit[3].replace("'", "");
 
                     // last param
                     String varLastParam = dataSplit[2];
                     String[] lastParamSPlit = varLastParam.split(" ");
-                    setLastParam(lastParamSPlit[3].replace("'", ""));
+                    lastParam = lastParamSPlit[3].replace("'", "");
 
-                }
-                if(data.contains("#"+getTokenName())){
                     // token value
-                    String regex = "\\(\"#"+getTokenName()+"\"\\).val\\(\"\\d*:[A-Za-z0-9]*";
-                    Pattern pattern = Pattern.compile(regex);
-                    Matcher matcher = pattern.matcher(data);
-                    if(matcher.find()){
-                        String tokenValueTemp = matcher.group();
-                        String strReplace = "(\"#"+getTokenName()+"\").val(\"";
-                        setTokenValue(tokenValueTemp.replace(strReplace, ""));
-                    }
+                    String varTokenValue = dataSplit[38];
+                    String[] tokenValueSPlit = varTokenValue.split(" ");
+                    tokenValue = tokenValueSPlit[3].replace("'", "");
                 }
             }
         }
-        setLastParamValue(getLastParamValue());
-    }
-
-    public String getOp() {
-        return op;
-    }
-
-    public void setOp(String op) {
-        this.op = op;
-    }
-
-    public String getFingerprint() {
-        return fingerprint;
-    }
-
-    public void setFingerprint(String fingerprint) {
-        this.fingerprint = fingerprint;
+        lastParamValue = getLastParamValue();
     }
 
     public String getClientSeed() {
@@ -97,50 +75,6 @@ public class RollAttribute {
         return clientSeed;
     }
 
-    public void setClientSeed(String clientSeed) {
-        this.clientSeed = clientSeed;
-    }
-
-    public String getFingerprint2() {
-        return fingerprint2;
-    }
-
-    public void setFingerprint2(String fingerprint2) {
-        this.fingerprint2 = fingerprint2;
-    }
-
-    public String getPwc() {
-        return pwc;
-    }
-
-    public void setPwc(String pwc) {
-        this.pwc = pwc;
-    }
-
-    public String getTokenName() {
-        return tokenName;
-    }
-
-    public void setTokenName(String tokenName) {
-        this.tokenName = tokenName;
-    }
-
-    public String getTokenValue() {
-        return tokenValue;
-    }
-
-    public void setTokenValue(String tokenValue) {
-        this.tokenValue = tokenValue;
-    }
-
-    public String getLastParam() {
-        return lastParam;
-    }
-
-    public void setLastParam(String lastParam) {
-        this.lastParam = lastParam;
-    }
-
     public String getLastParamValue() {
         if(lastParamValue == null){
             Connection.Response lastParamValueResponse = RoboHandler.getLastParamValueResponse(lastParam);
@@ -148,9 +82,4 @@ public class RollAttribute {
         }
         return lastParamValue;
     }
-
-    public void setLastParamValue(String lastParamValue) {
-        this.lastParamValue = lastParamValue;
-    }
-
 }

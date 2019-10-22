@@ -1,4 +1,4 @@
-package com.example.robocoinx.model;
+package com.example.robocoinx.logic;
 
 import android.app.AlarmManager;
 import android.app.NotificationManager;
@@ -9,8 +9,9 @@ import android.content.Intent;
 import androidx.core.app.NotificationCompat;
 
 import com.example.robocoinx.R;
-import com.example.robocoinx.logic.RoboHandler;
-import com.example.robocoinx.logic.ServiceBroadcastReceiver;
+import com.example.robocoinx.model.response.RollErrorResponse;
+import com.example.robocoinx.model.response.RollSuccessResponse;
+import com.example.robocoinx.model.StaticValues;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;

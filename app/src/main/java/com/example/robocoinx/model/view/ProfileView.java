@@ -1,5 +1,9 @@
-package com.example.robocoinx.model;
+package com.example.robocoinx.model.view;
 
+import android.content.Intent;
+
+import org.jsoup.nodes.Attribute;
+import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -18,76 +22,46 @@ public class ProfileView implements Serializable {
     public int nextRollTime;
     public int rpBonusTime;
     public int btcBonusTime;
+    public boolean disableLottery;
+    public boolean disableInterest;
     public boolean hasCaptcha;
 
     public ProfileView(Document doc) {
-        setUserID(getUserID(doc));
-        setBalance(getBalance(doc));
-        setRewardPoint(getRewardPoint(doc));
-        setNextRollTime(getNextRollTime(doc));
-        setRpBonusTime(getRPBonusCountDown(doc));
-        setBtcBonusTime(getBTCBonusCountDown(doc));
+        userID = getUserID(doc);
+        balance = getBalance(doc);
+        rewardPoint = getRewardPoint(doc);
+        nextRollTime = getNextRollTime(doc);
+        rpBonusTime = getRPBonusCountDown(doc);
+        btcBonusTime = getBTCBonusCountDown(doc);
+        disableLottery = getDisableLottery(doc);
+        disableInterest = getDisableInteres(doc);
+    }
+
+    private boolean getDisableInteres(Document doc) {
+        Element element = doc.getElementById("disable_interest_checkbox");
+        Attributes attributes = element.attributes();
+        for (Attribute atr : attributes ) {
+            if(atr.getKey().equalsIgnoreCase("checked")){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean getDisableLottery(Document doc) {
+        Element element = doc.getElementById("disable_lottery_checkbox");
+        Attributes attributes = element.attributes();
+        for (Attribute atr : attributes ) {
+            if(atr.getKey().equalsIgnoreCase("checked")){
+                return true;
+            }
+        }
+        return false;
     }
 
     public String getUserID(Document doc) {
         Elements elUserID = doc.getElementsByClass("left bold");
         return elUserID.text();
-    }
-
-    public String getUserID() {
-        return userID;
-    }
-
-    public void setUserID(String userID) {
-        this.userID = userID;
-    }
-
-    public String getBalance() {
-        return balance;
-    }
-
-    public void setBalance(String balance) {
-        this.balance = balance;
-    }
-
-    public String getRewardPoint() {
-        return rewardPoint;
-    }
-
-    public void setRewardPoint(String rewardPoint) {
-        this.rewardPoint = rewardPoint;
-    }
-
-    public int getNextRollTime() {
-        return nextRollTime;
-    }
-
-    public void setNextRollTime(int nextRollTime) {
-        this.nextRollTime = nextRollTime;
-    }
-
-    public int getRpBonusTime() {
-        return rpBonusTime;
-    }
-
-    public void setRpBonusTime(int rpBonusTime) {
-        this.rpBonusTime = rpBonusTime;
-    }
-
-    public int getBtcBonusTime() {
-        return btcBonusTime;
-    }
-
-    public void setBtcBonusTime(int btcBonusTime) {
-        this.btcBonusTime = btcBonusTime;
-    }
-
-    public boolean isHasCaptcha() {
-        return hasCaptcha;
-    }
-
-    public void setHasCaptcha(boolean hasCaptcha) {
-        this.hasCaptcha = hasCaptcha;
     }
 
     private int getRPBonusCountDown(Document doc) {
@@ -97,10 +71,12 @@ public class ProfileView implements Serializable {
             for (DataNode dataNode : dataNodes){
                 String data = dataNode.getWholeData();
                 if(data.contains("free_points")){
-                    Pattern pattern = Pattern.compile("[0-9]*.\\)");
+                    Pattern pattern = Pattern.compile("\"free_points\",[0-9]*");
                     Matcher matcher = pattern.matcher(data);
                     if(matcher.find()){
-                        return Integer.parseInt(matcher.group().substring(0, matcher.group().length()-1));
+                        String findText = matcher.group();
+                        findText = findText.replace("\"free_points\",", "");
+                        return Integer.parseInt(findText);
                     }
                 }
             }
@@ -115,10 +91,12 @@ public class ProfileView implements Serializable {
             for (DataNode dataNode : dataNodes){
                 String data = dataNode.getWholeData();
                 if(data.contains("fp_bonus")){
-                    Pattern pattern = Pattern.compile("[0-9]*.\\)");
+                    Pattern pattern = Pattern.compile("\"fp_bonus\",[0-9]*");
                     Matcher matcher = pattern.matcher(data);
                     if(matcher.find()){
-                        return Integer.parseInt(matcher.group().substring(0, matcher.group().length()-1));
+                        String findText = matcher.group();
+                        findText = findText.replace("\"fp_bonus\",", "");
+                        return Integer.parseInt(findText);
                     }
                 }
             }

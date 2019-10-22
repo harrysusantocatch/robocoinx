@@ -1,4 +1,4 @@
-package com.example.robocoinx.model;
+package com.example.robocoinx.model.response;
 
 public class RollSuccessResponse {
 

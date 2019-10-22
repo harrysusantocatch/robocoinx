@@ -4,10 +4,10 @@ import android.content.Context;
 import android.content.res.Resources;
 
 import com.example.robocoinx.R;
-import com.example.robocoinx.model.ProfileView;
-import com.example.robocoinx.model.RollAttribute;
-import com.example.robocoinx.model.RollErrorResponse;
-import com.example.robocoinx.model.RollSuccessResponse;
+import com.example.robocoinx.model.view.ProfileView;
+import com.example.robocoinx.model.request.RollAttribute;
+import com.example.robocoinx.model.response.RollErrorResponse;
+import com.example.robocoinx.model.response.RollSuccessResponse;
 import com.example.robocoinx.model.StaticValues;
 import com.example.robocoinx.model.UserCache;
 import com.google.gson.Gson;
@@ -214,12 +214,12 @@ public class RoboHandler {
                     .method(Connection.Method.POST)
                     .data("csrf_token", csrfToken)
                     .data("op", StaticValues.OP)
-                    .data("fingerprint", rollAttribute.getFingerprint())
-                    .data("client_seed", rollAttribute.getClientSeed())
-                    .data("fingerprint2", rollAttribute.getFingerprint2())
-                    .data("pwc", rollAttribute.getPwc())
-                    .data(rollAttribute.getTokenName(), rollAttribute.getTokenValue())
-                    .data(rollAttribute.getLastParam(), rollAttribute.getLastParamValue())
+                    .data("fingerprint", rollAttribute.fingerprint)
+                    .data("client_seed", rollAttribute.clientSeed)
+                    .data("fingerprint2", rollAttribute.fingerprint2)
+                    .data("pwc", rollAttribute.pwc)
+                    .data(rollAttribute.tokenName, rollAttribute.tokenValue)
+                    .data(rollAttribute.lastParam, rollAttribute.lastParamValue)
                     .data("g_recaptcha_response", "")
                     .cookies(cookies)
                     .execute();

@@ -1,4 +1,4 @@
-package com.example.robocoinx.model;
+package com.example.robocoinx.model.db;
 
 import java.util.Date;
 

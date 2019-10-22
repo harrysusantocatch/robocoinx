@@ -15,9 +15,8 @@ import android.widget.Toast;
 import androidx.appcompat.app.AppCompatActivity;
 
 import com.example.robocoinx.R;
-import com.example.robocoinx.logic.FileManager;
 import com.example.robocoinx.logic.RoboHandler;
-import com.example.robocoinx.model.ProfileView;
+import com.example.robocoinx.model.view.ProfileView;
 import com.example.robocoinx.model.StaticValues;
 
 import java.util.Objects;
