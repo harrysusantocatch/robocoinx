@@ -7,14 +7,15 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
+import java.io.Serializable;
 import java.util.List;
 
-public class SignupRequest {
+public class SignupRequest implements Serializable {
     public String op;
     public String btcAddress;
     public String password;
     public String email;
-    public String fingerprint; // todo
+    public String fingerprint;
     public String referrer;
     public String tag;
     public String token;
@@ -22,6 +23,8 @@ public class SignupRequest {
     public SignupRequest(Document doc){
         op = StaticValues.OP_SIGNUP;
         token = getToken(doc);
+        fingerprint = ""; // todo
+        referrer = ""; // todo
     }
 
     private String getToken(Document doc) {

@@ -93,9 +93,10 @@ public class SplashActivity extends AppCompatActivity {
         }
 
         private void goToLogin() {
-            String csrfToken = RoboHandler.getCsrfToken(getApplicationContext());
-            if(csrfToken != null) {
+            SignupRequest signupRequest = RoboHandler.getSignUpRequest(getApplicationContext());
+            if(signupRequest != null) {
                 Intent intent = new Intent(getBaseContext(), LoginActivity.class);
+                intent.putExtra(StaticValues.SIGNUP_REQ, signupRequest);
                 startActivity(intent);
             }else {
                 runOnUiThread(() -> {

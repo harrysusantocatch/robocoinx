@@ -56,23 +56,24 @@ public class RoboHandler {
     }
 
     private static Map<String, String> baseCookies;
-    private static Map<String, String> getBaseCookies(){
-        if(baseCookies == null) {
-            if(getFirstResponse() != null) {
-                baseCookies = getFirstResponse().cookies();
-            }
-        }
-        return baseCookies;
-    }
 
     private static String csrfToken;
-    public static String getCsrfToken(Context context){
-        if(csrfToken == null){
-            csrfToken = getBaseCookies().get("csrf_token");
-            FileManager.getInstance().writeFile(context, StaticValues.CSRF_TOKEN, csrfToken);
 
+    public static SignupRequest getSignUpRequest(Context context) {
+        Connection.Response firstResponse = getFirstResponse();
+        if(firstResponse == null) return null;
+        baseCookies = firstResponse.cookies();
+        csrfToken = baseCookies.get("csrf_token");
+        FileManager.getInstance().writeFile(context, StaticValues.CSRF_TOKEN, csrfToken);
+        try {
+            Document document = firstResponse.parse();
+            SignupRequest signupRequest = new SignupRequest(document);
+            return signupRequest;
+        } catch (IOException e) {
+            e.printStackTrace();
+            FileManager.getInstance().appendLog(e);
+            return null;
         }
-        return csrfToken;
     }
 
     private static Connection.Response getLoginResponse(String email, String password){
@@ -96,7 +97,7 @@ public class RoboHandler {
                     .data("btc_address", email)
                     .data("password", password)
                     .data("tfa_code", "")
-                    .cookies(getBaseCookies())
+                    .cookies(baseCookies)
                     .execute();
         } catch (IOException e) {
             FileManager.getInstance().appendLog(e);
@@ -459,7 +460,7 @@ public class RoboHandler {
                     .data("referrer", request.referrer)
                     .data("tag", request.tag)
                     .data("token", request.token)
-                    .cookies(getBaseCookies())
+                    .cookies(baseCookies)
                     .execute();
         } catch (IOException e) {
             FileManager.getInstance().appendLog(e);

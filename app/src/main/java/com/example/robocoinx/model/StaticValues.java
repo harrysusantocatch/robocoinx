@@ -7,6 +7,9 @@ public class StaticValues {
     public static final String ERROR_GENERAL = "General Error";
     public static final String NOTIFICATION_ROLL = "notification_roll";
     public static final String OP_SIGNUP = "signup_new";
+    public static final String SIGNUP_REQ = "signup_req";
+    public static final String STATE_LOGIN = "login";
+    public static final String STATE_SIGNUP = "signup";
     public static String URL_KEY_B = "aHR0cHM6Ly9mcmVlYml0Y28uaW4v";
     public static String URL_KEY_H = "aHR0cHM6Ly9mcmVlYml0Y28uaW4vP29wPWhvbWU=";
     public static String URL_KEY_S = "aHR0cHM6Ly9mcmVlYml0Y28uaW4vP29wPXNpZ251cF9wYWdl";
