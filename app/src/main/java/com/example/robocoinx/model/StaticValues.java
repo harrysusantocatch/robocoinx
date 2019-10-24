@@ -10,6 +10,15 @@ public class StaticValues {
     public static final String SIGNUP_REQ = "signup_req";
     public static final String STATE_LOGIN = "login";
     public static final String STATE_SIGNUP = "signup";
+    public static final String LAST_DATE = "last_play_date";
+    public static final String FP100 = "free_points_100";
+    public static final String FP50 = "free_points_50";
+    public static final String FP25 = "free_points_25";
+    public static final String FP10 = "free_points_10";
+    public static final String FP1 = "free_points_1";
+    public static final String FB_50 = "fp_bonus_50";
+    public static final String FB_100 = "fp_bonus_100";
+    public static final String FB_500 = "fp_bonus_500";
     public static String URL_KEY_B = "aHR0cHM6Ly9mcmVlYml0Y28uaW4v";
     public static String URL_KEY_H = "aHR0cHM6Ly9mcmVlYml0Y28uaW4vP29wPWhvbWU=";
     public static String URL_KEY_S = "aHR0cHM6Ly9mcmVlYml0Y28uaW4vP29wPXNpZ251cF9wYWdl";
@@ -27,4 +36,14 @@ public class StaticValues {
     public static final String CREATE_SERVICE = "create_service";
     public static final String BOOT_COMPLETED = "android.intent.action.BOOT_COMPLETED";
     public static int TIMEOUT = 100000;
+    public static final int POINT_1600 = 1600;
+    public static final int POINT_1200 = 1200;
+    public static final int POINT_800 = 800;
+    public static final int POINT_600 = 600;
+    public static final int POINT_400 = 400;
+    public static final int POINT_320 = 320;
+    public static final int POINT_300 = 300;
+    public static final int POINT_160 = 160;
+    public static final int POINT_120 = 120;
+    public static final int POINT_12 = 12;
 }

@@ -63,6 +63,13 @@ public class FileManager {
         return true;
     }
 
+    public void InsertOrUpdate(Context context, String filename, String content){
+        if(fileExists(context, filename)){
+            boolean success = delete(context, filename);
+        }
+        writeFile(context, filename, content);
+    }
+
     public void appendLog(Exception ex)
     {
         File folder = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS);

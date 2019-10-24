@@ -125,7 +125,7 @@ public class NotificationRoll {
         manager.notify(0, builder.build());
     }
 
-    public static void executeMainTask(Context context) {
+    public static void executeMainTask(Context context, Calendar calendar) {
         new Thread(() -> {
             try {
                 interval = 3600000;
@@ -138,23 +138,29 @@ public class NotificationRoll {
                     ClaimHistoryHandler.getInstance(context).insert(currentTime, claim, balance);
                     startNotificationListener(context);
                     FileManager.getInstance().appendLog("claim success");
+                    FileManager.getInstance().InsertOrUpdate(context, StaticValues.LAST_DATE, String.valueOf(System.currentTimeMillis()));
                 }else if(obj instanceof RollErrorResponse){
                     RollErrorResponse err = (RollErrorResponse) obj;
                     interval = (err.countDown) * 1000;
+                    if(interval/60000 > 59){
+                        interval = 30000;
+                        FileManager.getInstance().appendLog("claim wait "+ interval/1000 + " seconds");
+                    }else {
+                        FileManager.getInstance().appendLog("claim wait "+ (interval/60000) + " minutes");
+                    }
                     restartNotificationListener(context);
-                    FileManager.getInstance().appendLog("claim wait "+(interval/60000)+ " minutes");
+
                 }else {
                     interval = 30000;
                     FileManager.getInstance().appendLog("claim wait "+(interval/1000)+" seconds");
                 }
             } catch (Exception e){
-                FileManager.getInstance().appendLog("claim wait "+(interval/1000)+" seconds with error!");
                 interval = 30000;
+                FileManager.getInstance().appendLog("claim wait "+(interval/1000)+" seconds with error!");
                 FileManager.getInstance().appendLog(e);
             }
             finally {
                 if(alarmManager != null) alarmManager.cancel(pendingIntent);
-                Calendar calendar = Calendar.getInstance();
                 calendar.setTimeInMillis(System.currentTimeMillis()+ interval);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);

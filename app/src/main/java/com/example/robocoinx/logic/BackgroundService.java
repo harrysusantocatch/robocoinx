@@ -4,6 +4,8 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
+import java.util.Calendar;
+
 public class BackgroundService extends Service {
 
     public BackgroundService() {
@@ -18,7 +20,7 @@ public class BackgroundService extends Service {
     @Override
     public void onCreate() {
         new NotificationRoll(getApplicationContext());
-        NotificationRoll.executeMainTask(getApplicationContext());
+        NotificationRoll.executeMainTask(getApplicationContext(), Calendar.getInstance());
         FileManager.getInstance().appendLog("start service & execute main task");
         super.onCreate();
     }

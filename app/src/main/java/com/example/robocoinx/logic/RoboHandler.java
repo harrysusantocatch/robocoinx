@@ -323,8 +323,19 @@ public class RoboHandler {
             if(homeResponse == null) return StaticValues.ERROR_GENERAL;
             updateCsrfToken(context, homeResponse);
             Document doc = homeResponse.parse();
-            int nextRollTime = getNextRollTime(doc);
-            if(nextRollTime > 0) return new RollErrorResponse("",nextRollTime);
+            ProfileView pp = new ProfileView(doc);
+            if(pp.nextRollTime > 0) return new RollErrorResponse("",pp.nextRollTime);
+            if(pp.rpBonusTime == 0){
+                RedeemRP redeem = new RedeemRP(pp);
+                if(redeem.idP != null){
+                    // TODO
+
+                }
+                if(redeem.idB != null){
+                    // TODO
+
+                }
+            }
             RollRequest rollRequest = new RollRequest(doc);
             cookies.put("csrf_token", csrfToken);
             cookies.put("__cfduid", homeResponse.cookie("__cfduid"));
@@ -419,6 +430,27 @@ public class RoboHandler {
         Connection.Response response = null;
         try {
             response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_LT)+"&csrf_token="+csrfToken)
+                    .userAgent(StaticValues.USER_AGENT)
+                    .referrer(CryptEx.toBaseDecode(StaticValues.URL_KEY_H))
+                    .header("Accept", "*/*")
+                    .header("x-csrf-token", csrfToken)
+                    .header("x-requested-with", "XMLHttpRequest")
+                    .header("sec-fetch-mode", "cors")
+                    .header("sec-fetch-site", "same-origin")
+                    .timeout(StaticValues.TIMEOUT)
+                    .method(Connection.Method.GET)
+                    .cookies(cookies)
+                    .execute();
+        } catch (IOException e) {
+            FileManager.getInstance().appendLog(e);
+        }
+        return  response;
+    }
+
+    private static Connection.Response getRedeemRPResponse(Map<String, String> cookies, RedeemRP redeem){
+        Connection.Response response = null;
+        try {
+            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_A)+"?op=redeem_rewards&id=" + redeem.idB + "&points=" + redeem.pointB)
                     .userAgent(StaticValues.USER_AGENT)
                     .referrer(CryptEx.toBaseDecode(StaticValues.URL_KEY_H))
                     .header("Accept", "*/*")
