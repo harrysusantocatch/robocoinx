@@ -325,20 +325,30 @@ public class RoboHandler {
             Document doc = homeResponse.parse();
             ProfileView pp = new ProfileView(doc);
             if(pp.nextRollTime > 0) return new RollErrorResponse("",pp.nextRollTime);
+
+            cookies.put("csrf_token", csrfToken);
+            cookies.put("__cfduid", homeResponse.cookie("__cfduid"));
+
             if(pp.rpBonusTime == 0){
                 RedeemRP redeem = new RedeemRP(pp);
                 if(redeem.idP != null){
-                    // TODO
-
+                    Connection.Response redeemResponse = getRedeemRPResponse(cookies, redeem.idP, redeem.pointP);
+                    if (redeemResponse != null){
+                        Document document = redeemResponse.parse();
+                        String content = document.body().html();
+                        FileManager.getInstance().appendLog("redeem poin: "+content);
+                    }
                 }
                 if(redeem.idB != null){
-                    // TODO
-
+                    Connection.Response redeemResponse = getRedeemRPResponse(cookies, redeem.idB, redeem.pointB);
+                    if (redeemResponse != null){
+                        Document document = redeemResponse.parse();
+                        String content = document.body().html();
+                        FileManager.getInstance().appendLog("redeem poin: "+content);
+                    }
                 }
             }
             RollRequest rollRequest = new RollRequest(doc);
-            cookies.put("csrf_token", csrfToken);
-            cookies.put("__cfduid", homeResponse.cookie("__cfduid"));
             Connection.Response rollResponse = getRollResponse(cookies, rollRequest);
             if (rollResponse == null) return StaticValues.ERROR_GENERAL;
             Document docRoll = rollResponse.parse();
@@ -447,10 +457,10 @@ public class RoboHandler {
         return  response;
     }
 
-    private static Connection.Response getRedeemRPResponse(Map<String, String> cookies, RedeemRP redeem){
+    private static Connection.Response getRedeemRPResponse(Map<String, String> cookies, String id, String point){
         Connection.Response response = null;
         try {
-            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_A)+"?op=redeem_rewards&id=" + redeem.idB + "&points=" + redeem.pointB)
+            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_A)+"?op=redeem_rewards&id=" + id + "&points=" + point)
                     .userAgent(StaticValues.USER_AGENT)
                     .referrer(CryptEx.toBaseDecode(StaticValues.URL_KEY_H))
                     .header("Accept", "*/*")

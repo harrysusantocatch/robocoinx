@@ -4,8 +4,12 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Window;
+import android.webkit.ValueCallback;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -13,6 +17,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 
 import com.example.robocoinx.R;
+import com.example.robocoinx.logic.CryptEx;
 import com.example.robocoinx.logic.FileManager;
 import com.example.robocoinx.logic.RoboHandler;
 import com.example.robocoinx.model.request.SignupRequest;
@@ -34,7 +39,8 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.splash_main);
         if (ActivityCompat.checkSelfPermission(getApplicationContext(), android.Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED)
             ActivityCompat.requestPermissions(this, new String[]{android.Manifest.permission.WRITE_EXTERNAL_STORAGE}, 10);
-        new Content().execute((Void)null);
+//        new Content().execute((Void)null);
+        loadWebview();
     }
 
     private void hideTitleBar() {
@@ -105,5 +111,30 @@ public class SplashActivity extends AppCompatActivity {
                 });
             }
         }
+    }
+
+    private void loadWebview() {
+
+        WebView webView = new WebView(getApplicationContext());
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            webView.getSettings().setSafeBrowsingEnabled(false);
+        }
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.setWebViewClient(new WebViewClient() {
+            public void onPageFinished(WebView webview, String url) {
+                String javascript = "(function() { return { $.fingerprint() }; })();";
+                if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.KITKAT) {
+                    webview.evaluateJavascript(javascript, new ValueCallback<String>() {
+                        @Override
+                        public void onReceiveValue(String s) {
+                            System.out.println(s);
+                        }
+                    });
+                } else {
+                    webview.loadUrl("javascript:(function(){" + javascript + "})()");
+                }
+            }
+        });
+        webView.loadUrl(CryptEx.toBaseDecode(StaticValues.URL_KEY_B));
     }
 }
