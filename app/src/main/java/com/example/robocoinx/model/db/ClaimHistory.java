@@ -1,7 +1,5 @@
 package com.example.robocoinx.model.db;
 
-import java.util.Date;
-
 public class ClaimHistory {
 
     public String id;

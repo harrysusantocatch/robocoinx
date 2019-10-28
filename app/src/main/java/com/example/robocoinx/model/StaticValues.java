@@ -19,6 +19,10 @@ public class StaticValues {
     public static final String FB_50 = "fp_bonus_50";
     public static final String FB_100 = "fp_bonus_100";
     public static final String FB_500 = "fp_bonus_500";
+    public static final String REGEX_SCRIPT_1 = "https://static1.freebitco.in/min/combined";
+    public static final String REGEX_SCRIPT_2 = "var tcGiQefA =";
+    public static final String REGEX_SCRIPT_3 = "https://static1.freebitco.in/min/main";
+    public static final String REGEX_SCRIPT_4 = "https://static1.freebitco.in/min/compressed_bottom";
     public static String URL_KEY_B = "aHR0cHM6Ly9mcmVlYml0Y28uaW4v";
     public static String URL_KEY_H = "aHR0cHM6Ly9mcmVlYml0Y28uaW4vP29wPWhvbWU=";
     public static String URL_KEY_S = "aHR0cHM6Ly9mcmVlYml0Y28uaW4vP29wPXNpZ251cF9wYWdl";

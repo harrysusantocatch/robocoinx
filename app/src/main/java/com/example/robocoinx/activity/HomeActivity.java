@@ -163,23 +163,23 @@ public class HomeActivity extends AppCompatActivity {
                 }.start();
 
                 // table
-                String currentTime = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date());
-                ArrayList<ClaimHistory> claimHistories = ClaimHistoryHandler.getInstance(getApplicationContext()).getClaimHistories();
-                for (ClaimHistory cl: claimHistories) {
-                    TableRow row= new TableRow(getApplicationContext());
-                    TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT);
-                    row.setLayoutParams(lp);
-                    TextView t1 = new TextView(getApplicationContext());
-                    TextView t2 = new TextView(getApplicationContext());
-                    TextView t3 = new TextView(getApplicationContext());
-                    t1.setText("  "+cl.date);
-                    t2.setText("  "+cl.claim);
-                    t3.setText("  "+cl.balance);
-                    row.addView(t1);
-                    row.addView(t2);
-                    row.addView(t3);
-                    tableLayout.addView(row);
-                }
+//                String currentTime = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date());
+//                ArrayList<ClaimHistory> claimHistories = ClaimHistoryHandler.getInstance(getApplicationContext()).getClaimHistories();
+//                for (ClaimHistory cl: claimHistories) {
+//                    TableRow row= new TableRow(getApplicationContext());
+//                    TableRow.LayoutParams lp = new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT);
+//                    row.setLayoutParams(lp);
+//                    TextView t1 = new TextView(getApplicationContext());
+//                    TextView t2 = new TextView(getApplicationContext());
+//                    TextView t3 = new TextView(getApplicationContext());
+//                    t1.setText("  "+cl.date);
+//                    t2.setText("  "+cl.claim);
+//                    t3.setText("  "+cl.balance);
+//                    row.addView(t1);
+//                    row.addView(t2);
+//                    row.addView(t3);
+//                    tableLayout.addView(row);
+//                }
             }
         });
     }

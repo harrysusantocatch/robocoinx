@@ -19,10 +19,12 @@ public class SignupRequest implements Serializable {
     public String referrer;
     public String tag;
     public String token;
+    public String script;
 
-    public SignupRequest(Document doc){
+    public SignupRequest(Document doc, String sc){
         op = StaticValues.OP_SIGNUP;
         token = getToken(doc);
+        script = sc;
         fingerprint = ""; // todo
         referrer = ""; // todo
     }

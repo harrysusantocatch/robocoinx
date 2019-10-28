@@ -67,13 +67,29 @@ public class RoboHandler {
         FileManager.getInstance().writeFile(context, StaticValues.CSRF_TOKEN, csrfToken);
         try {
             Document document = firstResponse.parse();
-            SignupRequest signupRequest = new SignupRequest(document);
+            String script = updateScript(document);
+            SignupRequest signupRequest = new SignupRequest(document, script);
             return signupRequest;
         } catch (IOException e) {
             e.printStackTrace();
             FileManager.getInstance().appendLog(e);
             return null;
         }
+    }
+
+    private static String updateScript(Document document) {
+        StringBuilder stringBuilder = new StringBuilder();
+        Elements scripts = document.getElementsByTag("script");
+        for (Element script: scripts) {
+            String scriptData = script.toString();
+            if(scriptData.contains(StaticValues.REGEX_SCRIPT_1) ||
+                    scriptData.contains(StaticValues.REGEX_SCRIPT_2) ||
+                    scriptData.contains(StaticValues.REGEX_SCRIPT_3) ||
+                    scriptData.contains(StaticValues.REGEX_SCRIPT_4)){
+                stringBuilder.append(scriptData).append(System.lineSeparator());
+            }
+        }
+        return  stringBuilder.toString();
     }
 
     private static Connection.Response getLoginResponse(String email, String password){
