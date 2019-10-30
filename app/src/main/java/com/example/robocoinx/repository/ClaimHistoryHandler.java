@@ -1,4 +1,4 @@
-package com.example.robocoinx.logic;
+package com.example.robocoinx.repository;
 
 import android.content.ContentValues;
 import android.content.Context;

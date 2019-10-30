@@ -1,6 +1,6 @@
 package com.example.robocoinx.model.request;
 
-import com.example.robocoinx.model.StaticValues;
+import com.example.robocoinx.utils.StaticValues;
 
 import org.jsoup.nodes.DataNode;
 import org.jsoup.nodes.Document;

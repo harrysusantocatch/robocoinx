@@ -8,23 +8,20 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.os.Handler;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TableLayout;
-import android.widget.TableRow;
 import android.widget.TextView;
 
 import com.example.robocoinx.R;
-import com.example.robocoinx.logic.BackgroundService;
-import com.example.robocoinx.logic.FileManager;
-import com.example.robocoinx.model.db.ClaimHistory;
-import com.example.robocoinx.logic.ClaimHistoryHandler;
+import com.example.robocoinx.model.db.Fingerprint;
+import com.example.robocoinx.service.BackgroundService;
+import com.example.robocoinx.utils.CacheContext;
+import com.example.robocoinx.utils.FileManager;
 import com.example.robocoinx.model.view.ProfileView;
-import com.example.robocoinx.model.StaticValues;
+import com.example.robocoinx.utils.StaticValues;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.Locale;
 import java.util.concurrent.TimeUnit;
 
@@ -37,6 +34,8 @@ public class HomeActivity extends AppCompatActivity {
     private TextView btcBonus;
     private TextView userID;
     private TextView status;
+    private TextView fp1;
+    private TextView fp2;
     private TableLayout tableLayout;
 
     @Override
@@ -65,8 +64,11 @@ public class HomeActivity extends AppCompatActivity {
         rpBonus = findViewById(R.id.textViewRPBonus);
         btcBonus = findViewById(R.id.textViewBTCBonus);
         status = findViewById(R.id.textViewService);
+        fp1 = findViewById(R.id.textViewFP1);
+        fp2 = findViewById(R.id.textViewFP2);
         Button btnStart = findViewById(R.id.buttonStart);
         Button btnStop = findViewById(R.id.buttonStop);
+        Button btnHistory = findViewById(R.id.buttonHistory);
 
         ProfileView pp = (ProfileView) getIntent().getSerializableExtra(StaticValues.PROFILE_VIEW);
         if(pp != null) {
@@ -80,6 +82,7 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getBaseContext(), BackgroundService.class);
                 startService(intent);
+                status.setText("RUNNING");
             }
         });
 
@@ -88,9 +91,17 @@ public class HomeActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent intent = new Intent(getBaseContext(), BackgroundService.class);
                 stopService(intent);
+                status.setText("STOP");
             }
         });
 
+        btnHistory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getBaseContext(), HistoryActivity.class);
+                startActivity(intent);
+            }
+        });
         boolean running = isMyServiceRunning(BackgroundService.class);
         if(running) status.setText("RUNNING");
     }
@@ -162,6 +173,10 @@ public class HomeActivity extends AppCompatActivity {
                     }
                 }.start();
 
+
+                Fingerprint fingerprint = new CacheContext<>(Fingerprint.class, getApplicationContext()).get(StaticValues.FINGERPRINT);
+                fp1.setText(fingerprint.fingerprint1);
+                fp2.setText(fingerprint.fingerprint2);
                 // table
 //                String currentTime = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date());
 //                ArrayList<ClaimHistory> claimHistories = ClaimHistoryHandler.getInstance(getApplicationContext()).getClaimHistories();

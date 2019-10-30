@@ -1,4 +1,4 @@
-package com.example.robocoinx.model;
+package com.example.robocoinx.utils;
 
 public class StaticValues {
 
@@ -23,6 +23,8 @@ public class StaticValues {
     public static final String REGEX_SCRIPT_2 = "var tcGiQefA =";
     public static final String REGEX_SCRIPT_3 = "https://static1.freebitco.in/min/main";
     public static final String REGEX_SCRIPT_4 = "https://static1.freebitco.in/min/compressed_bottom";
+    public static final String CACHE = "CACHE";
+    public static final String FINGERPRINT = "FINGERPRINT";
     public static String URL_KEY_B = "aHR0cHM6Ly9mcmVlYml0Y28uaW4v";
     public static String URL_KEY_H = "aHR0cHM6Ly9mcmVlYml0Y28uaW4vP29wPWhvbWU=";
     public static String URL_KEY_S = "aHR0cHM6Ly9mcmVlYml0Y28uaW4vP29wPXNpZ251cF9wYWdl";

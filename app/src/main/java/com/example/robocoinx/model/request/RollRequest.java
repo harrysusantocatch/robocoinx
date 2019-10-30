@@ -1,11 +1,9 @@
 package com.example.robocoinx.model.request;
 
-import android.content.Context;
-
-import com.example.robocoinx.logic.CryptEx;
-import com.example.robocoinx.logic.FileManager;
-import com.example.robocoinx.logic.RoboHandler;
-import com.example.robocoinx.model.StaticValues;
+import com.example.robocoinx.utils.CryptEx;
+import com.example.robocoinx.utils.RoboBrowser;
+import com.example.robocoinx.utils.RoboHandler;
+import com.example.robocoinx.utils.StaticValues;
 
 import org.jsoup.Connection;
 import org.jsoup.nodes.DataNode;
@@ -14,8 +12,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class RollRequest {
     public String op;
@@ -77,7 +73,7 @@ public class RollRequest {
 
     public String getLastParamValue() {
         if(lastParamValue == null){
-            Connection.Response lastParamValueResponse = RoboHandler.getLastParamValueResponse(lastParam);
+            Connection.Response lastParamValueResponse = RoboBrowser.getLastParamValueResponse(lastParam);
             lastParamValue = CryptEx.getSha256Hex(lastParamValueResponse.body());
         }
         return lastParamValue;

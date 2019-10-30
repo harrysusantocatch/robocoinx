@@ -1,0 +1,20 @@
+<html>
+<head>
+</head>
+<body>
+<input type="button" value="Get Fingerprint" onClick="getDataFingerprint()" />
+
+<script type="text/javascript">
+    function getDataFingerprint() {
+    var idx = new Fingerprint({canvas: true, screen_resolution: true, ie_activex: true }).get();
+    var result = idx +":"+fingerprint
+        if(typeof Android !== "undefined" && Android !== null) {
+            Android.getFingerprint(result);
+        } else {
+            Android.getFingerprint("error");
+        }
+    }
+</script>
+[code]
+</body>
+</html>

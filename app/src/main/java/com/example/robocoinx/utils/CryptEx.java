@@ -1,4 +1,4 @@
-package com.example.robocoinx.logic;
+package com.example.robocoinx.utils;
 
 import android.util.Base64;
 

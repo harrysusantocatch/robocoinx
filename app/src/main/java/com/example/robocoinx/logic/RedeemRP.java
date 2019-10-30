@@ -1,6 +1,6 @@
 package com.example.robocoinx.logic;
 
-import com.example.robocoinx.model.StaticValues;
+import com.example.robocoinx.utils.StaticValues;
 import com.example.robocoinx.model.view.ProfileView;
 
 public class RedeemRP {

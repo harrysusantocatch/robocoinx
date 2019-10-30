@@ -1,9 +1,11 @@
-package com.example.robocoinx.logic;
+package com.example.robocoinx.service;
 
 import android.content.Context;
 import android.content.Intent;
 
-import com.example.robocoinx.model.StaticValues;
+import com.example.robocoinx.utils.FileManager;
+import com.example.robocoinx.logic.NotificationRoll;
+import com.example.robocoinx.utils.StaticValues;
 
 import java.util.Calendar;
 import java.util.Objects;
