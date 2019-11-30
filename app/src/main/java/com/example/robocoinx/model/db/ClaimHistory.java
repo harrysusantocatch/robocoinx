@@ -6,4 +6,11 @@ public class ClaimHistory {
     public String date;
     public String claim;
     public String balance;
+    public TransactionType type;
+    public String name;
+
+    public enum TransactionType{
+        withdrawal, receive, deposit
+    }
+
 }

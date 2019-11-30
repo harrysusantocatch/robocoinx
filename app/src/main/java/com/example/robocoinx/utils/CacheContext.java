@@ -33,4 +33,8 @@ public class CacheContext<T> {
         return t;
     }
 
+    public void clear(String cacheName){
+        SharedPreferences preferences = ctx.getSharedPreferences(cacheName, Context.MODE_PRIVATE);
+        preferences.edit().apply();
+    }
 }

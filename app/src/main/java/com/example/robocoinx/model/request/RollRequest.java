@@ -1,8 +1,11 @@
 package com.example.robocoinx.model.request;
 
+import android.content.Context;
+
+import com.example.robocoinx.model.db.Fingerprint;
+import com.example.robocoinx.utils.CacheContext;
 import com.example.robocoinx.utils.CryptEx;
 import com.example.robocoinx.utils.RoboBrowser;
-import com.example.robocoinx.utils.RoboHandler;
 import com.example.robocoinx.utils.StaticValues;
 
 import org.jsoup.Connection;
@@ -23,14 +26,15 @@ public class RollRequest {
     public String tokenValue;
     public String lastParam;
     public String lastParamValue;
+    public String gReCaptchaResponse;
 
-    public RollRequest(Document doc){
-
+    public RollRequest(Context ctx, Document doc, boolean haveCaptcha){
+        Fingerprint f = new CacheContext<>(Fingerprint.class, ctx)
+                .get(StaticValues.FINGERPRINT);
         op = StaticValues.OP;
-        fingerprint = "3a9c7c414c5b85342084560cf69eec93"; // TODO
-        fingerprint2 = "1457546166"; // TODO
+        fingerprint = f.fingerprint1;
+        fingerprint2 = f.fingerprint2;
         clientSeed = getClientSeed();
-        pwc = "1"; // TODO
         Elements scripts = doc.getElementsByTag("script");
         for (Element script: scripts) {
             List<DataNode> dataNodes = script.dataNodes();
@@ -56,22 +60,35 @@ public class RollRequest {
             }
         }
         lastParamValue = getLastParamValue();
+        if (haveCaptcha) {
+            pwc = "0";
+            gReCaptchaResponse = getCaptchaResponse();
+        }
+        else {
+            pwc = "1";
+            gReCaptchaResponse = "";
+        }
     }
 
-    public String getClientSeed() {
+    private String getCaptchaResponse() {
+        // TODO
+        return "";
+    }
+
+    private String getClientSeed() {
         if(clientSeed == null){
             String charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-            String randomString = "";
+            StringBuilder randomString = new StringBuilder();
             for (int i = 0; i < 16; i++) {
                 int randomPoz = (int) Math.floor(Math.random() * charSet.length());
-                randomString += charSet.substring(randomPoz, randomPoz + 1);
+                randomString.append(charSet.substring(randomPoz, randomPoz + 1));
             }
-            clientSeed = randomString;
+            clientSeed = randomString.toString();
         }
         return clientSeed;
     }
 
-    public String getLastParamValue() {
+    private String getLastParamValue() {
         if(lastParamValue == null){
             Connection.Response lastParamValueResponse = RoboBrowser.getLastParamValueResponse(lastParam);
             lastParamValue = CryptEx.getSha256Hex(lastParamValueResponse.body());

@@ -1,8 +1,32 @@
 <resources>
     <string name="app_name">robocoinx</string>
-    <string name="label_email">email</string>
-    <string name="label_password">password</string>
+    <string name="label_email">Email</string>
+    <string name="label_password">Password</string>
     <string name="label_login">Login</string>
-    <string name="label_signup">Sign Up</string>
+    <string name="label_sign_up">Sign Up</string>
     <string name="label_forgot_pass">Forgot Password?</string>
+
+    <string name="finish">FINISH</string>
+    <string name="start">START</string>
+    <string name="stop">STOP</string>
+    <string name="running">RUNNING</string>
+    <string name="running_dot">Running...</string>
+    <string name="stop_count_hour">00:00</string>
+    <string name="stop_count_day">00:00:00</string>
+
+    <string name="already_account">Already account?</string>
+    <string name="no_account">No account yet?</string>
+
+    <string name="header_date">Date</string>
+    <string name="header_amount">Amount</string>
+    <string name="header_balance">Balance</string>
+    <string name="account">Account Overview</string>
+    <string name="current_balance">Current balance</string>
+    <string name="rp_time">Reward Time:</string>
+    <string name="bonus_time">Bonus Time:</string>
+    <string name="next_bitcoin">Next Bitcoin:</string>
+    <string name="transaction_name">Transaction name</string>
+    <string name="sample_date">20 sept 17 10:11:11</string>
+    <string name="sample_amount">0.00004567</string>
+    <string name="transaction_history">Transaction History</string>
 </resources>

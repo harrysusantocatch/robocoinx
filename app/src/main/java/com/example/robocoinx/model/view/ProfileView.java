@@ -22,7 +22,7 @@ public class ProfileView implements Serializable {
     public int btcBonusTime;
     public boolean disableLottery;
     public boolean enableInterest;
-    public boolean hasCaptcha;
+    public boolean haveCaptcha;
 
     public ProfileView(Document doc) {
         userID = getUserID(doc);
@@ -33,6 +33,29 @@ public class ProfileView implements Serializable {
         btcBonusTime = getBTCBonusCountDown(doc);
         disableLottery = getDisableLottery(doc);
         enableInterest = getEnableInterest(doc);
+        haveCaptcha = getCaptchaFlag(doc);
+    }
+
+    private boolean getCaptchaFlag(Document doc) {
+        Elements scripts = doc.getElementsByTag("script");
+        for (Element script: scripts) {
+            List<DataNode> dataNodes = script.dataNodes();
+            for (DataNode dataNode : dataNodes){
+                String data = dataNode.getWholeData();
+                if(data.contains("captcha_type")){
+                    String[] dataSplit = data.split(";");
+                    for (String datas : dataSplit) {
+                        if(datas.contains("captcha_type")){
+                            String[] tokenNameSplit = datas.split(" ");
+                            String findText = tokenNameSplit[3].replace("'", "");
+                            if(findText.equalsIgnoreCase("11"))
+                            return true;
+                        }
+                    }
+                }
+            }
+        }
+        return false;
     }
 
     private boolean getEnableInterest(Document doc) {
@@ -57,7 +80,7 @@ public class ProfileView implements Serializable {
         return false;
     }
 
-    public String getUserID(Document doc) {
+    private String getUserID(Document doc) {
         Elements elUserID = doc.getElementsByClass("left bold");
         return elUserID.text();
     }
@@ -119,7 +142,7 @@ public class ProfileView implements Serializable {
             for (DataNode dataNode : dataNodes){
                 String data = dataNode.getWholeData();
                 if(data.contains("#time_remaining")){
-                    String matcher = extractCountDownRollTime(data, "#time_remaining");
+                    String matcher = extractCountDownRollTime(data);
                     if (matcher != null) return (Integer.parseInt(matcher));
                 }
             }
@@ -127,10 +150,10 @@ public class ProfileView implements Serializable {
         return 0;
     }
 
-    private String extractCountDownRollTime(String data, String regex) {
-        String[] array = data.split(regex);
+    private String extractCountDownRollTime(String data) {
+        String[] array = data.split("#time_remaining");
         String input = array[1];
-        Pattern pattern = Pattern.compile("\\+.[0-9]*.\\,");
+        Pattern pattern = Pattern.compile("\\+.[0-9]*.,");
         Matcher matcher = pattern.matcher(input);
         if(matcher.find()){
             return matcher.group().substring(1, matcher.group().length()-1);

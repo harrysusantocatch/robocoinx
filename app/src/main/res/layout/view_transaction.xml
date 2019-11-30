@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/contentTransaction"
+     android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginBottom="5dp"
+        android:paddingBottom="10dp"
+        android:background="@drawable/button_radius_white">
+
+        <ImageButton
+            android:id="@+id/imgTransaction"
+            android:layout_width="40dp"
+            android:layout_height="35dp"
+            android:src="@drawable/ic_right"
+            android:background="@drawable/small_button_green"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <TextView
+            android:id="@+id/labelTransactionName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="11dp"
+            android:textSize="16sp"
+            android:fontFamily="@font/gotham_bold"
+            android:text="@string/transaction_name"
+            app:layout_constraintStart_toEndOf="@+id/imgTransaction"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/labelDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="12dp"
+            android:textSize="12sp"
+            android:textColor="#99999b"
+            android:fontFamily="@font/avenir_roman"
+            android:text="@string/sample_date"
+            app:layout_constraintStart_toEndOf="@+id/imgTransaction"
+            app:layout_constraintTop_toBottomOf="@+id/labelTransactionName" />
+
+        <TextView
+            android:id="@+id/labelBalance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="8dp"
+            android:textSize="18sp"
+            android:textColor="@color/midBlue"
+            android:fontFamily="@font/gotham_bold"
+            android:text="@string/header_balance"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/labelAmount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="12dp"
+            android:layout_marginTop="2dp"
+            android:textSize="12sp"
+            android:fontFamily="@font/avenir_roman"
+            android:textColor="@color/transacRed"
+            android:text="@string/sample_amount"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/labelBalance" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>

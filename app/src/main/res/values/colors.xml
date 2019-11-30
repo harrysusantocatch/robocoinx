@@ -1,6 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#008577</color>
-    <color name="colorPrimaryDark">#00574B</color>
-    <color name="colorAccent">#D81B60</color>
+    <color name="colorPrimary">#2fa4d9</color>
+    <color name="colorPrimaryDark">#2fa4d9</color>
+    <color name="colorAccent">#ffffff</color>
+    <color name="white">#ffffff</color>
+    <color name="toolBar">#2f9bc1</color>
+    <color name="bottomBar">#f4f4f4</color>
+    <color name="bottomIcon">#282828</color>
+    <color name="bottomIconSelected">#2f9bc1</color>
+    <color name="textHint">#f8fcff</color>
+    <color name="drawerMenu">#282828</color>
+    <color name="midBlue">#1d7ca7</color>
+    <color name="orange1">#ffb347</color>
+
+    <color name="greyishBrown">#8e8e99</color>
+    <color name="greyWhite">#e0e0e3</color>
+    <color name="blackTwo">#030303</color>
+    <color name="brightBlue">#007aff</color>
+    <color name="transacRed">#ce3a3a</color>
+    <color name="transacGreen">#3ace3a</color>
+    <color name="softBlue">#71c1e5</color>
+
 </resources>

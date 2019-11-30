@@ -31,7 +31,7 @@ public class BackgroundService extends Service {
     @Override
     public void onDestroy() {
         if(NotificationRoll.getAlarmManager() != null) NotificationRoll.getAlarmManager().cancel(NotificationRoll.getPendingIntent());
-        NotificationRoll.stopNotificationListener(getApplicationContext());
+        NotificationRoll.stopNotificationListener(getApplicationContext(), "");
         FileManager.getInstance().appendLog("stop service");
         super.onDestroy();
     }

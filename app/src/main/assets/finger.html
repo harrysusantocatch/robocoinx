@@ -1,20 +1,37 @@
 <html>
 <head>
+    <style>
+        .button {
+              background-color: #007aff;
+              border: none;
+              color: white;
+              padding: 10px 30px 10px 30px ;
+              text-align: center;
+              text-decoration: none;
+              display: inline-block;
+              font-size: 15px;
+              margin: 4px 2px;
+              cursor: pointer;
+              border-radius: 10px;
+            }
+    </style>
 </head>
-<body>
-<input type="button" value="Get Fingerprint" onClick="getDataFingerprint()" />
+<body style="background-color:#2fa4d9">
+<center>
+    <input class="button" type="button" value="START" onClick="getDataFingerprint()" />
 
-<script type="text/javascript">
-    function getDataFingerprint() {
-    var idx = new Fingerprint({canvas: true, screen_resolution: true, ie_activex: true }).get();
-    var result = idx +":"+fingerprint
-        if(typeof Android !== "undefined" && Android !== null) {
-            Android.getFingerprint(result);
-        } else {
-            Android.getFingerprint("error");
+    <script type="text/javascript">
+        function getDataFingerprint() {
+        var idx = new Fingerprint({canvas: true, screen_resolution: true, ie_activex: true }).get();
+        var result = idx +":"+fingerprint
+            if(typeof Android !== "undefined" && Android !== null) {
+                Android.getFingerprint(result);
+            } else {
+                Android.getFingerprint("error");
+            }
         }
-    }
-</script>
-[code]
+    </script>
+    [code]
+</center>
 </body>
 </html>

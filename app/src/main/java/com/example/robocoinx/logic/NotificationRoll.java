@@ -26,7 +26,6 @@ import java.util.Locale;
 public class NotificationRoll {
 
     private static int interval = 3600000;
-    private static int defaultInterval = 3600000;
     private static AlarmManager alarmManager;
     private static PendingIntent pendingIntent;
     private static String claim;
@@ -68,26 +67,26 @@ public class NotificationRoll {
         new Thread(() -> sendNotifyClaim(context)).start();
     }
 
-    public static void stopNotificationListener(Context context) {
-        new Thread(() -> sendNotifyStop(context)).start();
+    public static void stopNotificationListener(Context context, String additionalMessage) {
+        new Thread(() -> sendNotifyStop(context, additionalMessage)).start();
     }
 
     private static void restartNotificationListener(Context context) {
         new Thread(() -> sendNotifyRestart(context)).start();
     }
 
-    private static void sendNotifyStop(Context context) {
+    private static void sendNotifyStop(Context context, String additionalMessage) {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, "stop")
-                        .setSmallIcon(R.drawable.ic_launcher_foreground)
+                        .setSmallIcon(R.drawable.ic_notif_bitcoin)
                         .setContentTitle("Service Stop")
-                        .setContentText("Click the start button below to run the service");
+                        .setContentText(additionalMessage+"Click the start button below to run the service");
 
         builder.setAutoCancel(true);
         Intent yesReceive = new Intent();
         yesReceive.setAction(StaticValues.START_SERVICE);
         PendingIntent pendingIntentYes = PendingIntent.getBroadcast(context, 9, yesReceive, PendingIntent.FLAG_UPDATE_CURRENT);
-        builder.addAction(R.drawable.ic_launcher_foreground, "START", pendingIntentYes);
+        builder.addAction(R.drawable.ic_notif_bitcoin, "START", pendingIntentYes);
 
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         assert manager != null;
@@ -97,8 +96,8 @@ public class NotificationRoll {
     private static void sendNotifyClaim(Context context) {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, "start")
-                        .setSmallIcon(R.drawable.ic_launcher_foreground)
-                        .setContentTitle("New Claim")
+                        .setSmallIcon(R.drawable.ic_notif_bitcoin)
+                        .setContentTitle("New Bitcoin")
                         .setContentText("You got "+claim+" & current balance is "+balance);
 
         Intent notificationIntent = new Intent();
@@ -115,7 +114,7 @@ public class NotificationRoll {
         String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date(System.currentTimeMillis() + interval));
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, "start")
-                        .setSmallIcon(R.drawable.ic_launcher_foreground)
+                        .setSmallIcon(R.drawable.ic_notif_bitcoin)
                         .setContentTitle("Restart Service")
                         .setContentText("service will run again at "+currentTime);
 
@@ -131,6 +130,7 @@ public class NotificationRoll {
 
     public static void executeMainTask(Context context, Calendar calendar) {
         new Thread(() -> {
+            boolean isStop = false;
             try {
                 interval = 3600000;
                 Object obj = RoboHandler.parsingRollResponse(context);
@@ -145,15 +145,20 @@ public class NotificationRoll {
                     FileManager.getInstance().InsertOrUpdate(context, StaticValues.LAST_DATE, String.valueOf(System.currentTimeMillis()));
                 }else if(obj instanceof RollErrorResponse){
                     RollErrorResponse err = (RollErrorResponse) obj;
-                    interval = (err.countDown) * 1000;
-                    if(interval/60000 > 59){
-                        interval = 30000;
-                        FileManager.getInstance().appendLog("claim wait "+ interval/1000 + " seconds");
+                    if(err.countDown == 0){
+                        isStop = true;
+                        FileManager.getInstance().appendLog(err.message);
+                        stopNotificationListener(context, "Stop with error ");
                     }else {
-                        FileManager.getInstance().appendLog("claim wait "+ (interval/60000) + " minutes");
+                        interval = (err.countDown) * 1000;
+                        if (interval / 60000 > 59) {
+                            interval = 30000;
+                            FileManager.getInstance().appendLog("claim wait " + interval / 1000 + " seconds");
+                        } else {
+                            FileManager.getInstance().appendLog("claim wait " + (interval / 60000) + " minutes");
+                        }
+                        restartNotificationListener(context);
                     }
-                    restartNotificationListener(context);
-
                 }else {
                     interval = 30000;
                     FileManager.getInstance().appendLog("claim wait "+(interval/1000)+" seconds");
@@ -165,13 +170,13 @@ public class NotificationRoll {
             }
             finally {
                 if(alarmManager != null) alarmManager.cancel(pendingIntent);
-                calendar.setTimeInMillis(System.currentTimeMillis()+ interval);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                }else if (Build.VERSION.SDK_INT >= 19) {
-                    alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
-                } else {
-                    alarmManager.set(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                if(!isStop) {
+                    calendar.setTimeInMillis(System.currentTimeMillis() + interval);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                    } else {
+                        alarmManager.setExact(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), pendingIntent);
+                    }
                 }
             }
         }).start();

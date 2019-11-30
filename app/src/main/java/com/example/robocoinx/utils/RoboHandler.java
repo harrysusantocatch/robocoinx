@@ -179,27 +179,14 @@ public class RoboHandler {
 
             cookies.put("csrf_token", RoboBrowser.csrfToken);
             cookies.put("__cfduid", homeResponse.cookie("__cfduid"));
+//            cookies.put("default_captcha", "recaptcha");
+            cookies.put("mobile", "1");
+            cookies.put("_gat", "1");
+            cookies.put("hide_push_msg", "1");
 
-            if(pp.rpBonusTime == 0){
-                RedeemRP redeem = new RedeemRP(pp);
-                if(redeem.idP != null){
-                    Connection.Response redeemResponse = RoboBrowser.getRedeemRPResponse(cookies, redeem.idP, redeem.pointP);
-                    if (redeemResponse != null){
-                        Document document = redeemResponse.parse();
-                        String content = document.body().html();
-                        FileManager.getInstance().appendLog("redeem poin: "+content);
-                    }
-                }
-                if(redeem.idB != null){
-                    Connection.Response redeemResponse = RoboBrowser.getRedeemRPResponse(cookies, redeem.idB, redeem.pointB);
-                    if (redeemResponse != null){
-                        Document document = redeemResponse.parse();
-                        String content = document.body().html();
-                        FileManager.getInstance().appendLog("redeem poin: "+content);
-                    }
-                }
-            }
-            RollRequest rollRequest = new RollRequest(doc);
+            redeemPoint(cookies, pp);
+
+            RollRequest rollRequest = new RollRequest(context,doc, pp.haveCaptcha);
             Connection.Response rollResponse = RoboBrowser.getRollResponse(cookies, rollRequest);
             if (rollResponse == null) return StaticValues.ERROR_GENERAL;
             Document docRoll = rollResponse.parse();
@@ -209,13 +196,38 @@ public class RoboHandler {
             if(dataRoll[0].equals("s")){
                 return new RollSuccessResponse(dataRoll[2], dataRoll[3]);
             }else if(dataRoll[0].equals("e")){
-                return new RollErrorResponse(dataRoll[1], Integer.parseInt(dataRoll[2]));
+                if(dataRoll.length == 2){
+                    return new RollErrorResponse(dataRoll[1], 0);
+                }else
+                    return new RollErrorResponse(dataRoll[1], Integer.parseInt(dataRoll[2]));
             }else {
                 return StaticValues.ERROR_GENERAL;
             }
         } catch (IOException e) {
             FileManager.getInstance().appendLog(e);
             return StaticValues.ERROR_GENERAL;
+        }
+    }
+
+    private static void redeemPoint(Map<String, String> cookies, ProfileView pp) throws IOException {
+        if(pp.rpBonusTime == 0){
+            RedeemRP redeem = new RedeemRP(pp);
+            if(redeem.idP != null){
+                Connection.Response redeemResponse = RoboBrowser.getRedeemRPResponse(cookies, redeem.idP, redeem.pointP);
+                if (redeemResponse != null){
+                    Document document = redeemResponse.parse();
+                    String content = document.body().html();
+                    FileManager.getInstance().appendLog("redeem poin: "+content);
+                }
+            }
+            if(redeem.idB != null){
+                Connection.Response redeemResponse = RoboBrowser.getRedeemRPResponse(cookies, redeem.idB, redeem.pointB);
+                if (redeemResponse != null){
+                    Document document = redeemResponse.parse();
+                    String content = document.body().html();
+                    FileManager.getInstance().appendLog("redeem poin: "+content);
+                }
+            }
         }
     }
 

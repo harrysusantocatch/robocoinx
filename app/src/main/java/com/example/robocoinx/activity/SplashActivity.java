@@ -47,12 +47,10 @@ public class SplashActivity extends Activity implements SplashContract.View {
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
-        switch (requestCode) {
-            case 10: {
-                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    //do here
-                    FileManager.getInstance().appendLog("first....");
-                }
+        if (requestCode == 10) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                //do here
+                FileManager.getInstance().appendLog("first....");
             }
         }
     }
@@ -62,6 +60,11 @@ public class SplashActivity extends Activity implements SplashContract.View {
         Intent intent = new Intent(getBaseContext(), HomeActivity.class);
         intent.putExtra(StaticValues.PROFILE_VIEW, profileView);
         startActivity(intent);
+    }
+
+    @Override
+    public void showMessage(String message) {
+        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -84,11 +87,6 @@ public class SplashActivity extends Activity implements SplashContract.View {
             e.printStackTrace();
             FileManager.getInstance().appendLog(e);
         }
-    }
-
-    @Override
-    public void showMessage(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
     }
 
     public class WebAppInterface {

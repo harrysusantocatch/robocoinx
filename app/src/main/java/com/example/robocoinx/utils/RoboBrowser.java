@@ -104,7 +104,7 @@ public class RoboBrowser {
                     .data("pwc", rollRequest.pwc)
                     .data(rollRequest.tokenName, rollRequest.tokenValue)
                     .data(rollRequest.lastParam, rollRequest.lastParamValue)
-                    .data("g_recaptcha_response", "")
+                    .data("g_recaptcha_response", rollRequest.gReCaptchaResponse)
                     .cookies(cookies)
                     .execute();
         } catch (IOException e) {
