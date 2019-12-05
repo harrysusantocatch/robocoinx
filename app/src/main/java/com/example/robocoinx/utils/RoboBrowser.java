@@ -266,4 +266,51 @@ public class RoboBrowser {
         }
         return response;
     }
+
+    static Connection.Response setLottery(Map<String, String> cookies, String lottery){
+        cookies.put("csrf_token", csrfToken);
+        Connection.Response response = null;
+        try {
+            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_A)+
+                    "/?op=purchase_lott_tickets&num="+lottery+"&csrf_token="+csrfToken)
+                    .userAgent(StaticValues.USER_AGENT)
+                    .timeout(StaticValues.TIMEOUT)
+                    .method(Connection.Method.GET)
+                    .referrer(CryptEx.toBaseDecode(StaticValues.URL_KEY_H))
+                    .header("Accept", "*/*")
+                    .header("x-csrf-token", csrfToken)
+                    .header("x-requested-with", "XMLHttpRequest")
+                    .header("sec-fetch-mode", "cors")
+                    .header("sec-fetch-site", "same-origin")
+                    .cookies(cookies)
+                    .execute();
+        }catch (IOException e){
+            FileManager.getInstance().appendLog(e);
+        }
+        return response;
+    }
+
+    static Connection.Response getHiLo(Map<String, String> cookies, String hiLo, String clientSeed, String stake){
+        cookies.put("csrf_token", csrfToken);
+        Connection.Response response = null;
+        try {
+            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_A)+
+                    "/cgi-bin/bet.pl?m="+hiLo+"&client_seed="+clientSeed+"&jackpot=0&stake="+stake+"&multiplier=2.00" +
+                    "&rand="+Math.random()+"&csrf_token="+csrfToken)
+                    .userAgent(StaticValues.USER_AGENT)
+                    .timeout(StaticValues.TIMEOUT)
+                    .method(Connection.Method.GET)
+                    .referrer(CryptEx.toBaseDecode(StaticValues.URL_KEY_H))
+                    .header("Accept", "*/*")
+                    .header("x-csrf-token", csrfToken)
+                    .header("x-requested-with", "XMLHttpRequest")
+                    .header("sec-fetch-mode", "cors")
+                    .header("sec-fetch-site", "same-origin")
+                    .cookies(cookies)
+                    .execute();
+        }catch (IOException e){
+            FileManager.getInstance().appendLog(e);
+        }
+        return response;
+    }
 }

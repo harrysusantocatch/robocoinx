@@ -22,6 +22,8 @@ import org.jsoup.select.Elements;
 
 import java.io.IOException;
 import java.lang.reflect.Type;
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -263,6 +265,7 @@ public class RoboHandler {
                         noCaptchaSpecJsn.getString("wager_to_unblock"),
                         noCaptchaSpecJsn.getString("jackpot_to_unblock"),
                         noCaptchaSpecJsn.getString("deposit_to_unblock"));
+                test(cookies);
             }
             if (setInterestAndLottery(profileView, cookies, homeResponse)) return StaticValues.ERROR_GENERAL;
             return profileView;
@@ -270,5 +273,68 @@ public class RoboHandler {
             FileManager.getInstance().appendLog(e);
             return StaticValues.ERROR_GENERAL;
         }
+    }
+
+    private static void test(Map<String, String> cookies){
+
+        String clientSeed = getClientSeed();
+        double baseStake = 1;
+        double stake = baseStake / 100000000;
+        DecimalFormat precision = new DecimalFormat("0.00000000");
+        String stakeStr = precision.format(stake).replace(",", ".");
+
+        boolean winHi = isWinStakeHi(cookies, clientSeed, stakeStr);
+        boolean winLo = isWinStakeLo(cookies, clientSeed, stakeStr);
+
+//        purchaseLottery(cookies);
+    }
+
+    private static boolean purchaseLottery(Map<String, String> cookies) {
+        Connection.Response res1 = RoboBrowser.setLottery(cookies,"1");
+        String result = res1.body();
+        String[] resultArr  = result.split(":");
+        if(resultArr[0].equalsIgnoreCase("s")){
+            System.out.println("success");
+            return true;
+        }else {
+            System.out.println("failed");
+            return false;
+        }
+    }
+
+    private static boolean isWinStakeHi(Map<String, String> cookies, String clientSeed, String stakeStr) {
+        Connection.Response resp = RoboBrowser.getHiLo(cookies,"hi", clientSeed, stakeStr);
+        String result2 = resp.body();
+        String[] result2Arr = result2.split(":");
+        if(result2Arr[1].equalsIgnoreCase("w")){
+            System.out.println("Win");
+            return true;
+        }else {
+            System.out.println("Lose");
+            return false;
+        }
+    }
+
+    private static boolean isWinStakeLo(Map<String, String> cookies, String clientSeed, String stakeStr) {
+        Connection.Response resp = RoboBrowser.getHiLo(cookies,"lo", clientSeed, stakeStr);
+        String result2 = resp.body();
+        String[] result2Arr = result2.split(":");
+        if(result2Arr[1].equalsIgnoreCase("w")){
+            System.out.println("Win");
+            return true;
+        }else {
+            System.out.println("Lose");
+            return false;
+        }
+    }
+
+    private static String getClientSeed() {
+        String charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        StringBuilder randomString = new StringBuilder();
+        for (int i = 0; i < 16; i++) {
+            int randomPoz = (int) Math.floor(Math.random() * charSet.length());
+            randomString.append(charSet.substring(randomPoz, randomPoz + 1));
+        }
+        return randomString.toString();
     }
 }
