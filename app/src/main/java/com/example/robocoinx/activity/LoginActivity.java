@@ -71,7 +71,7 @@ public class LoginActivity extends Activity implements LoginContract.View, View.
 
     @Override
     public void showMessage(String message) {
-        Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show();
+        runOnUiThread(() -> Toast.makeText(getApplicationContext(), message, Toast.LENGTH_SHORT).show());
     }
 
     @Override

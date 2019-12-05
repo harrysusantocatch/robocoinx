@@ -172,6 +172,28 @@ public class RoboBrowser {
         return  response;
     }
 
+    static Connection.Response getUserStatistic(String socketId, String socketPass){
+        Connection.Response response = null;
+        try {
+            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_A)+"/stats_new_private/?u="+socketId+"&p="+socketPass+"&f=user_stats&csrf_token="+csrfToken)
+                    .userAgent(StaticValues.USER_AGENT)
+                    .referrer(CryptEx.toBaseDecode(StaticValues.URL_KEY_H))
+                    .header("Accept", "*/*")
+                    .header("Content-Type", "application/json")
+                    .ignoreContentType(true)
+                    .header("x-csrf-token", csrfToken)
+                    .header("x-requested-with", "XMLHttpRequest")
+                    .header("sec-fetch-mode", "cors")
+                    .header("sec-fetch-site", "same-origin")
+                    .timeout(StaticValues.TIMEOUT)
+                    .method(Connection.Method.GET)
+                    .execute();
+        }catch (IOException e) {
+            FileManager.getInstance().appendLog(e);
+        }
+        return response;
+    }
+
     static Connection.Response getRedeemRPResponse(Map<String, String> cookies, String id, String point){
         Connection.Response response = null;
         try {

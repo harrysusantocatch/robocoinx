@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -8,191 +8,466 @@
     tools:context=".activity.WithdrawActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/overview"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <ImageView
-            android:id="@+id/imageView"
-            android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/overview"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:src="?attr/actionModeCloseDrawable"
-            android:tint="@color/white"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="18dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
+            android:background="@color/colorPrimary"
+            app:layout_constraintTop_toTopOf="parent">
 
-        <TextView
-            android:id="@+id/labeHeader"
-            android:layout_width="wrap_content"
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:src="?attr/actionModeCloseDrawable"
+                android:tint="@color/white"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="18dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/labeHeader"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="18dp"
+                android:layout_marginBottom="18dp"
+                android:text="Withdraw Overview"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:fontFamily="@font/avenir_roman"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="@id/overview"/>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/card"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="18dp"
-            android:layout_marginBottom="18dp"
-            android:text="Withdraw Overview"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:fontFamily="@font/avenir_roman"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintBottom_toBottomOf="@id/overview"/>
-
-
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/card"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="15dp"
-        android:layout_marginEnd="15dp"
-        android:layout_marginTop="15dp"
-        android:elevation="5dp"
-        android:background="@drawable/button_card"
-        app:layout_constraintTop_toBottomOf="@id/overview"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <ImageView
-            android:id="@+id/fingerprint"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:tint="#ff4141"
-            android:src="@drawable/ic_fingerprint"
-            app:layout_constraintTop_toTopOf="@id/card"
-            app:layout_constraintStart_toStartOf="@id/card"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
             android:layout_marginTop="15dp"
-            android:layout_marginStart="15dp"/>
-        <TextView
-            android:id="@+id/type"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="A"
-            android:textColor="@color/white"
-            android:fontFamily="@font/gotham_bold"
-            android:textSize="35sp"
-            app:layout_constraintTop_toTopOf="@id/card"
-            app:layout_constraintStart_toEndOf="@id/fingerprint"
-            android:layout_marginTop="10dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="uto"
-            android:fontFamily="@font/gotham_bold"
-            android:textSize="15sp"
-            android:textColor="@color/white"
-            app:layout_constraintStart_toEndOf="@id/type"
-            app:layout_constraintTop_toTopOf="@id/card"
-            android:layout_marginTop="30dp"/>
+            android:elevation="5dp"
+            android:background="@drawable/button_card"
+            app:layout_constraintTop_toBottomOf="@id/overview"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:id="@+id/balance"
-            android:layout_width="100dp"
-            android:layout_height="30dp"
-            android:text="0.09277860"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:background="@drawable/balance_card"
-            android:textSize="12sp"
-            android:fontFamily="@font/avenir_roman"
-            app:layout_constraintTop_toTopOf="@id/card"
-            app:layout_constraintEnd_toEndOf="@id/card"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="20dp"/>
-        <TextView
-            android:id="@+id/address"
-            android:layout_width="0dp"
+            <ImageView
+                android:id="@+id/fingerprint"
+                android:layout_width="40dp"
+                android:layout_height="35dp"
+                android:tint="#ff4141"
+                android:src="@drawable/ic_fingerprint"
+                app:layout_constraintTop_toTopOf="@id/card"
+                app:layout_constraintStart_toStartOf="@id/card"
+                android:layout_marginTop="15dp"
+                android:layout_marginStart="15dp"/>
+            <TextView
+                android:id="@+id/firstType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="A"
+                android:textColor="@color/white"
+                android:fontFamily="@font/gotham_bold"
+                android:textSize="35sp"
+                app:layout_constraintTop_toTopOf="@id/card"
+                app:layout_constraintStart_toEndOf="@id/fingerprint"
+                android:layout_marginTop="10dp"/>
+            <TextView
+                android:id="@+id/secondType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="uto"
+                android:fontFamily="@font/gotham_bold"
+                android:textSize="15sp"
+                android:textColor="@color/white"
+                app:layout_constraintStart_toEndOf="@id/firstType"
+                app:layout_constraintTop_toTopOf="@id/card"
+                android:layout_marginTop="30dp"/>
+
+            <TextView
+                android:id="@+id/balance"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:text="0.09277860"
+                android:gravity="center"
+                android:textColor="@color/white"
+                android:background="@drawable/balance_card"
+                android:textSize="12sp"
+                android:fontFamily="@font/avenir_roman"
+                app:layout_constraintTop_toTopOf="@id/card"
+                app:layout_constraintEnd_toEndOf="@id/card"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="20dp"/>
+            <TextView
+                android:id="@+id/address"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:text="1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX"
+                android:textColor="@color/white"
+                android:fontFamily="@font/roboto_bold"
+                app:layout_constraintTop_toBottomOf="@id/firstType"
+                app:layout_constraintStart_toStartOf="@id/card"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="25dp"
+                android:layout_marginTop="25dp"/>
+
+            <TextView
+                android:id="@+id/cardTime"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Every Sunday"
+                android:fontFamily="@font/avenir_roman"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintTop_toBottomOf="@id/address"
+                app:layout_constraintStart_toStartOf="@id/card"
+                app:layout_constraintBottom_toBottomOf="@id/card"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="25dp"
+                android:layout_marginBottom="20dp"/>
+
+            <TextView
+                android:id="@+id/cardFee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00001500"
+                android:fontFamily="@font/avenir_roman"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@id/card"
+                android:layout_marginEnd="30dp"
+                app:layout_constraintTop_toBottomOf="@id/address"
+                app:layout_constraintBottom_toBottomOf="@id/card"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="25dp"/>
+            <TextView
+                android:id="@+id/minWithdraw"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="0.00031500"
+                android:fontFamily="@font/avenir_roman"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toStartOf="@id/cardFee"
+                android:layout_marginEnd="10dp"
+                app:layout_constraintTop_toBottomOf="@id/address"
+                app:layout_constraintBottom_toBottomOf="@id/card"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="25dp"/>
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="25dp"
+                android:background="#0D000000"
+                app:layout_constraintStart_toStartOf="@id/card"
+                app:layout_constraintEnd_toEndOf="@id/card"
+                app:layout_constraintTop_toBottomOf="@id/address"
+                app:layout_constraintBottom_toBottomOf="@id/card"
+                android:layout_marginBottom="20dp"
+                android:layout_marginTop="25dp"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <LinearLayout
+            android:id="@+id/layoutAction"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="20sp"
-            android:text="1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX"
-            android:textColor="@color/white"
-            android:fontFamily="@font/roboto_bold"
-            app:layout_constraintTop_toBottomOf="@id/type"
-            app:layout_constraintStart_toStartOf="@id/card"
+            android:orientation="vertical"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginBottom="5dp"
+            android:elevation="5dp"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginStart="20dp"
-            android:layout_marginEnd="25dp"
-            android:layout_marginTop="25dp"/>
+            app:layout_constraintBottom_toBottomOf="parent">
+            <LinearLayout
+                android:id="@+id/layoutAction1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
 
-        <TextView
-            android:id="@+id/labelTime"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Every Sunday"
-            android:fontFamily="@font/avenir_roman"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            app:layout_constraintTop_toBottomOf="@id/address"
-            app:layout_constraintStart_toStartOf="@id/card"
-            app:layout_constraintBottom_toBottomOf="@id/card"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="25dp"
-            android:layout_marginBottom="20dp"/>
+                android:visibility="gone">
+                <Button
+                    android:id="@+id/btnSave"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/white"
+                    android:background="@drawable/button_blue"
+                    android:text="save"/>
+            </LinearLayout>
+            <LinearLayout
+                android:id="@+id/layoutAction2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:weightSum="2">
+                <Button
+                    android:id="@+id/btnWithdrawNow"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:textColor="@color/white"
+                    android:background="@drawable/button_withdraw_left"
+                    android:text="withdraw now"/>
+                <Button
+                    android:id="@+id/btnChange"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:background="@drawable/button_change_right"
+                    android:layout_weight="1"
+                    android:text="Change"/>
+            </LinearLayout>
+        </LinearLayout>
 
-        <TextView
-            android:id="@+id/fee"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0.00001500"
-            android:fontFamily="@font/avenir_roman"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="@id/card"
-            android:layout_marginEnd="30dp"
-            app:layout_constraintTop_toBottomOf="@id/address"
-            app:layout_constraintBottom_toBottomOf="@id/card"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="25dp"/>
-        <TextView
-            android:id="@+id/minWithdraw"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0.00031500"
-            android:fontFamily="@font/avenir_roman"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toStartOf="@id/fee"
-            android:layout_marginEnd="10dp"
-            app:layout_constraintTop_toBottomOf="@id/address"
-            app:layout_constraintBottom_toBottomOf="@id/card"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="25dp"/>
         <View
             android:layout_width="match_parent"
-            android:layout_height="25dp"
-            android:background="#0D000000"
-            app:layout_constraintStart_toStartOf="@id/card"
-            app:layout_constraintEnd_toEndOf="@id/card"
-            app:layout_constraintTop_toBottomOf="@id/address"
-            app:layout_constraintBottom_toBottomOf="@id/card"
-            android:layout_marginBottom="20dp"
-            android:layout_marginTop="25dp"/>
-    </androidx.constraintlayout.widget.ConstraintLayout>
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="2"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent">
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:textColor="@color/white"
-            android:background="@color/transacGreen"
-            android:text="withdraw now"/>
-        <Button
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:background="@color/colorPrimary"
-            android:layout_weight="1"
-            android:text="Change"/>
-    </LinearLayout>
+            android:layout_height="1dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/layoutAction"/>
+            <TableLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="20dp"
+                android:layout_marginEnd="20dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginBottom="10dp"
+                android:padding="5dp"
+                android:elevation="5dp"
+                app:layout_constraintTop_toBottomOf="@id/card"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/layoutAction">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:id="@+id/textView3"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="5dp"
+                        android:textSize="13sp"
+                        android:text="TYPE"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textColor="@color/orange3"/>
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="13sp"
+                        android:layout_marginStart="5dp"
+                        android:text="TIME"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textColor="@color/orange3" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:weightSum="2">
+                    <Spinner
+                        android:id="@+id/spinner"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:textSize="13sp"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="5dp"
+                        android:clickable="false"
+                        android:background="@drawable/spinner_bg"/>
+
+                    <EditText
+                        android:id="@+id/valueTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_weight="1"
+                        android:layout_marginStart="5dp"
+                        android:textSize="13sp"
+                        android:paddingStart="10dp"
+                        android:focusable="false"
+                        android:paddingEnd="10dp"
+                        android:text="Every Sunday"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/roboto_bold"
+                        android:background="@drawable/button_orange2"/>
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="BITCOIN ADDRESS"
+                        android:textSize="13sp"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textColor="@color/orange3" />
+                </TableRow>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="1">
+
+                    <EditText
+                        android:id="@+id/valueAddress"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_weight="1"
+                        android:layout_span="2"
+                        android:textSize="13sp"
+                        android:enabled="false"
+                        android:background="@drawable/button_orange2"
+                        android:fontFamily="@font/roboto_bold"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:text="1F1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xqX"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="5dp"
+                        android:textSize="13sp"
+                        android:text="MIN WITHDRAW"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textColor="@color/orange3"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="13sp"
+                        android:layout_marginStart="5dp"
+                        android:text="FEE TRANSACTION"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textColor="@color/orange3" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="2">
+                    <EditText
+                        android:id="@+id/valueMinWithdraw"
+                        android:layout_width="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_height="35dp"
+                        android:paddingStart="10dp"
+                        android:layout_marginEnd="5dp"
+                        android:textSize="13sp"
+                        android:paddingEnd="10dp"
+                        android:text="0.00031500"
+                        android:focusable="false"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/roboto_bold"
+                        android:background="@drawable/button_orange2"/>
+
+                    <EditText
+                        android:id="@+id/valueFee"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_weight="1"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:textSize="13sp"
+                        android:layout_marginStart="5dp"
+                        android:text="0.00001500"
+                        android:focusable="false"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/roboto_bold"
+                        android:background="@drawable/button_orange2"/>
+                </TableRow>
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_marginTop="10dp"
+                    android:weightSum="2">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:layout_marginEnd="5dp"
+                        android:textSize="13sp"
+                        android:text="AMOUNT"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textColor="@color/orange3"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:textSize="13sp"
+                        android:layout_marginStart="5dp"
+                        android:text="AMOUNT DEDUCTED"
+                        android:fontFamily="@font/roboto_bold"
+                        android:textColor="@color/orange3" />
+                </TableRow>
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:weightSum="2">
+                    <EditText
+                        android:id="@+id/valueAmount"
+                        android:layout_width="match_parent"
+                        android:layout_height="35dp"
+                        android:layout_weight="1"
+                        android:textSize="13sp"
+                        android:enabled="false"
+                        android:background="@drawable/button_orange2"
+                        android:fontFamily="@font/roboto_bold"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:layout_gravity="center_vertical"
+                        android:maxLines="1"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"/>
+
+                    <EditText
+                        android:id="@+id/valueAmountDeducted"
+                        android:layout_width="wrap_content"
+                        android:layout_height="35dp"
+                        android:layout_weight="1"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:textSize="13sp"
+                        android:layout_marginStart="5dp"
+                        android:text="0.00000000"
+                        android:focusable="false"
+                        android:textAllCaps="false"
+                        android:textColor="@color/white"
+                        android:fontFamily="@font/roboto_bold"
+                        android:background="@drawable/button_orange2"/>
+                </TableRow>
+            </TableLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</ScrollView>

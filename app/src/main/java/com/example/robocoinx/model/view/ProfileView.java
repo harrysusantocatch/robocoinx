@@ -23,6 +23,8 @@ public class ProfileView implements Serializable {
     public boolean disableLottery;
     public boolean enableInterest;
     public boolean haveCaptcha;
+    public String socketPass;
+    public String socketId;
 
     public ProfileView(Document doc) {
         userID = getUserID(doc);
@@ -34,6 +36,50 @@ public class ProfileView implements Serializable {
         disableLottery = getDisableLottery(doc);
         enableInterest = getEnableInterest(doc);
         haveCaptcha = getCaptchaFlag(doc);
+        socketPass = getSocketPass(doc);
+        socketId = getSocketId(doc);
+    }
+
+    private String getSocketId(Document doc) {
+        Elements scripts = doc.getElementsByTag("script");
+        for (Element script: scripts) {
+            List<DataNode> dataNodes = script.dataNodes();
+            for (DataNode dataNode : dataNodes){
+                String data = dataNode.getWholeData();
+                if(data.contains("socket_userid")){
+                    String[] dataSplit = data.split(";");
+                    for (String datas : dataSplit) {
+                        if(datas.contains("socket_userid")){
+                            String[] socketPassSplit = datas.split(" ");
+                            String findText = socketPassSplit[3].replace("'", "");
+                            return findText;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
+
+    private String getSocketPass(Document doc) {
+        Elements scripts = doc.getElementsByTag("script");
+        for (Element script: scripts) {
+            List<DataNode> dataNodes = script.dataNodes();
+            for (DataNode dataNode : dataNodes){
+                String data = dataNode.getWholeData();
+                if(data.contains("socket_password")){
+                    String[] dataSplit = data.split(";");
+                    for (String datas : dataSplit) {
+                        if(datas.contains("socket_password")){
+                            String[] socketPassSplit = datas.split(" ");
+                            String findText = socketPassSplit[3].replace("'", "");
+                            return findText;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
     }
 
     private boolean getCaptchaFlag(Document doc) {

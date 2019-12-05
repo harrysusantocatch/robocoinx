@@ -29,4 +29,10 @@
     <string name="sample_date">20 sept 17 10:11:11</string>
     <string name="sample_amount">0.00004567</string>
     <string name="transaction_history">Transaction History</string>
+
+    <string-array name="type_withdraw">
+        <item>Auto</item>
+        <item>Slow</item>
+        <item>Instant</item>
+    </string-array>
 </resources>

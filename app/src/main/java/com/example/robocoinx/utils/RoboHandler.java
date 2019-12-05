@@ -8,10 +8,13 @@ import com.example.robocoinx.model.request.RollRequest;
 import com.example.robocoinx.model.request.SignupRequest;
 import com.example.robocoinx.model.response.RollErrorResponse;
 import com.example.robocoinx.model.response.RollSuccessResponse;
+import com.example.robocoinx.model.view.NoCaptchaSpec;
 import com.example.robocoinx.model.view.ProfileView;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.jsoup.Connection;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -175,11 +178,11 @@ public class RoboHandler {
             updateCsrfToken(context, homeResponse);
             Document doc = homeResponse.parse();
             ProfileView pp = new ProfileView(doc);
+            if(pp.haveCaptcha) return new RollErrorResponse("resolve captcha", 300000);
             if(pp.nextRollTime > 0) return new RollErrorResponse("",pp.nextRollTime);
 
             cookies.put("csrf_token", RoboBrowser.csrfToken);
             cookies.put("__cfduid", homeResponse.cookie("__cfduid"));
-//            cookies.put("default_captcha", "recaptcha");
             cookies.put("mobile", "1");
             cookies.put("_gat", "1");
             cookies.put("hide_push_msg", "1");
@@ -251,9 +254,19 @@ public class RoboHandler {
             updateCsrfToken(context, homeResponse);
             Document doc = homeResponse.parse();
             ProfileView profileView = new ProfileView(doc);
+            if(profileView.haveCaptcha){
+                Connection.Response response = RoboBrowser.getUserStatistic(profileView.socketId, profileView.socketPass);
+                String result = response.body();
+                JSONObject root = new JSONObject(result);
+                JSONObject noCaptchaSpecJsn = root.getJSONObject("no_captcha_gbr");
+                NoCaptchaSpec noCaptchaSpec = new NoCaptchaSpec(noCaptchaSpecJsn.getString("lottery_to_unblock"),
+                        noCaptchaSpecJsn.getString("wager_to_unblock"),
+                        noCaptchaSpecJsn.getString("jackpot_to_unblock"),
+                        noCaptchaSpecJsn.getString("deposit_to_unblock"));
+            }
             if (setInterestAndLottery(profileView, cookies, homeResponse)) return StaticValues.ERROR_GENERAL;
             return profileView;
-        } catch (IOException e) {
+        } catch (JSONException | IOException e) {
             FileManager.getInstance().appendLog(e);
             return StaticValues.ERROR_GENERAL;
         }
