@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "209355369593",
+    "firebase_url": "https://robocoinx.firebaseio.com",
+    "project_id": "robocoinx",
+    "storage_bucket": "robocoinx.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:209355369593:android:693d11737e9fa2664cb8a8",
+        "android_client_info": {
+          "package_name": "com.bureng.robocoinx"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "209355369593-a8efgfqksv93sifgo4ha5qoftd678gjq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.bureng.robocoinx",
+            "certificate_hash": "2150761910bbd9b372c7ec1910060372cd4d2b99"
+          }
+        },
+        {
+          "client_id": "209355369593-iu5mvdetoe7jln928bkm9m6geemnlfgs.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPapKvKpOoKNTMVHJgwbc3aofDJy1umzs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "209355369593-iu5mvdetoe7jln928bkm9m6geemnlfgs.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

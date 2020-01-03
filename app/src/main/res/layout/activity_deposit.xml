@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorPrimary"
+    tools:context=".activity.DepositActivity">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/imageBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="?attr/actionModeCloseDrawable"
+            android:tint="@color/white"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="18dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="32dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="32dp"
+            android:text="My Deposit Address"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:fontFamily="@font/avenir_roman"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layoutDeposit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintTop_toBottomOf="@id/header"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginStart="15dp"
+            android:layout_marginEnd="15dp"
+            android:layout_marginTop="30dp"
+            android:paddingTop="20dp"
+            android:paddingStart="10dp"
+            android:paddingEnd="10dp"
+            android:paddingBottom="20dp"
+            android:background="@drawable/button_up">
+            <LinearLayout
+                android:id="@+id/layoutAddress"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_constraintStart_toStartOf="@id/layoutDeposit"
+                app:layout_constraintTop_toTopOf="@id/layoutDeposit"
+                app:layout_constraintEnd_toEndOf="@id/layoutDeposit"
+                android:orientation="horizontal">
+
+                <Button
+                    android:id="@+id/btcAddress"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btc_address"
+                    android:textAllCaps="false"
+                    android:fontFamily="@font/avenir_roman"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:background="@drawable/button_up"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"/>
+
+                <ImageView
+                    android:id="@+id/buttonCopy"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/ic_copy"
+                    android:layout_marginStart="10dp"/>
+            </LinearLayout>
+
+
+            <ImageView
+                android:id="@+id/qrCodeImage"
+                android:layout_width="200dp"
+                android:layout_height="200dp"
+                android:background="@color/greyWhite"
+                app:layout_constraintTop_toBottomOf="@id/layoutAddress"
+                android:layout_marginTop="20dp"
+                app:layout_constraintStart_toStartOf="@id/layoutDeposit"
+                app:layout_constraintEnd_toEndOf="@id/layoutDeposit"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <TextView
+            android:id="@+id/note"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:text="Note :"
+            android:textColor="@color/blackTwo"
+            app:layout_constraintTop_toBottomOf="@id/layoutDeposit"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="15dp"/>
+
+        <TextView
+            android:id="@+id/note1"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:fontFamily="@font/avenir_roman"
+            android:text="@string/note1"
+            android:textColor="@color/blackTwo"
+            app:layout_constraintTop_toBottomOf="@id/note"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="25dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="20dp"/>
+        <TextView
+            android:id="@+id/note2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:textSize="13sp"
+            android:fontFamily="@font/avenir_roman"
+            android:text="@string/note2"
+            android:textColor="@color/blackTwo"
+            app:layout_constraintTop_toBottomOf="@id/note1"
+            android:layout_marginTop="5dp"
+            app:layout_constraintStart_toStartOf="parent"
+            android:layout_marginStart="25dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_marginEnd="20dp"/>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</ScrollView>

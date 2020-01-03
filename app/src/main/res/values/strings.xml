@@ -29,7 +29,17 @@
     <string name="sample_date">20 sept 17 10:11:11</string>
     <string name="sample_amount">0.00004567</string>
     <string name="transaction_history">Transaction History</string>
+    <string name="btc_address">5D1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xxX</string>
 
+
+
+    <string name="note1">You can send bitcoins to your deposit address and
+        they will be credited to your account after 1 network confirmation.
+        We have no minimum deposit amount, we accept and credit all deposits to your account.</string>
+    <string name="note2">Please double-check that the address you have copied is correct
+        before sending bitcoins from your wallet since there are some malware that can
+        change the deposit address after you copy it, resulting in coins being sent
+        to some other address and not your deposit address.</string>
     <string-array name="type_withdraw">
         <item>Auto</item>
         <item>Slow</item>
