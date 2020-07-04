@@ -105,8 +105,8 @@ public class RoboBrowser {
                     .data("client_seed", rollRequest.clientSeed)
                     .data("fingerprint2", rollRequest.fingerprint2)
                     .data("pwc", rollRequest.pwc)
-                    .data(rollRequest.tokenName, rollRequest.tokenValue)
-                    .data(rollRequest.lastParam, rollRequest.lastParamValue)
+                    .data(rollRequest.tokenName, rollRequest.tokenValue) // TODO check
+                    .data(rollRequest.lastParam, rollRequest.lastParamValue) // TODO check
                     .data("g_recaptcha_response", rollRequest.gReCaptchaResponse)
                     .cookies(cookies)
                     .execute();

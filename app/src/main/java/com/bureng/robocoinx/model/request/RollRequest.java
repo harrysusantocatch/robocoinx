@@ -65,7 +65,7 @@ public class RollRequest {
             gReCaptchaResponse = getCaptchaResponse();
         }
         else {
-            pwc = "1";
+            pwc = "0";
             gReCaptchaResponse = "";
         }
     }

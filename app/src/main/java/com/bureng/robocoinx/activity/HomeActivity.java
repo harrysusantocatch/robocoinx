@@ -30,6 +30,7 @@ import androidx.constraintlayout.widget.ConstraintSet;
 
 import com.bureng.robocoinx.R;
 import com.bureng.robocoinx.adapter.TransactionAdapter;
+import com.bureng.robocoinx.logic.NotificationRoll;
 import com.bureng.robocoinx.model.db.ClaimHistory;
 import com.bureng.robocoinx.model.view.ProfileView;
 import com.bureng.robocoinx.repository.ClaimHistoryHandler;
@@ -39,6 +40,7 @@ import com.bureng.robocoinx.utils.RoboHandler;
 import com.bureng.robocoinx.utils.StaticValues;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -178,7 +180,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
                 }
             }.start();
             String text = "AUTO";
-            if(pp.haveCaptcha) text = "MANUAL ("+pp.noCaptchaSpec.lottery+":"+pp.noCaptchaSpec.wager+")";
+            if(pp.haveCaptcha) text = "MANUAL ("+pp.noCaptchaSpec.lottery+":"+pp.noCaptchaSpec.wager+":"+pp.noCaptchaSpec.deposit+")";
             captcha.setText(text);
         });
     }
@@ -188,6 +190,8 @@ public class HomeActivity extends Activity implements View.OnClickListener {
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.buttonStart:
+                new NotificationRoll(getApplicationContext());
+                NotificationRoll.executeMainTask(getApplicationContext(), Calendar.getInstance());
                 Intent intent = new Intent(getBaseContext(), BackgroundService.class);
                 String packageName = getApplicationContext().getPackageName();
                 PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
