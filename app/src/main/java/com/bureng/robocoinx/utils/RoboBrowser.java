@@ -88,7 +88,7 @@ public class RoboBrowser {
                     .header("Accept", "*/*")
                     .header("accept-encoding", "gzip, deflate, br")
                     .header("accept-language", "en-US,en;q=0.9")
-                    .header("content-length", "331")
+//                    .header("content-length", "331")
                     .header("Origin", CryptEx.toBaseDecode(StaticValues.URL_KEY_A))
                     .referrer(CryptEx.toBaseDecode(StaticValues.URL_KEY_A))
                     .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
@@ -105,9 +105,9 @@ public class RoboBrowser {
                     .data("client_seed", rollRequest.clientSeed)
                     .data("fingerprint2", rollRequest.fingerprint2)
                     .data("pwc", rollRequest.pwc)
-                    .data(rollRequest.tokenName, rollRequest.tokenValue) // TODO check
-                    .data(rollRequest.lastParam, rollRequest.lastParamValue) // TODO check
-                    .data("g_recaptcha_response", rollRequest.gReCaptchaResponse)
+                    .data(rollRequest.tokenName, rollRequest.tokenValue)
+                    .data(rollRequest.lastParam, rollRequest.lastParamValue)
+//                    .data("g_recaptcha_response", rollRequest.gReCaptchaResponse)
                     .cookies(cookies)
                     .execute();
         } catch (IOException e) {
@@ -265,6 +265,7 @@ public class RoboBrowser {
                     .timeout(StaticValues.TIMEOUT)
                     .method(Connection.Method.GET)
                     .cookies(cookies)
+                    .ignoreContentType(true)
                     .execute();
         } catch (IOException e) {
             FileManager.getInstance().appendLog(e);
@@ -359,4 +360,34 @@ public class RoboBrowser {
         return response;
     }
 
+    static Connection.Response getWithdrawResponse(Map<String, String> cookies, String amount, String withdrawAddress){
+        Connection.Response response = null;
+        try {
+            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_B))
+                    .header("Accept", "*/*")
+                    .header("accept-encoding", "gzip, deflate, br")
+                    .header("accept-language", "en-US,en;q=0.9")
+//                    .header("content-length", "331")
+                    .header("Origin", CryptEx.toBaseDecode(StaticValues.URL_KEY_A))
+                    .referrer(CryptEx.toBaseDecode(StaticValues.URL_KEY_A))
+                    .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                    .header("sec-fetch-mode", "cors")
+                    .header("sec-fetch-site", "same-origin")
+                    .userAgent(StaticValues.USER_AGENT)
+                    .header("x-csrf-token", csrfToken)
+                    .header("x-requested-with", "XMLHttpRequest")
+                    .timeout(StaticValues.TIMEOUT)
+                    .method(Connection.Method.POST)
+                    .data("csrf_token", csrfToken)
+                    .data("op", StaticValues.WITHDRAW)
+                    .data("type", StaticValues.WITHDRAW_TYPE_SLOW)
+                    .data("amount", amount)
+                    .data("withdraw_address", withdrawAddress)
+                    .cookies(cookies)
+                    .execute();
+        } catch (IOException e) {
+            FileManager.getInstance().appendLog(e);
+        }
+        return response;
+    }
 }

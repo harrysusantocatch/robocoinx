@@ -25,6 +25,7 @@ import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 
@@ -39,8 +40,10 @@ import com.bureng.robocoinx.utils.FileManager;
 import com.bureng.robocoinx.utils.RoboHandler;
 import com.bureng.robocoinx.utils.StaticValues;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -54,6 +57,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
     private TextView btcBonus;
     private TextView userID;
     private TextView captcha;
+    private TextView email;
     private Button buttonStart;
     private Button buttonStop;
     private ImageButton slideTransaction;
@@ -81,6 +85,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
     }
 
     private void setView() {
+        email = findViewById(R.id.textViewEmail);
         userID = findViewById(R.id.textViewUserId);
         balance = findViewById(R.id.textViewBalance);
         nextRoll = findViewById(R.id.textViewnextRoll);
@@ -101,6 +106,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         buttonPage.setOnClickListener(this);
         slideTransaction.setOnClickListener(this);
 
+//        getCount();
         ProfileView pp = (ProfileView) getIntent().getSerializableExtra(StaticValues.PROFILE_VIEW);
         setValueUI(pp);
 
@@ -130,6 +136,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
             userID.setText(pp.userID);
             balance.setText(pp.balance);
             rp.setText(pp.rewardPoint);
+//            email.setText(pp.email);
 
             // next roll
             new CountDownTimer((pp.nextRollTime)*1000, 1000){
@@ -145,6 +152,7 @@ public class HomeActivity extends Activity implements View.OnClickListener {
                 @Override
                 public void onFinish() {
                     nextRoll.setText(R.string.stop_count_hour);
+                    launchManual();
                 }
             }.start();
             // reward point bonus
@@ -185,28 +193,62 @@ public class HomeActivity extends Activity implements View.OnClickListener {
         });
     }
 
+    private void launchManual() {
+        startActivity(new Intent(this, ManualRollActivity.class));
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == StaticValues.MY_IGNORE_OPTIMIZATION_REQUEST) {
+            PowerManager pm = (PowerManager)getApplicationContext().getSystemService(Context.POWER_SERVICE);
+            boolean isIgnoringBatteryOptimizations = pm.isIgnoringBatteryOptimizations(getPackageName());
+            if(isIgnoringBatteryOptimizations){
+                // Ignoring battery optimization
+                Intent intent = new Intent(getBaseContext(), BackgroundService.class);
+                startService(intent);
+                buttonStart.setVisibility(View.GONE);
+                buttonStop.setVisibility(View.VISIBLE);
+            }else{
+                // Not ignoring battery optimization
+                Intent intent = new Intent();
+                intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
+                intent.setData(Uri.parse("package:" + getApplicationContext().getPackageName()));
+                startActivityForResult(intent, StaticValues.MY_IGNORE_OPTIMIZATION_REQUEST);
+            }
+        }
+    }
+
     @SuppressLint("BatteryLife")
     @Override
     public void onClick(View view) {
         switch (view.getId()){
             case R.id.buttonStart:
-                new NotificationRoll(getApplicationContext());
-                NotificationRoll.executeMainTask(getApplicationContext(), Calendar.getInstance());
-                Intent intent = new Intent(getBaseContext(), BackgroundService.class);
+//                new NotificationRoll(getApplicationContext());
+//                NotificationRoll.executeMainTask(getApplicationContext(), Calendar.getInstance());
                 String packageName = getApplicationContext().getPackageName();
                 PowerManager pm = (PowerManager) getApplicationContext().getSystemService(Context.POWER_SERVICE);
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     assert pm != null;
-                    if (pm.isIgnoringBatteryOptimizations(packageName))
-                        intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                    if (pm.isIgnoringBatteryOptimizations(packageName)) {
+//                        intent.setAction(Settings.ACTION_IGNORE_BATTERY_OPTIMIZATION_SETTINGS);
+                        Intent intent = new Intent(getBaseContext(), BackgroundService.class);
+                        startService(intent);
+                        buttonStart.setVisibility(View.GONE);
+                        buttonStop.setVisibility(View.VISIBLE);
+                    }
                     else {
+                        Intent intent = new Intent();
                         intent.setAction(Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS);
                         intent.setData(Uri.parse("package:" + packageName));
+                        startActivityForResult(intent, StaticValues.MY_IGNORE_OPTIMIZATION_REQUEST);
                     }
+                }else{
+                    Intent intent = new Intent(getBaseContext(), BackgroundService.class);
+                    startService(intent);
+                    buttonStart.setVisibility(View.GONE);
+                    buttonStop.setVisibility(View.VISIBLE);
                 }
-                startService(intent);
-                buttonStart.setVisibility(View.GONE);
-                buttonStop.setVisibility(View.VISIBLE);
                 break;
             case R.id.buttonStop:
                 stopService(new Intent(getBaseContext(), BackgroundService.class));
@@ -214,30 +256,31 @@ public class HomeActivity extends Activity implements View.OnClickListener {
                 buttonStop.setVisibility(View.GONE);
                 break;
             case R.id.buttonPage:
-                Dialog dialog = new Dialog(this);
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
-                dialog.setContentView(R.layout.menu_option);
-                Window window = dialog.getWindow();
-                Objects.requireNonNull(window).setLayout(this.getResources().getDisplayMetrics().widthPixels, ViewGroup.LayoutParams.WRAP_CONTENT);
-                ImageView closeDialog = dialog.findViewById(R.id.imageClose);
-                ConstraintLayout layoutWithdraw = dialog.findViewById(R.id.layoutWithdraw);
-                ConstraintLayout layoutDeposit = dialog.findViewById(R.id.layoutDeposit);
-                ConstraintLayout layoutNotif = dialog.findViewById(R.id.layoutNotification);
-                Button btnLogout = dialog.findViewById(R.id.buttonLogout);
-                closeDialog.setOnClickListener(v -> dialog.dismiss());
-                layoutWithdraw.setOnClickListener(v -> {
-                    dialog.dismiss();
-                    startActivity(new Intent(this, WithdrawActivity.class));
-                });
-                layoutDeposit.setOnClickListener(v -> {
-                    dialog.dismiss();
-                    Intent newIntent = new Intent(this, DepositActivity.class);
-                    newIntent.putExtra(StaticValues.DEPOSIT_ADDRESS, depositAddress);
-                    startActivity(newIntent);
-                });
-                layoutNotif.setOnClickListener(v -> dialog.dismiss());
-                btnLogout.setOnClickListener(v -> dialog.dismiss());
-                dialog.show();
+                startActivity(new Intent(this, ManualRollActivity.class));
+//                Dialog dialog = new Dialog(this);
+//                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
+//                dialog.setContentView(R.layout.menu_option);
+//                Window window = dialog.getWindow();
+//                Objects.requireNonNull(window).setLayout(this.getResources().getDisplayMetrics().widthPixels, ViewGroup.LayoutParams.WRAP_CONTENT);
+//                ImageView closeDialog = dialog.findViewById(R.id.imageClose);
+//                ConstraintLayout layoutWithdraw = dialog.findViewById(R.id.layoutWithdraw);
+//                ConstraintLayout layoutDeposit = dialog.findViewById(R.id.layoutDeposit);
+//                ConstraintLayout layoutNotif = dialog.findViewById(R.id.layoutNotification);
+//                Button btnLogout = dialog.findViewById(R.id.buttonLogout);
+//                closeDialog.setOnClickListener(v -> dialog.dismiss());
+//                layoutWithdraw.setOnClickListener(v -> {
+//                    dialog.dismiss();
+//                    startActivity(new Intent(this, WithdrawActivity.class));
+//                });
+//                layoutDeposit.setOnClickListener(v -> {
+//                    dialog.dismiss();
+//                    Intent newIntent = new Intent(this, DepositActivity.class);
+//                    newIntent.putExtra(StaticValues.DEPOSIT_ADDRESS, depositAddress);
+//                    startActivity(newIntent);
+//                });
+//                layoutNotif.setOnClickListener(v -> dialog.dismiss());
+//                btnLogout.setOnClickListener(v -> dialog.dismiss());
+//                dialog.show();
                 break;
             case R.id.buttonSlideTransaction:
                 if (isUp) {
@@ -286,6 +329,4 @@ public class HomeActivity extends Activity implements View.OnClickListener {
             return null;
         }
     }
-
-
 }

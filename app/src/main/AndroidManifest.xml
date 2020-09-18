@@ -17,7 +17,9 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.DepositActivity"></activity>
+        <activity android:name=".activity.SignUpActivity"></activity>
+        <activity android:name=".activity.ManualRollActivity" />
+        <activity android:name=".activity.DepositActivity" />
         <activity
             android:name=".activity.WithdrawActivity"
             android:windowSoftInputMode="stateHidden" />

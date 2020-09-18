@@ -17,14 +17,13 @@ public class RedeemRP {
     }
 
     private void parsingBonus(int rp) {
-
         if(rp >= StaticValues.POINT_1600){
             idB = StaticValues.FB_500;
             pointB = String.valueOf(StaticValues.POINT_1600);
-        }else if(rp >= StaticValues.POINT_800){
+        }else if(rp >= StaticValues.POINT_320){
             idB = StaticValues.FB_100;
             pointB = String.valueOf(StaticValues.POINT_320);
-        }else if(rp >= StaticValues.POINT_400){
+        }else if(rp >= StaticValues.POINT_160){
             idB = StaticValues.FB_50;
             pointB = String.valueOf(StaticValues.POINT_160);
         }

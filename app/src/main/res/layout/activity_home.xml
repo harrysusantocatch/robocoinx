@@ -31,6 +31,19 @@
         android:fontFamily="@font/avenir_roman"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textViewEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text=""
+        android:textColor="@color/white"
+        android:textSize="12sp"
+        android:fontFamily="@font/avenir_roman"
+        app:layout_constraintEnd_toEndOf="@id/parent"
+        app:layout_constraintBottom_toTopOf="@id/constraintBoxBalance"
+        android:layout_marginEnd="22dp"
+        android:layout_marginBottom="5dp"/>
+
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintBoxBalance"
         android:layout_width="match_parent"
@@ -108,6 +121,21 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
+    <TextView
+        android:id="@+id/textViewHaveCapcha"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="25dp"
+        android:textSize="12sp"
+        android:textColor="@color/white"
+        android:fontFamily="@font/avenir_roman"
+        android:layout_marginEnd="5dp"
+        android:text="requirement auto"
+        app:layout_constraintTop_toBottomOf="@+id/constraintBoxBalance"
+        app:layout_constraintStart_toStartOf="parent"/>
+
     <LinearLayout
         android:id="@+id/layoutPoint"
         android:layout_width="wrap_content"
@@ -115,7 +143,7 @@
         android:layout_marginTop="8dp"
         android:layout_marginStart="25dp"
         android:orientation="horizontal"
-        app:layout_constraintTop_toBottomOf="@+id/constraintBoxBalance"
+        app:layout_constraintTop_toBottomOf="@+id/textViewHaveCapcha"
         app:layout_constraintStart_toStartOf="parent">
 
         <TextView
@@ -137,16 +165,6 @@
             android:fontFamily="@font/avenir_roman"
             android:layout_marginEnd="15dp"
             android:text="reward poin" />
-
-        <TextView
-            android:id="@+id/textViewHaveCapcha"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textSize="12sp"
-            android:textColor="@color/white"
-            android:fontFamily="@font/avenir_roman"
-            android:layout_marginEnd="5dp"
-            android:text="-" />
     </LinearLayout>
 
     <TextView
@@ -183,7 +201,7 @@
         android:layout_marginEnd="23dp"
         android:orientation="vertical"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintBoxBalance">
+        app:layout_constraintTop_toBottomOf="@+id/textViewHaveCapcha">
 
         <TextView
             android:layout_width="wrap_content"

@@ -21,7 +21,6 @@ class WithdrawActivity : Activity(), AdapterView.OnItemSelectedListener, View.On
 
     private fun setupView() {
         val list: MutableList<String> = ArrayList()
-        list.add("Auto")
         list.add("Slow")
         list.add("Instant")
         val spinnerAdapter = ArrayAdapter<String>(this, R.layout.spinner_item, list)

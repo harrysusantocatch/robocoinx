@@ -216,7 +216,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:textColor="@color/white"
-                    android:background="@drawable/button_withdraw_left"
+                    android:background="@drawable/button_withdraw"
                     android:text="withdraw now"/>
                 <Button
                     android:id="@+id/btnChange"

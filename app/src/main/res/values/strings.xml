@@ -32,7 +32,6 @@
     <string name="btc_address">5D1tAaz5x1HUXrCNLbtMDqcw6o5GNn4xxX</string>
 
 
-
     <string name="note1">You can send bitcoins to your deposit address and
         they will be credited to your account after 1 network confirmation.
         We have no minimum deposit amount, we accept and credit all deposits to your account.</string>

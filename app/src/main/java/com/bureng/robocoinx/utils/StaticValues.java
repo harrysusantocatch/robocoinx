@@ -1,8 +1,12 @@
 package com.bureng.robocoinx.utils;
 
+import org.jetbrains.annotations.Nullable;
+
 public class StaticValues {
 
     public static final String OP = "free_play";
+    public static final String WITHDRAW = "withdraw";
+    public static final String WITHDRAW_TYPE_SLOW = "slow";
     public static final String AUTH_COOKIES = "auth_cookies";
     public static final String ERROR_GENERAL = "General Error";
     public static final String NOTIFICATION_ROLL = "notification_roll";
@@ -44,7 +48,9 @@ public class StaticValues {
     public static final String STOP_SERVICE = "stop_service";
     public static final String CREATE_SERVICE = "create_service";
     public static final String BOOT_COMPLETED = "android.intent.action.BOOT_COMPLETED";
-    public static int TIMEOUT = 100000;
+    public static final String CURRENT_BALANCE = "current_balance";
+    public static final String EMAIL = "email";
+    public static int TIMEOUT = 50000;
     public static final int POINT_1600 = 1600;
     public static final int POINT_1200 = 1200;
     public static final int POINT_800 = 800;
@@ -55,4 +61,6 @@ public class StaticValues {
     public static final int POINT_160 = 160;
     public static final int POINT_120 = 120;
     public static final int POINT_12 = 12;
+    public static final int MY_IGNORE_OPTIMIZATION_REQUEST = 1613;
+    public static final String BASE_URL = "https://freebitco.in/";
 }

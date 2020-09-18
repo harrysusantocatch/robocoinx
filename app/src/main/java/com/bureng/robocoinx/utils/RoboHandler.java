@@ -3,6 +3,7 @@ package com.bureng.robocoinx.utils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
@@ -18,6 +19,7 @@ import com.bureng.robocoinx.model.response.RollSuccessResponse;
 import com.bureng.robocoinx.model.view.NoCaptchaSpec;
 import com.bureng.robocoinx.model.view.ProfileView;
 import com.bureng.robocoinx.repository.ClaimHistoryHandler;
+import com.bureng.robocoinx.service.BackgroundService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -86,7 +88,7 @@ public class RoboHandler {
             if(homeResponse == null) return StaticValues.ERROR_GENERAL;
             updateCsrfToken(context, homeResponse);
             userCache.loginAuth = homeResponse.cookie("login_auth");
-            ProfileView profileView = new ProfileView(homeResponse.parse());
+            ProfileView profileView = new ProfileView(homeResponse.parse(), context);
             new CacheContext<>(UserCache.class, context).save(userCache, StaticValues.USER_CACHE);
             Map<String, String> cookies = new HashMap<>();
             cookies.put("login_auth", userCache.loginAuth);
@@ -197,9 +199,10 @@ public class RoboHandler {
             if(homeResponse == null) return StaticValues.ERROR_GENERAL;
             updateCsrfToken(context, homeResponse);
             Document doc = homeResponse.parse();
-            ProfileView pp = new ProfileView(doc);
+            ProfileView pp = new ProfileView(doc, context);
             if(pp.haveCaptcha){
                 resolveCaptchaWithPlay(context, pp, cookies);
+                context.stopService(new Intent(context.getApplicationContext(), BackgroundService.class));
                 return new RollErrorResponse("resolve captcha", 30000);
             }
             if(pp.nextRollTime > 0) return new RollErrorResponse("",pp.nextRollTime);
@@ -276,7 +279,7 @@ public class RoboHandler {
             if(homeResponse == null) return StaticValues.ERROR_GENERAL;
             updateCsrfToken(context, homeResponse);
             Document doc = homeResponse.parse();
-            ProfileView profileView = new ProfileView(doc);
+            ProfileView profileView = new ProfileView(doc, context);
             profileView.noCaptchaSpec = getCaptchaSpec(profileView);
             if (setInterestAndLottery(profileView, cookies, homeResponse)) return StaticValues.ERROR_GENERAL;
             return profileView;
@@ -289,18 +292,19 @@ public class RoboHandler {
     private static boolean resolveCaptchaWithPlay(Context context, ProfileView profileView, Map<String, String> cookies) {
         try {
             NoCaptchaSpec noCaptchaSpec = getCaptchaSpec(profileView);
+            // this is spec
+            double wagerSpec = Double.parseDouble(noCaptchaSpec.wager);
+            int lotterySpecInt = Integer.parseInt(noCaptchaSpec.lottery);
+            double lotterySpec = (double) lotterySpecInt/100000000;
+
             double balance = Double.parseDouble(profileView.balance);
             double currentBalance = 0;
             currentBalance = currentBalance + balance;
-            double minimumBalance = 0.00003500;
-            if(balance > minimumBalance) {
+            double minimumBalance = 0.00050000;
+            double maxWagerInit = 0.00050000;
+            if(balance > minimumBalance) { // TODO add max total wager
                 DecimalFormat precision = new DecimalFormat("0.00000000");
                 String clientSeed = getClientSeed();
-
-                // this is spec
-                double wagerSpec = Double.parseDouble(noCaptchaSpec.wager);
-                int lotterySpecInt = Integer.parseInt(noCaptchaSpec.lottery);
-                double lotterySpec = (double) lotterySpecInt/100000000;
 
                 int lose = 0;
                 boolean isLo = true;
