@@ -29,14 +29,14 @@
                 android:fontFamily="@font/avenir_roman" />
 
             <Button
-                android:id="@+id/buttonUp"
+                android:id="@+id/buttonLogin"
                 android:layout_width="wrap_content"
                 android:layout_height="25dp"
                 android:textColor="@color/white"
                 android:textSize="12sp"
                 android:textAllCaps="false"
                 android:fontFamily="@font/avenir_roman"
-                android:text="@string/label_sign_up"
+                android:text="@string/label_login"
                 android:background="@drawable/button_up" />
         </LinearLayout>
 
@@ -49,7 +49,7 @@
             android:textColor="@color/white"
             android:fontFamily="@font/gotham_bold"
             android:textAllCaps="true"
-            android:text="@string/app_name"
+            android:text="@string/header"
             app:layout_constraintBottom_toTopOf="@+id/layout"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
@@ -144,12 +144,34 @@
                 android:layout_gravity="center"
                 android:textColor="@color/white" />
 
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutRefresh"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <Button
+                    android:id="@+id/buttonRefreshCaptcha"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/refresh_captcha"
+                    android:textAllCaps="false"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:background="@drawable/button_radius"
+                    android:paddingStart="10sp"
+                    android:paddingEnd="10sp"
+                    android:layout_marginTop="10sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
             <Button
-                android:id="@+id/buttonAction"
+                android:id="@+id/buttonSignUp"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="30dp"
                 android:textSize="18sp"
+                android:text="@string/label_sign_up"
                 android:fontFamily="@font/gotham_bold"
                 android:textColor="@color/white"
                 android:background="@drawable/button_radius" />

@@ -1,10 +1,13 @@
 <resources>
     <string name="app_name">robocoinx</string>
+    <string name="header">Free Bitcoin</string>
     <string name="label_email">Email</string>
     <string name="label_password">Password</string>
     <string name="label_login">Login</string>
     <string name="label_sign_up">Sign Up</string>
     <string name="label_forgot_pass">Forgot Password?</string>
+
+    <string name="refresh_captcha">Refresh Captcha</string>
 
     <string name="finish">FINISH</string>
     <string name="start">START</string>
