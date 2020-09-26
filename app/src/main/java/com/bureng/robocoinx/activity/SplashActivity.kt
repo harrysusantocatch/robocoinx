@@ -52,7 +52,7 @@ class SplashActivity : Activity(), SplashContract.View {
     }
 
     override fun showMessage(message: String?) {
-        Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()
+        runOnUiThread { Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()}
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -63,13 +63,15 @@ class SplashActivity : Activity(), SplashContract.View {
             val document = Jsoup.parse(inputStream, "UTF-8", "")
             val doc = document.html()
             html = doc.replace("[code]", signUpRequest.script)
-            val webView = findViewById<WebView>(R.id.webviewx)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-                webView.settings.safeBrowsingEnabled = false
+            runOnUiThread {
+                val webView = findViewById<WebView>(R.id.webviewx)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    webView.settings.safeBrowsingEnabled = false
+                }
+                webView.settings.javaScriptEnabled = true
+                webView.addJavascriptInterface(WebAppInterface(this, signUpRequest), "Android")
+                webView.loadDataWithBaseURL("blarg://ignored", html, "text/html", "UTF-8", "")
             }
-            webView.settings.javaScriptEnabled = true
-            webView.addJavascriptInterface(WebAppInterface(this, signUpRequest), "Android")
-            webView.loadDataWithBaseURL("blarg://ignored", html, "text/html", "UTF-8", "")
         } catch (e: Exception) {
             e.printStackTrace()
             FileManager.getInstance().appendLog(e)

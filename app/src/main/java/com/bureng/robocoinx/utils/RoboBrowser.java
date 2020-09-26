@@ -390,4 +390,34 @@ public class RoboBrowser {
         }
         return response;
     }
+
+    static Connection.Response getResetResponse(String email, String captchaNet, String captchaResp, String fingerprint) {
+        Connection.Response response = null;
+        try {
+            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_B))
+                    .userAgent(StaticValues.USER_AGENT)
+                    .header("Origin", CryptEx.toBaseDecode(StaticValues.URL_KEY_A))
+                    .referrer(CryptEx.toBaseDecode(StaticValues.URL_KEY_S))
+                    .header("Accept", "*/*")
+                    .header("Content-Type", "application/x-www-form-urlencoded")
+                    .header("x-csrf-token", csrfToken)
+                    .header("Host", CryptEx.toBaseDecode(StaticValues.URL_KEY_O))
+                    .header("Connection", "Keep-Alive")
+                    .header("Access-Control-Allow-Credentials", "true")
+                    .header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept")
+                    .timeout(StaticValues.TIMEOUT)
+                    .method(Connection.Method.POST)
+                    .data("csrf_token", csrfToken)
+                    .data("op", StaticValues.RESET_PASSWORD)
+                    .data("email", email)
+                    .data("captchasnet_random", captchaNet)
+                    .data("captchasnet_response", captchaResp)
+                    .data("fingerprint", fingerprint)
+                    .cookies(baseCookies)
+                    .execute();
+        } catch (IOException e) {
+            FileManager.getInstance().appendLog(e);
+        }
+        return response;
+    }
 }

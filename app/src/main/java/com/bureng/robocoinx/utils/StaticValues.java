@@ -5,6 +5,7 @@ import org.jetbrains.annotations.Nullable;
 public class StaticValues {
 
     public static final String OP = "free_play";
+    public static final String RESET_PASSWORD = "forgot_password";
     public static final String WITHDRAW = "withdraw";
     public static final String WITHDRAW_TYPE_SLOW = "slow";
     public static final String AUTH_COOKIES = "auth_cookies";

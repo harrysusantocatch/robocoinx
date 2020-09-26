@@ -14,6 +14,7 @@ import com.bureng.robocoinx.model.common.UserCache;
 import com.bureng.robocoinx.model.db.ClaimHistory;
 import com.bureng.robocoinx.model.request.RollRequest;
 import com.bureng.robocoinx.model.request.SignUpRequest;
+import com.bureng.robocoinx.model.response.MessageResponse;
 import com.bureng.robocoinx.model.response.RollErrorResponse;
 import com.bureng.robocoinx.model.response.RollSuccessResponse;
 import com.bureng.robocoinx.model.view.NoCaptchaSpec;
@@ -23,6 +24,7 @@ import com.bureng.robocoinx.service.BackgroundService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Connection;
@@ -81,7 +83,7 @@ public class RoboHandler {
             Document docLogin = loginResponse.parse();
             String contentBody = docLogin.body().html();
             String[] dataLogin = contentBody.split(":");
-            if(dataLogin.length < 3) return contentBody;
+            if(dataLogin.length < 3) return dataLogin[1];
             UserCache userCache = new UserCache(dataLogin);
             Map<String, String> firstHomeCookies = setForFirstHomeCookies(RoboBrowser.baseCookies, userCache);
             Connection.Response homeResponse = RoboBrowser.getFirstHomeResponse(firstHomeCookies);
@@ -126,7 +128,33 @@ public class RoboHandler {
             if(result[0].equalsIgnoreCase("s")){
                 return parsingLoginResponse(context, request.email, request.password);
             }else if(result[0].equalsIgnoreCase("e")){
-                return result[1];
+                String msg = result[1];
+                String ms1 = "email";
+                String ms2 = "exist";
+                if(msg.contains(ms1) && msg.contains(ms2)){
+                    msg = "Please use another email address";
+                }
+                return msg;
+            }else return StaticValues.ERROR_GENERAL;
+        }catch (Exception e){
+            e.printStackTrace();
+            FileManager.getInstance().appendLog(e);
+            return StaticValues.ERROR_GENERAL;
+        }
+    }
+
+    public static Object parsingResetPassword(String email, String captchaNet, String captchaResp, String fingerprint) {
+        Connection.Response resetResponse = RoboBrowser.getResetResponse(email, captchaNet, captchaResp, fingerprint);
+        if(resetResponse == null) return StaticValues.ERROR_GENERAL;
+        try {
+            Document doc = resetResponse.parse();
+            String contentBody = doc.body().html();
+            String[] result = contentBody.split(":");
+            if(result.length == 0) return StaticValues.ERROR_GENERAL;
+            if(result[0].equalsIgnoreCase("s")){
+                return new MessageResponse(result[0],result[1]);
+            }else if(result[0].equalsIgnoreCase("e")){
+                return new MessageResponse(result[0],result[1]);
             }else return StaticValues.ERROR_GENERAL;
         }catch (Exception e){
             e.printStackTrace();
@@ -702,4 +730,5 @@ public class RoboHandler {
             }
         });
     }
+
 }

@@ -1,11 +1,11 @@
 package com.bureng.robocoinx.activity
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
 import com.bureng.robocoinx.R
 import com.bureng.robocoinx.contract.SignUpContract
 import com.bureng.robocoinx.model.common.DoAsync
@@ -18,7 +18,7 @@ import com.bureng.robocoinx.utils.StaticValues
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_signup.*
 
-class SignUpActivity : AppCompatActivity(), View.OnClickListener, SignUpContract.View {
+class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
     private lateinit var presenter: SignUpContract.Presenter
     private lateinit var fingerprint: String
     private lateinit var captchaNets: String
@@ -34,24 +34,24 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, SignUpContract
     }
 
     private fun setOnClickListener() {
-        buttonLogin.setOnClickListener(this)
-        buttonSignUp.setOnClickListener(this)
+        buttonLoginSG.setOnClickListener(this)
+        buttonSignUpSG.setOnClickListener(this)
         buttonRefreshCaptcha.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
         v?.let {
             when(it.id){
-                R.id.buttonLogin -> {
+                R.id.buttonLoginSG -> {
                     val signUpRequest = (intent.getSerializableExtra(StaticValues.SIGNUP_REQ) as SignUpRequest)
                     val loginIntent = Intent(applicationContext, LoginActivity::class.java)
                     loginIntent.putExtra(StaticValues.SIGNUP_REQ, signUpRequest)
                     startActivity(loginIntent)
                 }
-                R.id.buttonSignUp -> {
+                R.id.buttonSignUpSG -> {
                     DoAsync {
-                        val email: String = editTextEmail.text.toString()
-                        val password: String = editTextPass.text.toString()
+                        val email: String = editTextEmailSG.text.toString()
+                        val password: String = editTextPassSG.text.toString()
                         val captcha: String = editTextCaptcha.text.toString()
                         val signUpRequest = (intent.getSerializableExtra(StaticValues.SIGNUP_REQ) as SignUpRequest)
                         signUpRequest.email = email
@@ -63,10 +63,10 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, SignUpContract
                     }.execute()
                 }
                 R.id.buttonRefreshCaptcha ->{
+                    editTextCaptcha.setText("")
                     DoAsync{
-                        editTextCaptcha.setText("")
                         presenter.getCaptchaNet(fingerprint)
-                    }
+                    }.execute()
                 }else -> {}
             }
         }
@@ -74,10 +74,10 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, SignUpContract
 
     @SuppressLint("ShowToast")
     override fun showMessage(message: String) {
-        runOnUiThread { Toast.makeText(applicationContext, message, Toast.LENGTH_LONG) }
+        runOnUiThread { Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show() }
         DoAsync{
             presenter.getCaptchaNet(fingerprint)
-        }
+        }.execute()
     }
 
     override fun goHome(profileView: ProfileView) {
@@ -88,8 +88,10 @@ class SignUpActivity : AppCompatActivity(), View.OnClickListener, SignUpContract
     }
 
     override fun setCaptchaNet(captchaNet: String) {
-        captchaNets = captchaNet
-        val path = "https://captchas.freebitco.in/botdetect/e/live/images/$captchaNet.jpeg"
-        Picasso.get().load(path).into(captcha)
+        runOnUiThread {
+            captchaNets = captchaNet
+            val path = "https://captchas.freebitco.in/botdetect/e/live/images/$captchaNet.jpeg"
+            Picasso.get().load(path).into(captcha)
+        }
     }
 }
