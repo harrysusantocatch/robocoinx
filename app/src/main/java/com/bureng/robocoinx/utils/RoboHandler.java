@@ -14,6 +14,7 @@ import com.bureng.robocoinx.model.common.UserCache;
 import com.bureng.robocoinx.model.db.ClaimHistory;
 import com.bureng.robocoinx.model.request.RollRequest;
 import com.bureng.robocoinx.model.request.SignUpRequest;
+import com.bureng.robocoinx.model.response.InitWithdrawResponse;
 import com.bureng.robocoinx.model.response.MessageResponse;
 import com.bureng.robocoinx.model.response.RollErrorResponse;
 import com.bureng.robocoinx.model.response.RollSuccessResponse;
@@ -731,4 +732,38 @@ public class RoboHandler {
         });
     }
 
+    public static Object parsingHomeWithdrawResponse(Context context) {
+        UserCache userCache = new CacheContext<>(UserCache.class, context).get(StaticValues.USER_CACHE);
+        Map<String, String> cookies = new HashMap<>();
+        if(FileManager.getInstance().fileExists(context, StaticValues.AUTH_COOKIES)){
+            String cookiesStr =  FileManager.getInstance().readFile(context, StaticValues.AUTH_COOKIES);
+            Type type = new TypeToken<Map<String, String>>(){}.getType();
+            cookies = new Gson().fromJson(cookiesStr, type);
+        }else {
+            cookies.put("login_auth", userCache.loginAuth);
+            cookies.put("btc_address",userCache.btcAddress);
+            cookies.put("password",userCache.password);
+            cookies.put("have_account", "1");
+            FileManager.getInstance().writeFile(context, StaticValues.AUTH_COOKIES, new Gson().toJson(cookies));
+        }
+        try {
+            Connection.Response homeResponse = RoboBrowser.getRefreshHomeResponse(cookies);
+            if(homeResponse == null) return StaticValues.ERROR_GENERAL;
+            updateCsrfToken(context, homeResponse);
+            Document doc = homeResponse.parse();
+            String balance = doc.getElementById("balance").text();
+            String fee = doc.getElementsByClass("manual_withdraw_fee").get(0).text();
+            InitWithdrawResponse result = new InitWithdrawResponse(balance, fee);
+            return result;
+        } catch (IOException e) {
+            FileManager.getInstance().appendLog(e);
+            return StaticValues.ERROR_GENERAL;
+        }
+    }
+
+    public static Object parsingWithdrawResponse(String amount, String address) {
+        return new MessageResponse("s", "We have sent you an email with a confirmation link. Unless you click the link in the email, this payment will not be sent.\n" +
+                "<BR><BR>The confirmation link will expire in 1 hour and if it is not clicked by then, \n" +
+                "the payment request will be cancelled and the amount will be refunded to your account balance.:0.00412497");
+    }
 }

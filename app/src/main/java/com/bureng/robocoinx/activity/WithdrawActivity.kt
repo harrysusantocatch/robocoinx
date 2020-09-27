@@ -1,104 +1,114 @@
 package com.bureng.robocoinx.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
+import android.content.Intent
 import android.os.Bundle
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.View
-import android.widget.AdapterView
-import android.widget.ArrayAdapter
-import android.widget.TextView
 import android.widget.Toast
+import androidx.core.text.HtmlCompat
 import com.bureng.robocoinx.R
+import com.bureng.robocoinx.contract.WithdrawContract
+import com.bureng.robocoinx.model.common.DoAsync
+import com.bureng.robocoinx.model.response.InitWithdrawResponse
+import com.bureng.robocoinx.presenter.WithdrawPresenter
 import kotlinx.android.synthetic.main.activity_withdraw.*
+import java.math.BigDecimal
 
 
-class WithdrawActivity : Activity(), AdapterView.OnItemSelectedListener, View.OnClickListener{
+class WithdrawActivity : Activity(), View.OnClickListener, WithdrawContract.View{
 
+    private lateinit var presenter: WithdrawContract.Presenter
+    private var initFee: Double = 0.0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_withdraw)
-        setupView()
+        setOnListener()
+        presenter = WithdrawPresenter(this)
+        DoAsync{
+            presenter.loadData(applicationContext)
+        }.execute()
     }
 
-    private fun setupView() {
-        val list: MutableList<String> = ArrayList()
-        list.add("Slow")
-        list.add("Instant")
-        val spinnerAdapter = ArrayAdapter<String>(this, R.layout.spinner_item, list)
-        spinner.adapter = spinnerAdapter
-        spinner.onItemSelectedListener = this
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinner.isEnabled = false
+    private fun setOnListener() {
+        buttonWithdrawWD.setOnClickListener(this)
+        imageBackWD.setOnClickListener(this)
+        editTextAmount.addTextChangedListener(object : TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
 
-        btnChange.setOnClickListener(this)
-        btnSave.setOnClickListener(this)
-        btnWithdrawNow.setOnClickListener(this)
-    }
+            }
 
-    override fun onNothingSelected(parent: AdapterView<*>?) {
-    }
+            @SuppressLint("SetTextI18n")
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                s?.let {
+                    if(it.isNotEmpty()){
+                        var total: BigDecimal = BigDecimal.ZERO
+                        total += it.toString().toBigDecimal() + initFee.toBigDecimal()
+                        labelAmountDeducted.text = "Amount Deducted: ${total} BTC"
+                    }
+                }
+            }
 
-    override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
-        val textView = view as TextView
-        val key = textView.text.toString()
-        val time = getTime(key)
-        val fee = getFee(key)
-        cardTime.text = time
-        cardFee.text = fee
-        valueTime.setText(time)
-        valueFee.setText(fee)
-        val keyFirst = key.toCharArray()[0]
-        val typeSecond = key.substring(1, key.length)
-        firstType.text = keyFirst.toString()
-        secondType.text = typeSecond
-    }
+            override fun afterTextChanged(s: Editable?) {
 
-    fun getTime(key: String): String{
-        val takeTime : MutableMap<String, String> = mutableMapOf(
-                "Auto" to "Every sunday",
-                "Slow" to "6 - 24 hour",
-                "Instant" to "~15 minute")
-        return takeTime[key]!!
-    }
-
-    fun getFee(key: String): String{
-        val fees : MutableMap<String, String> = mutableMapOf(
-                "Auto" to "0.00000933",
-                "Slow" to "0.00000933",
-                "Instant" to "0.00003967")
-        return fees[key]!!
+            }
+        })
     }
 
     override fun onClick(v: View?) {
-        when(v?.id){
-            R.id.btnChange -> stateChange()
-            R.id.btnSave -> stateSave()
-            R.id.btnWithdrawNow -> {
-                Toast.makeText(this, "Coming Soon, please be patient. Thank You", Toast.LENGTH_LONG).show()
+        v?.let {
+            when(it.id){
+                R.id.buttonWithdrawWD -> {
+                    val amount = editTextAmount.text.toString()
+                    val address = editTextBitcoinAddress.text.toString()
+                    DoAsync {
+                        presenter.withdraw(amount, address)
+                    }.execute()
+                }
+                R.id.imageBackWD -> {
+                    onBackPressed()
+                }
+                else ->{}
             }
         }
     }
 
-    private fun stateChange() {
-        spinner.isEnabled = true
-        spinner.isClickable = true
-        spinner.setBackgroundResource(R.drawable.spinner_bg_edit)
-        valueAddress.isEnabled = true
-        valueAddress.setBackgroundResource(R.drawable.button_orange)
-        valueAmount.isEnabled = true
-        valueAmount.setBackgroundResource(R.drawable.button_orange)
-        layoutAction2.visibility = View.GONE
-        layoutAction1.visibility = View.VISIBLE
+    @SuppressLint("SetTextI18n")
+    override fun setData(initWithdraw: InitWithdrawResponse) {
+        runOnUiThread {
+            val fee = initWithdraw.fee
+            textViewBalanceWD.text = initWithdraw.balance
+            labelFeesWD.text = "Transaction Fees: $fee BTC"
+            initFee = fee.toDouble()
+        }
     }
-    private fun stateSave() {
-        spinner.isEnabled = false
-        spinner.isClickable = false
-        spinner.setBackgroundResource(R.drawable.spinner_bg)
-        valueAddress.isEnabled = false
-        valueAddress.setBackgroundResource(R.drawable.button_orange2)
-        valueAmount.isEnabled = false
-        valueAmount.isFocusable = false
-        valueAmount.setBackgroundResource(R.drawable.button_orange2)
-        layoutAction2.visibility = View.VISIBLE
-        layoutAction1.visibility = View.GONE
+
+    override fun showMessage(message: String) {
+        runOnUiThread { Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show() }
     }
+
+    override fun showMessageSuccess(message: String) {
+        runOnUiThread {
+            val positiveButtonClick = { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+            }
+
+            val builder = AlertDialog.Builder(this, R.style.AlertDialogStyle)
+            with(builder)
+            {
+                setTitle("Success!!")
+                setMessage(HtmlCompat.fromHtml(message, HtmlCompat.FROM_HTML_MODE_COMPACT))
+                setPositiveButton("OK", positiveButtonClick)
+                setOnDismissListener {
+                    startActivity(Intent(applicationContext, SplashActivity::class.java))
+                }
+                show()
+            }
+        }
+    }
+
 }

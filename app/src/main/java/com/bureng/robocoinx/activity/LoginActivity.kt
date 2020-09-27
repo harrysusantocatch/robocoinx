@@ -3,6 +3,7 @@ package com.bureng.robocoinx.activity
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.widget.Toast
 import com.bureng.robocoinx.R
@@ -15,6 +16,7 @@ import com.bureng.robocoinx.utils.StaticValues
 import kotlinx.android.synthetic.main.activity_login.*
 
 class LoginActivity : Activity(), LoginContract.View, View.OnClickListener {
+    private var visibilityPass = false
     private lateinit var presenter: LoginContract.Presenter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -27,6 +29,7 @@ class LoginActivity : Activity(), LoginContract.View, View.OnClickListener {
         buttonSignUpLG.setOnClickListener(this)
         buttonLoginLG.setOnClickListener(this)
         textViewForgotPass.setOnClickListener(this)
+        imageVisibilityPassLG.setOnClickListener(this)
     }
 
     override fun showMessage(message: String) {
@@ -60,6 +63,17 @@ class LoginActivity : Activity(), LoginContract.View, View.OnClickListener {
                 val intent = Intent(baseContext, ForgotPasswordActivity::class.java)
                 intent.putExtra(StaticValues.SIGNUP_REQ, signUpRequest)
                 startActivity(intent)
+            }
+            R.id.imageVisibilityPassLG -> {
+                if(visibilityPass){
+                    visibilityPass = false
+                    imageVisibilityPassLG.setImageDrawable(getDrawable(R.drawable.ic_visibility_off))
+                    editTextPassLG.transformationMethod = PasswordTransformationMethod()
+                }else{
+                    visibilityPass = true
+                    imageVisibilityPassLG.setImageDrawable(getDrawable(R.drawable.ic_visibility_on))
+                    editTextPassLG.transformationMethod = null
+                }
             }
         }
     }

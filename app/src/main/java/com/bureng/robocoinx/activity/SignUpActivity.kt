@@ -4,6 +4,7 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.widget.Toast
 import com.bureng.robocoinx.R
@@ -16,9 +17,11 @@ import com.bureng.robocoinx.presenter.SignUpPresenter
 import com.bureng.robocoinx.utils.CacheContext
 import com.bureng.robocoinx.utils.StaticValues
 import com.squareup.picasso.Picasso
+import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_signup.*
 
 class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
+    private var visibilityPass = false
     private lateinit var presenter: SignUpContract.Presenter
     private lateinit var fingerprint: String
     private lateinit var captchaNets: String
@@ -37,6 +40,7 @@ class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
         buttonLoginSG.setOnClickListener(this)
         buttonSignUpSG.setOnClickListener(this)
         buttonRefreshCaptcha.setOnClickListener(this)
+        imageVisibilityPassSG.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -67,7 +71,19 @@ class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
                     DoAsync{
                         presenter.getCaptchaNet(fingerprint)
                     }.execute()
-                }else -> {}
+                }
+                R.id.imageVisibilityPassSG -> {
+                    if(visibilityPass){
+                        visibilityPass = false
+                        imageVisibilityPassSG.setImageDrawable(getDrawable(R.drawable.ic_visibility_off))
+                        editTextPassSG.transformationMethod = PasswordTransformationMethod()
+                    }else{
+                        visibilityPass = true
+                        imageVisibilityPassSG.setImageDrawable(getDrawable(R.drawable.ic_visibility_on))
+                        editTextPassSG.transformationMethod = null
+                    }
+                }
+                else -> {}
             }
         }
     }

@@ -249,7 +249,9 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
     }
 
     override fun goToSplash() {
-        startActivity(Intent(applicationContext, SplashActivity::class.java))
+        val intent = Intent(applicationContext, SplashActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
     }
 
     @Suppress("DEPRECATION")
