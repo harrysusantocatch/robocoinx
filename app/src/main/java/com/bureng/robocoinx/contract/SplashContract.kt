@@ -8,6 +8,8 @@ interface SplashContract {
         fun goHome(profileView: ProfileView)
         fun loadFingerprint(signUpRequest: SignUpRequest)
         fun showMessage(message: String?)
+        fun showProgressBar()
+        fun hideProgressBar()
     }
 
     interface Presenter {

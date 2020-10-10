@@ -11,6 +11,7 @@ interface HomeContract {
     interface  Presenter{
         fun getTransactionList(context: Context)
         fun logout(ctx: Context)
+        fun callRoll(ctx: Context)
     }
 
 }

@@ -10,7 +10,15 @@
 
     <style name="AlertDialogStyle" parent="Theme.AppCompat.Light.Dialog">
         <item name="android:colorAccent">@color/bottomIcon</item>
-        <item name="android:textColor">@color/colorPrimaryDark</item>
-        <item name="android:textColorPrimary">@color/colorPrimary</item>
+        <item name="android:textColor">@color/bottomIcon</item>
+        <item name="android:textColorPrimary">@color/bottomIcon</item>
+    </style>
+
+    <style name="BlueAccent">
+        <item name="colorAccent">@color/midBlue</item>
+    </style>
+
+    <style name="WhiteAccent">
+        <item name="colorAccent">@color/white</item>
     </style>
 </resources>

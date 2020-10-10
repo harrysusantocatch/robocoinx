@@ -86,7 +86,7 @@ public class RoboBrowser {
         try {
             response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_B))
                     .header("Accept", "*/*")
-                    .header("accept-encoding", "gzip, deflate, br")
+//                    .header("accept-encoding", "gzip, deflate, br")
                     .header("accept-language", "en-US,en;q=0.9")
 //                    .header("content-length", "331")
                     .header("Origin", CryptEx.toBaseDecode(StaticValues.URL_KEY_A))
@@ -361,16 +361,18 @@ public class RoboBrowser {
     }
 
     static Connection.Response getWithdrawResponse(Map<String, String> cookies, String amount, String withdrawAddress){
+        cookies.put("csrf_token", csrfToken);
         Connection.Response response = null;
         try {
-            response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_B))
+            response = Jsoup.connect("https://freebitco.in/")
                     .header("Accept", "*/*")
-                    .header("accept-encoding", "gzip, deflate, br")
                     .header("accept-language", "en-US,en;q=0.9")
-//                    .header("content-length", "331")
-                    .header("Origin", CryptEx.toBaseDecode(StaticValues.URL_KEY_A))
-                    .referrer(CryptEx.toBaseDecode(StaticValues.URL_KEY_A))
+//                    .header("content-length", "121")
+//                    .header("accept-encoding", "gzip, deflate, br")
                     .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                    .header("Origin", "https://freebitco.in")
+                    .referrer("https://freebitco.in/")
+                    .header("sec-fetch-dest", "empty")
                     .header("sec-fetch-mode", "cors")
                     .header("sec-fetch-site", "same-origin")
                     .userAgent(StaticValues.USER_AGENT)
@@ -378,11 +380,13 @@ public class RoboBrowser {
                     .header("x-requested-with", "XMLHttpRequest")
                     .timeout(StaticValues.TIMEOUT)
                     .method(Connection.Method.POST)
+//                    .ignoreContentType(true)
                     .data("csrf_token", csrfToken)
                     .data("op", StaticValues.WITHDRAW)
                     .data("type", StaticValues.WITHDRAW_TYPE_SLOW)
                     .data("amount", amount)
                     .data("withdraw_address", withdrawAddress)
+                    .data("tfa_code", "")
                     .cookies(cookies)
                     .execute();
         } catch (IOException e) {
@@ -420,4 +424,37 @@ public class RoboBrowser {
         }
         return response;
     }
+
+    static Connection.Response getChangePasswordResponse(Map<String, String> cookies, String oldPassword, String newPassword, String repeatPassword){
+        cookies.put("csrf_token", csrfToken);
+        Connection.Response response = null;
+        try {
+            response = Jsoup.connect("https://freebitco.in/")
+                    .header("Accept", "*/*")
+                    .header("accept-language", "en-US,en;q=0.9")
+                    .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
+                    .header("Origin", "https://freebitco.in")
+                    .referrer("https://freebitco.in/")
+                    .header("sec-fetch-dest", "empty")
+                    .header("sec-fetch-mode", "cors")
+                    .header("sec-fetch-site", "same-origin")
+                    .userAgent(StaticValues.USER_AGENT)
+                    .header("x-csrf-token", csrfToken)
+                    .header("x-requested-with", "XMLHttpRequest")
+                    .timeout(StaticValues.TIMEOUT)
+                    .method(Connection.Method.POST)
+//                    .ignoreContentType(true)
+                    .data("csrf_token", csrfToken)
+                    .data("op", StaticValues.CHANGE_PASSWORD)
+                    .data("old_password", oldPassword)
+                    .data("new_password", newPassword)
+                    .data("repeat_new_password", repeatPassword)
+                    .cookies(cookies)
+                    .execute();
+        } catch (IOException e) {
+            FileManager.getInstance().appendLog(e);
+        }
+        return response;
+    }
+
 }

@@ -7,6 +7,8 @@ interface LoginContract {
     interface View {
         fun showMessage(message: String)
         fun goHome(profileView: ProfileView)
+        fun showProgressBar()
+        fun hideProgressBar()
     }
 
     interface Presenter {

@@ -9,6 +9,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import androidx.core.text.HtmlCompat
 import com.bureng.robocoinx.R
@@ -23,7 +24,7 @@ import java.math.BigDecimal
 class WithdrawActivity : Activity(), View.OnClickListener, WithdrawContract.View{
 
     private lateinit var presenter: WithdrawContract.Presenter
-    private var initFee: Double = 0.0
+    private var initFee: BigDecimal = BigDecimal.ZERO
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_withdraw)
@@ -38,24 +39,20 @@ class WithdrawActivity : Activity(), View.OnClickListener, WithdrawContract.View
         buttonWithdrawWD.setOnClickListener(this)
         imageBackWD.setOnClickListener(this)
         editTextAmount.addTextChangedListener(object : TextWatcher{
-            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-
-            }
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             @SuppressLint("SetTextI18n")
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 s?.let {
                     if(it.isNotEmpty()){
                         var total: BigDecimal = BigDecimal.ZERO
-                        total += it.toString().toBigDecimal() + initFee.toBigDecimal()
-                        labelAmountDeducted.text = "Amount Deducted: ${total} BTC"
+                        total += it.toString().toBigDecimal() + initFee
+                        labelAmountDeducted.text = "Amount Deducted: $total BTC"
                     }
                 }
             }
 
-            override fun afterTextChanged(s: Editable?) {
-
-            }
+            override fun afterTextChanged(s: Editable?) {}
         })
     }
 
@@ -66,7 +63,7 @@ class WithdrawActivity : Activity(), View.OnClickListener, WithdrawContract.View
                     val amount = editTextAmount.text.toString()
                     val address = editTextBitcoinAddress.text.toString()
                     DoAsync {
-                        presenter.withdraw(amount, address)
+                        presenter.withdraw(applicationContext, amount, address)
                     }.execute()
                 }
                 R.id.imageBackWD -> {
@@ -83,7 +80,7 @@ class WithdrawActivity : Activity(), View.OnClickListener, WithdrawContract.View
             val fee = initWithdraw.fee
             textViewBalanceWD.text = initWithdraw.balance
             labelFeesWD.text = "Transaction Fees: $fee BTC"
-            initFee = fee.toDouble()
+            initFee = fee.toBigDecimal()
         }
     }
 
@@ -108,6 +105,21 @@ class WithdrawActivity : Activity(), View.OnClickListener, WithdrawContract.View
                 }
                 show()
             }
+        }
+    }
+
+    override fun showProgressBar() {
+        runOnUiThread {
+            progressBarWD.visibility = View.VISIBLE
+            window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        }
+    }
+
+    override fun hideProgressBar() {
+        runOnUiThread {
+            progressBarWD.visibility = View.GONE
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
     }
 

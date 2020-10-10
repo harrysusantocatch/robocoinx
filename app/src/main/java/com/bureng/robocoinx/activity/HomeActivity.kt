@@ -27,6 +27,7 @@ import androidx.constraintlayout.widget.ConstraintSet
 import com.bureng.robocoinx.R
 import com.bureng.robocoinx.adapter.TransactionAdapter
 import com.bureng.robocoinx.contract.HomeContract
+import com.bureng.robocoinx.model.common.DoAsync
 import com.bureng.robocoinx.model.db.ClaimHistory
 import com.bureng.robocoinx.model.view.ProfileView
 import com.bureng.robocoinx.presenter.HomePresenter
@@ -37,6 +38,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 
 class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
+    private var runManual = false
     private var isUp = false
     private lateinit var depositAddress: String
     private lateinit var presenter: HomeContract.Presenter
@@ -71,6 +73,7 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
     private fun setValueUI() {
         runOnUiThread {
             val pp = intent.getSerializableExtra(StaticValues.PROFILE_VIEW) as ProfileView
+            if (pp.haveCaptcha) runManual = true
             depositAddress = pp.depositAdress
             textViewUserId.text = pp.userID
             textViewBalance.text = pp.balance
@@ -88,7 +91,12 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
                 }
                 override fun onFinish() {
                     textViewnextRoll!!.setText(R.string.stop_count_hour)
-                    launchManual()
+                    if(runManual) launchManual()
+                    else {
+                        DoAsync{
+                            presenter.callRoll(applicationContext)
+                        }.execute()
+                    }
                 }
             }.start()
 
@@ -134,6 +142,29 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
     }
 
     @SuppressLint("BatteryLife")
+    private fun startRollService(){
+        val packageName = applicationContext.packageName
+        val pm = applicationContext.getSystemService(POWER_SERVICE) as PowerManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (pm.isIgnoringBatteryOptimizations(packageName)) {
+                val intent = Intent(baseContext, BackgroundService::class.java)
+                startService(intent)
+                buttonStart!!.visibility = View.GONE
+                buttonStop!!.visibility = View.VISIBLE
+            } else {
+                val intent = Intent()
+                intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
+                intent.data = Uri.parse("package:$packageName")
+                startActivityForResult(intent, StaticValues.MY_IGNORE_OPTIMIZATION_REQUEST)
+            }
+        } else {
+            val intent = Intent(baseContext, BackgroundService::class.java)
+            startService(intent)
+            buttonStart!!.visibility = View.GONE
+            buttonStop!!.visibility = View.VISIBLE
+        }
+    }
+    @SuppressLint("BatteryLife")
     @RequiresApi(api = Build.VERSION_CODES.M)
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         if (requestCode == StaticValues.MY_IGNORE_OPTIMIZATION_REQUEST) {
@@ -155,30 +186,10 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
         }
     }
 
-    @SuppressLint("BatteryLife")
     override fun onClick(view: View) {
         when (view.id) {
             R.id.buttonStart -> {
-                val packageName = applicationContext.packageName
-                val pm = applicationContext.getSystemService(POWER_SERVICE) as PowerManager
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (pm.isIgnoringBatteryOptimizations(packageName)) {
-                        val intent = Intent(baseContext, BackgroundService::class.java)
-                        startService(intent)
-                        buttonStart!!.visibility = View.GONE
-                        buttonStop!!.visibility = View.VISIBLE
-                    } else {
-                        val intent = Intent()
-                        intent.action = Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS
-                        intent.data = Uri.parse("package:$packageName")
-                        startActivityForResult(intent, StaticValues.MY_IGNORE_OPTIMIZATION_REQUEST)
-                    }
-                } else {
-                    val intent = Intent(baseContext, BackgroundService::class.java)
-                    startService(intent)
-                    buttonStart!!.visibility = View.GONE
-                    buttonStop!!.visibility = View.VISIBLE
-                }
+                startRollService()
             }
             R.id.buttonStop -> {
                 stopService(Intent(baseContext, BackgroundService::class.java))
@@ -193,7 +204,7 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
                 val closeDialog = dialog.findViewById<ImageView>(R.id.imageClose)
                 val layoutWithdraw: ConstraintLayout = dialog.findViewById(R.id.layoutWithdraw)
                 val layoutDeposit: ConstraintLayout = dialog.findViewById(R.id.layoutDeposit)
-                val layoutNotify: ConstraintLayout = dialog.findViewById(R.id.layoutNotification)
+                val layoutNotify: ConstraintLayout = dialog.findViewById(R.id.layoutChangePassword)
                 val btnLogout = dialog.findViewById<Button>(R.id.buttonLogout)
                 closeDialog.setOnClickListener { dialog.dismiss() }
                 layoutWithdraw.setOnClickListener {

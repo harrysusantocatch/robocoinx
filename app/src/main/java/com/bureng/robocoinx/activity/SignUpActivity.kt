@@ -77,10 +77,12 @@ class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
                         visibilityPass = false
                         imageVisibilityPassSG.setImageDrawable(getDrawable(R.drawable.ic_visibility_off))
                         editTextPassSG.transformationMethod = PasswordTransformationMethod()
+                        editTextPassSG.setSelection(editTextPassSG.length())
                     }else{
                         visibilityPass = true
                         imageVisibilityPassSG.setImageDrawable(getDrawable(R.drawable.ic_visibility_on))
                         editTextPassSG.transformationMethod = null
+                        editTextPassSG.setSelection(editTextPassSG.length())
                     }
                 }
                 else -> {}

@@ -8,7 +8,9 @@ import com.bureng.robocoinx.utils.RoboHandler
 
 class WithdrawPresenter(val view: WithdrawContract.View): WithdrawContract.Presenter {
     override fun loadData(ctx: Context) {
+        view.showProgressBar()
         val response = RoboHandler.parsingHomeWithdrawResponse(ctx)
+        view.hideProgressBar()
         if(response is InitWithdrawResponse){
             view.setData(response)
         }else{
@@ -16,8 +18,10 @@ class WithdrawPresenter(val view: WithdrawContract.View): WithdrawContract.Prese
         }
     }
 
-    override fun withdraw(amount: String, address: String) {
-        val response = RoboHandler.parsingWithdrawResponse(amount, address)
+    override fun withdraw(ctx: Context, amount: String, address: String) {
+        view.showProgressBar()
+        val response = RoboHandler.parsingWithdrawResponse(ctx, amount, address)
+        view.hideProgressBar()
         if(response is MessageResponse){
             if(response.code == "s"){
                 view.showMessageSuccess(response.message)

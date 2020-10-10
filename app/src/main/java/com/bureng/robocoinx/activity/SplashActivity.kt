@@ -8,6 +8,8 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.WindowManager
 import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.Toast
@@ -22,6 +24,7 @@ import com.bureng.robocoinx.presenter.SplashPresenter
 import com.bureng.robocoinx.utils.CacheContext
 import com.bureng.robocoinx.utils.FileManager
 import com.bureng.robocoinx.utils.StaticValues
+import kotlinx.android.synthetic.main.splash_main.*
 import org.jsoup.Jsoup
 
 class SplashActivity : Activity(), SplashContract.View {
@@ -75,6 +78,21 @@ class SplashActivity : Activity(), SplashContract.View {
         } catch (e: Exception) {
             e.printStackTrace()
             FileManager.getInstance().appendLog(e)
+        }
+    }
+
+    override fun showProgressBar() {
+        runOnUiThread {
+            progressBarSP.visibility = View.VISIBLE
+            window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        }
+    }
+
+    override fun hideProgressBar() {
+        runOnUiThread {
+            progressBarSP.visibility = View.GONE
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
     }
 

@@ -25,7 +25,6 @@ import com.bureng.robocoinx.service.BackgroundService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
-import org.jetbrains.annotations.NotNull;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.jsoup.Connection;
@@ -237,7 +236,10 @@ public class RoboHandler {
             if(pp.nextRollTime > 0) return new RollErrorResponse("",pp.nextRollTime);
 
             cookies.put("csrf_token", RoboBrowser.csrfToken);
-            cookies.put("__cfduid", homeResponse.cookie("__cfduid"));
+            String cfduid = homeResponse.cookie("__cfduid");
+            if(cfduid != null){
+                cookies.put("__cfduid", cfduid);
+            }
             cookies.put("mobile", "1");
             cookies.put("_gat", "1");
             cookies.put("hide_push_msg", "1");
@@ -308,6 +310,8 @@ public class RoboHandler {
             if(homeResponse == null) return StaticValues.ERROR_GENERAL;
             updateCsrfToken(context, homeResponse);
             Document doc = homeResponse.parse();
+            String payoutStr = doc.getElementById("pending_payout_table").text(); // slow address amount, address amount dst
+            String[] pendingPayoutStr = payoutStr.split(" ");
             ProfileView profileView = new ProfileView(doc, context);
             profileView.noCaptchaSpec = getCaptchaSpec(profileView);
             if (setInterestAndLottery(profileView, cookies, homeResponse)) return StaticValues.ERROR_GENERAL;
@@ -318,7 +322,7 @@ public class RoboHandler {
         }
     }
 
-    private static boolean resolveCaptchaWithPlay(Context context, ProfileView profileView, Map<String, String> cookies) {
+    private static void resolveCaptchaWithPlay(Context context, ProfileView profileView, Map<String, String> cookies) {
         try {
             NoCaptchaSpec noCaptchaSpec = getCaptchaSpec(profileView);
             // this is spec
@@ -330,7 +334,7 @@ public class RoboHandler {
             double currentBalance = 0;
             currentBalance = currentBalance + balance;
             double minimumBalance = 0.00050000;
-            double maxWagerInit = 0.00050000;
+//            double maxWagerInit = 0.00050000;
             if(balance > minimumBalance) { // TODO add max total wager
                 DecimalFormat precision = new DecimalFormat("0.00000000");
                 String clientSeed = getClientSeed();
@@ -410,7 +414,7 @@ public class RoboHandler {
                         if(totalWinStake >= lotterySpec) finish = true;
                     }
                 }
-                if(totalWager >= wagerSpec) return true;
+                if(totalWager >= wagerSpec) return;
                 Thread.sleep(60000);
                 NoCaptchaSpec noCaptchaSpecNext = getCaptchaSpec(profileView);
                 boolean success = purchaseLottery(cookies, noCaptchaSpecNext.lottery);
@@ -423,13 +427,10 @@ public class RoboHandler {
                             "Resolve Network", ClaimHistory.TransactionType.lost.name(), amountStr,
                             precision.format(currentBalance));
                 }
-                return success;
             }
         } catch (JSONException | InterruptedException e) {
             FileManager.getInstance().appendLog(e);
-            return false;
         }
-        return false;
     }
 
     private static NoCaptchaSpec getCaptchaSpec(ProfileView profileView) throws JSONException {
@@ -748,6 +749,8 @@ public class RoboHandler {
         }
         try {
             Connection.Response homeResponse = RoboBrowser.getRefreshHomeResponse(cookies);
+            cookies.put("__cfduid", homeResponse.cookie("__cfduid"));
+            FileManager.getInstance().writeFile(context, StaticValues.AUTH_COOKIES, new Gson().toJson(cookies));
             if(homeResponse == null) return StaticValues.ERROR_GENERAL;
             updateCsrfToken(context, homeResponse);
             Document doc = homeResponse.parse();
@@ -761,9 +764,61 @@ public class RoboHandler {
         }
     }
 
-    public static Object parsingWithdrawResponse(String amount, String address) {
-        return new MessageResponse("s", "We have sent you an email with a confirmation link. Unless you click the link in the email, this payment will not be sent.\n" +
-                "<BR><BR>The confirmation link will expire in 1 hour and if it is not clicked by then, \n" +
-                "the payment request will be cancelled and the amount will be refunded to your account balance.:0.00412497");
+    public static Object parsingWithdrawResponse(Context context, String amount, String address) {
+        UserCache userCache = new CacheContext<>(UserCache.class, context).get(StaticValues.USER_CACHE);
+        Map<String, String> cookies = new HashMap<>();
+        if(FileManager.getInstance().fileExists(context, StaticValues.AUTH_COOKIES)){
+            String cookiesStr =  FileManager.getInstance().readFile(context, StaticValues.AUTH_COOKIES);
+            Type type = new TypeToken<Map<String, String>>(){}.getType();
+            cookies = new Gson().fromJson(cookiesStr, type);
+        }else {
+            cookies.put("login_auth", userCache.loginAuth);
+            cookies.put("btc_address",userCache.btcAddress);
+            cookies.put("password",userCache.password);
+            cookies.put("have_account", "1");
+            FileManager.getInstance().writeFile(context, StaticValues.AUTH_COOKIES, new Gson().toJson(cookies));
+        }
+        try {
+            Connection.Response signUpResponse = RoboBrowser.getWithdrawResponse(cookies, amount, address);
+            if(signUpResponse == null) return StaticValues.ERROR_GENERAL;
+            Document doc = signUpResponse.parse();
+            String contentBody = doc.body().html();
+            String[] result = contentBody.split(":");
+            if(result.length > 0) return new MessageResponse(result[0], result[1]);
+            else return StaticValues.ERROR_GENERAL;
+        }catch (Exception e){
+            e.printStackTrace();
+            FileManager.getInstance().appendLog(e);
+            return StaticValues.ERROR_GENERAL;
+        }
+    }
+
+    public static Object parsingChangePasswordResponse(Context context, String oldPassword, String newPassword, String repeatPassword) {
+        UserCache userCache = new CacheContext<>(UserCache.class, context).get(StaticValues.USER_CACHE);
+        Map<String, String> cookies = new HashMap<>();
+        if(FileManager.getInstance().fileExists(context, StaticValues.AUTH_COOKIES)){
+            String cookiesStr =  FileManager.getInstance().readFile(context, StaticValues.AUTH_COOKIES);
+            Type type = new TypeToken<Map<String, String>>(){}.getType();
+            cookies = new Gson().fromJson(cookiesStr, type);
+        }else {
+            cookies.put("login_auth", userCache.loginAuth);
+            cookies.put("btc_address",userCache.btcAddress);
+            cookies.put("password",userCache.password);
+            cookies.put("have_account", "1");
+            FileManager.getInstance().writeFile(context, StaticValues.AUTH_COOKIES, new Gson().toJson(cookies));
+        }
+        try {
+            Connection.Response signUpResponse = RoboBrowser.getChangePasswordResponse(cookies, oldPassword, newPassword, repeatPassword);
+            if(signUpResponse == null) return StaticValues.ERROR_GENERAL;
+            Document doc = signUpResponse.parse();
+            String contentBody = doc.body().html();
+            String[] result = contentBody.split(":");
+            if(result.length > 0) return new MessageResponse(result[0], result[1]);
+            else return StaticValues.ERROR_GENERAL;
+        }catch (Exception e){
+            e.printStackTrace();
+            FileManager.getInstance().appendLog(e);
+            return StaticValues.ERROR_GENERAL;
+        }
     }
 }

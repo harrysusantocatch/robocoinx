@@ -8,9 +8,11 @@ interface WithdrawContract {
         fun setData(initWithdraw: InitWithdrawResponse)
         fun showMessage(message: String)
         fun showMessageSuccess(message: String)
+        fun showProgressBar()
+        fun hideProgressBar()
     }
     interface Presenter{
         fun loadData(ctx: Context)
-        fun withdraw(amount: String, address: String)
+        fun withdraw(ctx: Context, amount: String, address: String)
     }
 }

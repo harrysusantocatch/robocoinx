@@ -5,6 +5,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import com.bureng.robocoinx.R
 import com.bureng.robocoinx.contract.LoginContract
@@ -69,12 +70,30 @@ class LoginActivity : Activity(), LoginContract.View, View.OnClickListener {
                     visibilityPass = false
                     imageVisibilityPassLG.setImageDrawable(getDrawable(R.drawable.ic_visibility_off))
                     editTextPassLG.transformationMethod = PasswordTransformationMethod()
+                    editTextPassLG.setSelection(editTextPassLG.length())
                 }else{
                     visibilityPass = true
                     imageVisibilityPassLG.setImageDrawable(getDrawable(R.drawable.ic_visibility_on))
                     editTextPassLG.transformationMethod = null
+                    editTextPassLG.setSelection(editTextPassLG.length())
                 }
             }
         }
     }
+
+    override fun showProgressBar() {
+        runOnUiThread {
+            progressBarLG.visibility = View.VISIBLE
+            window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        }
+    }
+
+    override fun hideProgressBar() {
+        runOnUiThread {
+            progressBarLG.visibility = View.GONE
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        }
+    }
+
 }

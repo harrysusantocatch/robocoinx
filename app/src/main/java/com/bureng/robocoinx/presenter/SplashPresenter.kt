@@ -15,6 +15,7 @@ class SplashPresenter(private val ctx: Context, private val view: SplashContract
         return userCache != null
     }
     override fun loadActivity() {
+        view.showProgressBar()
         if (authorize()){
             val resp = RoboHandler.parsingHomeResponse(ctx)
             view.goHome(resp as ProfileView)
@@ -22,5 +23,6 @@ class SplashPresenter(private val ctx: Context, private val view: SplashContract
             val resp = RoboHandler.getSignUpRequest(ctx)
             view.loadFingerprint(resp as SignUpRequest)
         }
+        view.hideProgressBar()
     }
 }

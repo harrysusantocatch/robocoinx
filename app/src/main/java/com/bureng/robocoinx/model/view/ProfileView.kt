@@ -48,10 +48,10 @@ class ProfileView(doc: Document, context: Context) : Serializable {
             if(currentBalance.isNullOrEmpty()) currentBalance = "0"
             val amount = newBalance.toBigDecimal() - currentBalance.toBigDecimal()
             var type = ClaimHistory.TransactionType.lost.name
-            var name = "Add bitcoin"
+            var name = "Lose bitcoin"
             if(amount > BigDecimal.ZERO){
                 type = ClaimHistory.TransactionType.receive.name
-                name = "Lose bitcoin"
+                name = "Free bitcoin"
             }
             val currentTime = SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(Date())
             ClaimHistoryHandler.getInstance(context).insert(currentTime, name, type, amount.toPlainString(), newBalance)
@@ -245,6 +245,6 @@ class ProfileView(doc: Document, context: Context) : Serializable {
         socketId = getSocketId(doc)
         depositAdress = getDepositAddress(doc)
         email = getEmailAddress(doc)
-        checkCurrentBalance(balance, context)
+//        checkCurrentBalance(balance, context)
     }
 }
