@@ -2,9 +2,10 @@
 package com.bureng.robocoinx.activity
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
-import android.os.CountDownTimer
 import android.view.View
 import android.widget.Toast
 import com.bureng.robocoinx.R
@@ -44,17 +45,23 @@ class ForgotPasswordActivity : Activity(), View.OnClickListener, ForgotPasswordC
         runOnUiThread { Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show() }
     }
 
-    override fun goSplash(message: String) {
+    override fun showSuccessMessage(message: String) {
         runOnUiThread {
-            Toast.makeText(applicationContext, message, Toast.LENGTH_LONG).show()
-            val timer = object : CountDownTimer(2500, 1000){
-                override fun onTick(millisUntilFinished: Long) {
-                }
-                override fun onFinish() {
+            val positiveButtonClick = { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+            }
+
+            val builder = AlertDialog.Builder(this, R.style.AlertDialogStyle)
+            with(builder)
+            {
+                setTitle("Success!!")
+                setMessage(message)
+                setPositiveButton("OK", positiveButtonClick)
+                setOnDismissListener {
                     startActivity(Intent(applicationContext, SplashActivity::class.java))
                 }
+                show()
             }
-            timer.start()
         }
     }
 

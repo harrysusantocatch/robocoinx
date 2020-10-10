@@ -164,9 +164,11 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
             buttonStop!!.visibility = View.VISIBLE
         }
     }
+
     @SuppressLint("BatteryLife")
-    @RequiresApi(api = Build.VERSION_CODES.M)
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    @RequiresApi(Build.VERSION_CODES.M)
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == StaticValues.MY_IGNORE_OPTIMIZATION_REQUEST) {
             val pm = applicationContext.getSystemService(POWER_SERVICE) as PowerManager
             val isIgnoringBatteryOptimizations = pm.isIgnoringBatteryOptimizations(packageName)

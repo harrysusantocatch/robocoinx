@@ -33,6 +33,7 @@ class ChangePasswordActivity : Activity(), View.OnClickListener, ChangePasswordC
         imageVisibilityOldPass.setOnClickListener(this)
         imageVisibilityNewPass.setOnClickListener(this)
         imageVisibilityConfirmPass.setOnClickListener(this)
+        imageBackCP.setOnClickListener(this)
     }
 
     override fun onClick(v: View?) {
@@ -81,6 +82,9 @@ class ChangePasswordActivity : Activity(), View.OnClickListener, ChangePasswordC
                         editTextConfirmPassword.transformationMethod = null
                         editTextConfirmPassword.setSelection(editTextConfirmPassword.length())
                     }
+                }
+                R.id.imageBackCP -> {
+                    onBackPressed()
                 }
                 else -> {
                 }

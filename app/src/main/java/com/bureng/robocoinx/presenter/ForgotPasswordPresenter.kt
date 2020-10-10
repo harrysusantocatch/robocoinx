@@ -11,7 +11,7 @@ class ForgotPasswordPresenter(val view: ForgotPasswordContract.View): ForgotPass
             if(resp.code == "e"){
                 view.showMessage(resp.message)
             }else{
-                view.goSplash(resp.message)
+                view.showSuccessMessage(resp.message)
             }
         }else{
             view.showMessage(resp as String)
