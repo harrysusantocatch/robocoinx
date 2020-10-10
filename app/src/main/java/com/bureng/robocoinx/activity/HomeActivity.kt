@@ -217,7 +217,7 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
                     newIntent.putExtra(StaticValues.DEPOSIT_ADDRESS, depositAddress)
                     startActivity(newIntent)
                 }
-                layoutNotify.setOnClickListener { dialog.dismiss() }
+                layoutNotify.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }
                 btnLogout.setOnClickListener { presenter.logout(applicationContext) }
                 dialog.show()
             }
