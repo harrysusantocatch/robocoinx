@@ -2,17 +2,19 @@ package com.bureng.robocoinx.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.View
+import android.view.WindowManager
 import android.widget.Toast
 import com.bureng.robocoinx.R
 import com.bureng.robocoinx.contract.SignUpContract
 import com.bureng.robocoinx.model.common.DoAsync
 import com.bureng.robocoinx.model.db.Fingerprint
 import com.bureng.robocoinx.model.request.SignUpRequest
-import com.bureng.robocoinx.model.view.ProfileView
 import com.bureng.robocoinx.presenter.SignUpPresenter
 import com.bureng.robocoinx.utils.CacheContext
 import com.bureng.robocoinx.utils.StaticValues
@@ -29,7 +31,7 @@ class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_signup)
         setOnClickListener()
-        presenter = SignUpPresenter(applicationContext, this)
+        presenter = SignUpPresenter(this)
         fingerprint = CacheContext(Fingerprint::class.java, applicationContext)[StaticValues.FINGERPRINT].fingerprint2
         DoAsync{
             presenter.getCaptchaNet(fingerprint)
@@ -73,19 +75,40 @@ class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
                     }.execute()
                 }
                 R.id.imageVisibilityPassSG -> {
-                    if(visibilityPass){
+                    if (visibilityPass) {
                         visibilityPass = false
                         imageVisibilityPassSG.setImageDrawable(getDrawable(R.drawable.ic_visibility_off))
                         editTextPassSG.transformationMethod = PasswordTransformationMethod()
                         editTextPassSG.setSelection(editTextPassSG.length())
-                    }else{
+                    } else {
                         visibilityPass = true
                         imageVisibilityPassSG.setImageDrawable(getDrawable(R.drawable.ic_visibility_on))
                         editTextPassSG.transformationMethod = null
                         editTextPassSG.setSelection(editTextPassSG.length())
                     }
                 }
-                else -> {}
+                else -> {
+                }
+            }
+        }
+    }
+
+    override fun showSuccessMessage(message: String) {
+        runOnUiThread {
+            val positiveButtonClick = { dialog: DialogInterface, _: Int ->
+                dialog.dismiss()
+            }
+
+            val builder = AlertDialog.Builder(this, R.style.AlertDialogStyle)
+            with(builder)
+            {
+                setTitle("Success!!")
+                setMessage(message)
+                setPositiveButton("OK", positiveButtonClick)
+                setOnDismissListener {
+                    startActivity(Intent(applicationContext, SplashActivity::class.java))
+                }
+                show()
             }
         }
     }
@@ -93,16 +116,9 @@ class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
     @SuppressLint("ShowToast")
     override fun showMessage(message: String) {
         runOnUiThread { Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show() }
-        DoAsync{
+        DoAsync {
             presenter.getCaptchaNet(fingerprint)
         }.execute()
-    }
-
-    override fun goHome(profileView: ProfileView) {
-        val homeIntent = Intent(applicationContext, HomeActivity::class.java)
-        homeIntent.putExtra(StaticValues.PROFILE_VIEW, profileView)
-        homeIntent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        startActivity(homeIntent)
     }
 
     override fun setCaptchaNet(captchaNet: String) {
@@ -110,6 +126,21 @@ class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
             captchaNets = captchaNet
             val path = "https://captchas.freebitco.in/botdetect/e/live/images/$captchaNet.jpeg"
             Picasso.get().load(path).into(captcha)
+        }
+    }
+
+    override fun showProgressBar() {
+        runOnUiThread {
+            progressBarLG.visibility = View.VISIBLE
+            window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        }
+    }
+
+    override fun hideProgressBar() {
+        runOnUiThread {
+            progressBarLG.visibility = View.GONE
+            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         }
     }
 }

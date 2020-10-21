@@ -1,7 +1,5 @@
 package com.bureng.robocoinx.utils;
 
-import org.jetbrains.annotations.Nullable;
-
 public class StaticValues {
 
     public static final String OP = "free_play";
@@ -65,4 +63,5 @@ public class StaticValues {
     public static final int POINT_12 = 12;
     public static final int MY_IGNORE_OPTIMIZATION_REQUEST = 1613;
     public static final String BASE_URL = "https://freebitco.in/";
+    public static final String KEY_SECRET = "#7H3g0Df4Th312##";
 }
