@@ -14,6 +14,7 @@ import com.bureng.robocoinx.model.request.SignUpRequest
 import com.bureng.robocoinx.model.view.ProfileView
 import com.bureng.robocoinx.presenter.LoginPresenter
 import com.bureng.robocoinx.utils.StaticValues
+import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
@@ -43,7 +44,7 @@ class LoginActivity : Activity(), LoginContract.View, View.OnClickListener {
     }
 
     override fun goHome(profileView: ProfileView) {
-
+        Firebase.auth.signOut()
         val intent = Intent(baseContext, HomeActivity::class.java)
         intent.putExtra(StaticValues.PROFILE_VIEW, profileView)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
@@ -55,8 +56,8 @@ class LoginActivity : Activity(), LoginContract.View, View.OnClickListener {
         val password = editTextPassLG.text.toString()
         when (view.id) {
             R.id.buttonLoginLG -> {
-                DoAsync{
-                    presenter.login(applicationContext, email, password)
+                DoAsync {
+                    presenter.login(this, applicationContext, email, password)
                 }.execute()
             }
             R.id.buttonSignUpLG -> {

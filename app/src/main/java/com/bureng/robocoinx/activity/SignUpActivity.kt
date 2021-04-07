@@ -18,6 +18,8 @@ import com.bureng.robocoinx.model.request.SignUpRequest
 import com.bureng.robocoinx.presenter.SignUpPresenter
 import com.bureng.robocoinx.utils.CacheContext
 import com.bureng.robocoinx.utils.StaticValues
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_signup.*
@@ -65,7 +67,7 @@ class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
                         signUpRequest.fingerprint = fingerprint
                         signUpRequest.captchaNet = captchaNets
                         signUpRequest.captchaResp = captcha
-                        presenter.signUp(applicationContext, signUpRequest)
+                        presenter.signUp(this, applicationContext, signUpRequest)
                     }.execute()
                 }
                 R.id.buttonRefreshCaptcha ->{
@@ -95,6 +97,7 @@ class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
 
     override fun showSuccessMessage(message: String) {
         runOnUiThread {
+            Firebase.auth.signOut()
             val positiveButtonClick = { dialog: DialogInterface, _: Int ->
                 dialog.dismiss()
             }

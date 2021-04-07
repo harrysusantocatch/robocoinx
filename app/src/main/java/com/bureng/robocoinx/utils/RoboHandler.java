@@ -229,7 +229,7 @@ public class RoboHandler {
             Document doc = homeResponse.parse();
             ProfileView pp = new ProfileView(doc, context);
             if(pp.haveCaptcha){
-                resolveCaptchaWithPlay(context, pp, cookies);
+//                resolveCaptchaWithPlay(context, pp, cookies);
                 context.stopService(new Intent(context.getApplicationContext(), BackgroundService.class));
                 return new RollErrorResponse("resolve captcha", 30000);
             }
@@ -324,108 +324,131 @@ public class RoboHandler {
 
     private static void resolveCaptchaWithPlay(Context context, ProfileView profileView, Map<String, String> cookies) {
         try {
+            DecimalFormat precision = new DecimalFormat("0.00000000");
             NoCaptchaSpec noCaptchaSpec = getCaptchaSpec(profileView);
             // this is spec
             double wagerSpec = Double.parseDouble(noCaptchaSpec.wager);
             int lotterySpecInt = Integer.parseInt(noCaptchaSpec.lottery);
-            double lotterySpec = (double) lotterySpecInt/100000000;
+            double lotterySpec = (double) lotterySpecInt / 100000000;
 
             double balance = Double.parseDouble(profileView.balance);
             double currentBalance = 0;
             currentBalance = currentBalance + balance;
-            double minimumBalance = 0.00050000;
-//            double maxWagerInit = 0.00050000;
-            if(balance > minimumBalance) { // TODO add max total wager
-                DecimalFormat precision = new DecimalFormat("0.00000000");
-                String clientSeed = getClientSeed();
-
-                int lose = 0;
-                boolean isLo = true;
-                boolean finish = false;
-                double additional = (double) 1 / 100000000;
-                double stake = (double) 2 / 100000000;
-
-                // this is comparable
-                double totalWager = 0;
-                double totalWinStake = 0;
-
-                while (totalWinStake < lotterySpec || !finish){
-                    String stakeStr = precision.format(stake).replace(",", ".");
-                    if(lose == 10){ // todo nanti bisa diganti sesuai balance
-                        finish = true;
-                    }else {
-                        if(isLo) {
-                            boolean win = isWinStakeLo(cookies, clientSeed, stakeStr);
-                            if(win){
-                                currentBalance = currentBalance + stake;
-                                stake = (double) 2 / 100000000;
-                                isLo = false;
-                                lose = 0;
-                                ClaimHistoryHandler.getInstance(context).insert(
-                                        new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date()),
-                                        "Distribution Network", ClaimHistory.TransactionType.receive.name(), stakeStr,
-                                        precision.format(currentBalance));
-                                if(totalWager >= wagerSpec) finish = true;
-                            }else {
-                                currentBalance = currentBalance - stake;
-                                stake = (stake*2)+additional;
-                                lose++;
-                                ClaimHistoryHandler.getInstance(context).insert(
-                                        new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date()),
-                                        "Lost Network", ClaimHistory.TransactionType.lost.name(), stakeStr,
-                                        precision.format(currentBalance));
-                            }
-                        }else {
-                            boolean win = isWinStakeHi(cookies, clientSeed, stakeStr);
-                            if(win){
-                                currentBalance = currentBalance + stake;
-                                stake = (double) 2 / 100000000;
-                                isLo = true;
-                                lose = 0;
-                                ClaimHistoryHandler.getInstance(context).insert(
-                                        new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date()),
-                                        "Distribution Network", ClaimHistory.TransactionType.receive.name(), stakeStr,
-                                        precision.format(currentBalance));
-                                if(totalWager >= wagerSpec) finish = true;
-                            }else {
-                                currentBalance = currentBalance - stake;
-                                stake = (stake*2)+additional;
-                                lose++;
-                                ClaimHistoryHandler.getInstance(context).insert(
-                                        new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date()),
-                                        "Lost Network", ClaimHistory.TransactionType.lost.name(), stakeStr,
-                                        precision.format(currentBalance));
-                            }
-                        }
-                        // update spec
-                        totalWinStake = currentBalance - balance;
-                        if((lotterySpec - totalWinStake) >= ((double)20/100000000)){
-                            if(totalWager >= wagerSpec/4 || totalWinStake >= lotterySpec/2){
-                                Thread.sleep(60000);
-                                NoCaptchaSpec newCaptchaSpec = getCaptchaSpec(profileView);
-                                wagerSpec = Double.parseDouble(newCaptchaSpec.wager);
-                                int newLotterySpecInt = Integer.parseInt(newCaptchaSpec.lottery);
-                                lotterySpec = (double) newLotterySpecInt/100000000;
-                                totalWager = totalWager - (wagerSpec/4);
-                            }
-                        }
-                        totalWager += stake;
-                        if(totalWager >= wagerSpec) finish = true;
-                        if(totalWinStake >= lotterySpec) finish = true;
+            double minimumBalance = 0.00005000;
+            double minimumLottery = 0.00000050;
+            double minimumWager = balance * ((double) (8 / 100));
+            if (balance > minimumBalance) {
+                // resolve by lottery
+                if (lotterySpec <= minimumLottery) {
+                    boolean success = purchaseLottery(cookies, noCaptchaSpec.lottery);
+                    if (success) {
+                        double amount = Double.parseDouble(noCaptchaSpec.lottery) / 100000000;
+                        String amountStr = precision.format(amount);
+                        currentBalance = currentBalance - amount;
+                        ClaimHistoryHandler.getInstance(context).insert(
+                                new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date()),
+                                "Resolve Network", ClaimHistory.TransactionType.lost.name(), amountStr,
+                                precision.format(currentBalance));
+                    } else {
+                        FileManager.getInstance().appendLog("Resolve by lottery failed..");
                     }
-                }
-                if(totalWager >= wagerSpec) return;
-                Thread.sleep(60000);
-                NoCaptchaSpec noCaptchaSpecNext = getCaptchaSpec(profileView);
-                boolean success = purchaseLottery(cookies, noCaptchaSpecNext.lottery);
-                if(success){
-                    double amount = Double.parseDouble(noCaptchaSpecNext.lottery)/100000000;
-                    String amountStr = precision.format(amount);
-                    currentBalance = currentBalance - amount;
-                    ClaimHistoryHandler.getInstance(context).insert(
-                            new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date()),
-                            "Resolve Network", ClaimHistory.TransactionType.lost.name(), amountStr,
-                            precision.format(currentBalance));
+                } else {
+                    if (wagerSpec <= minimumWager) {
+                        String clientSeed = getClientSeed();
+
+                        int lose = 0;
+                        boolean isLo = true;
+                        boolean finish = false;
+                        double additional = (double) 1 / 100000000;
+                        double stake = (double) 2 / 100000000;
+
+                        // this is comparable
+                        double totalWager = 0;
+                        double totalWinStake = 0;
+
+                        while (totalWinStake < lotterySpec || !finish) {
+                            String stakeStr = precision.format(stake).replace(",", ".");
+                            if (lose == 10) {
+                                finish = true;
+                            } else {
+                                if (isLo) {
+                                    boolean win = isWinStakeLo(cookies, clientSeed, stakeStr);
+                                    if (win) {
+                                        currentBalance = currentBalance + stake;
+                                        stake = (double) 2 / 100000000;
+                                        isLo = false;
+                                        lose = 0;
+                                        ClaimHistoryHandler.getInstance(context).insert(
+                                                new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date()),
+                                                "Distribution Network", ClaimHistory.TransactionType.receive.name(), stakeStr,
+                                                precision.format(currentBalance));
+                                        if (totalWager >= wagerSpec) finish = true;
+                                    } else {
+                                        currentBalance = currentBalance - stake;
+                                        stake = (stake * 2) + additional;
+                                        lose++;
+                                        ClaimHistoryHandler.getInstance(context).insert(
+                                                new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date()),
+                                                "Lost Network", ClaimHistory.TransactionType.lost.name(), stakeStr,
+                                                precision.format(currentBalance));
+                                    }
+                                } else {
+                                    boolean win = isWinStakeHi(cookies, clientSeed, stakeStr);
+                                    if (win) {
+                                        currentBalance = currentBalance + stake;
+                                        stake = (double) 2 / 100000000;
+                                        isLo = true;
+                                        lose = 0;
+                                        ClaimHistoryHandler.getInstance(context).insert(
+                                                new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date()),
+                                                "Distribution Network", ClaimHistory.TransactionType.receive.name(), stakeStr,
+                                                precision.format(currentBalance));
+                                        if (totalWager >= wagerSpec) finish = true;
+                                    } else {
+                                        currentBalance = currentBalance - stake;
+                                        stake = (stake * 2) + additional;
+                                        lose++;
+                                        ClaimHistoryHandler.getInstance(context).insert(
+                                                new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date()),
+                                                "Lost Network", ClaimHistory.TransactionType.lost.name(), stakeStr,
+                                                precision.format(currentBalance));
+                                    }
+                                }
+                                // update spec
+                                totalWinStake = currentBalance - balance;
+                                if ((lotterySpec - totalWinStake) >= ((double) 20 / 100000000)) {
+                                    if (totalWager >= wagerSpec / 4 || totalWinStake >= lotterySpec / 2) {
+                                        Thread.sleep(60000);
+                                        NoCaptchaSpec newCaptchaSpec = getCaptchaSpec(profileView);
+                                        wagerSpec = Double.parseDouble(newCaptchaSpec.wager);
+                                        int newLotterySpecInt = Integer.parseInt(newCaptchaSpec.lottery);
+                                        lotterySpec = (double) newLotterySpecInt / 100000000;
+                                        totalWager = totalWager - (wagerSpec / 4);
+                                    }
+                                }
+                                totalWager += stake;
+                                if (totalWager >= wagerSpec) finish = true;
+                                if (totalWinStake >= lotterySpec) finish = true;
+                            }
+                        }
+                        if (totalWager >= wagerSpec) return;
+                        Thread.sleep(60000);
+                        NoCaptchaSpec noCaptchaSpecNext = getCaptchaSpec(profileView);
+                        boolean success = purchaseLottery(cookies, noCaptchaSpecNext.lottery);
+                        if (success) {
+                            double amount = Double.parseDouble(noCaptchaSpecNext.lottery) / 100000000;
+                            String amountStr = precision.format(amount);
+                            currentBalance = currentBalance - amount;
+                            ClaimHistoryHandler.getInstance(context).insert(
+                                    new SimpleDateFormat("dd/MM/yyyy HH:mm:ss", Locale.getDefault()).format(new Date()),
+                                    "Resolve Network", ClaimHistory.TransactionType.lost.name(), amountStr,
+                                    precision.format(currentBalance));
+                        } else {
+                            FileManager.getInstance().appendLog("Resolve by lottery failed... after wager");
+                        }
+                    } else {
+                        FileManager.getInstance().appendLog("Spec wager too high...");
+                    }
                 }
             }
         } catch (JSONException | InterruptedException e) {

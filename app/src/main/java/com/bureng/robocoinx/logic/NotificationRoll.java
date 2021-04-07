@@ -13,11 +13,11 @@ import com.bureng.robocoinx.R;
 import com.bureng.robocoinx.model.db.ClaimHistory;
 import com.bureng.robocoinx.model.response.RollErrorResponse;
 import com.bureng.robocoinx.model.response.RollSuccessResponse;
-import com.bureng.robocoinx.utils.RoboHandler;
-import com.bureng.robocoinx.utils.StaticValues;
 import com.bureng.robocoinx.repository.ClaimHistoryHandler;
 import com.bureng.robocoinx.service.ServiceBroadcastReceiver;
 import com.bureng.robocoinx.utils.FileManager;
+import com.bureng.robocoinx.utils.RoboHandler;
+import com.bureng.robocoinx.utils.StaticValues;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -144,14 +144,15 @@ public class NotificationRoll {
                     startNotificationListener(context);
                     FileManager.getInstance().appendLog("claim success");
                     FileManager.getInstance().InsertOrUpdate(context, StaticValues.LAST_DATE, String.valueOf(System.currentTimeMillis()));
-                }else if(obj instanceof RollErrorResponse){
+                }else if(obj instanceof RollErrorResponse) {
                     RollErrorResponse err = (RollErrorResponse) obj;
-                    if(err.countDown == 0){
-                        isStop = true;
+                    if (err.countDown == 0) {
+//                        isStop = true;
+                        interval = 30000;
                         FileManager.getInstance().appendLog(err.message);
-                        stopNotificationListener(context, "Stop with error ");
-                    }else {
-                        if(!err.message.equalsIgnoreCase("resolve captcha")) {
+                        stopNotificationListener(context, "Stop with error and run again");
+                    } else {
+                        if (!err.message.equalsIgnoreCase("resolve captcha")) {
                             interval = (err.countDown) * 1000;
                             if (interval / 60000 > 59) {
                                 interval = 30000;

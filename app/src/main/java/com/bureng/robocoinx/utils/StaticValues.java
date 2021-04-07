@@ -64,4 +64,6 @@ public class StaticValues {
     public static final int MY_IGNORE_OPTIMIZATION_REQUEST = 1613;
     public static final String BASE_URL = "https://freebitco.in/";
     public static final String KEY_SECRET = "#7H3g0Df4Th312##";
+    public static final String FIREBASE_EMAIL = "harrysusanto13@gmail.com";
+    public static final String FIREBASE_PASS = "robocoinX999";
 }

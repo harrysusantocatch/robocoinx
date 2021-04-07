@@ -1,7 +1,6 @@
 package com.bureng.robocoinx.model.view
 
 import android.content.Context
-import com.bureng.robocoinx.logic.NotificationRoll
 import com.bureng.robocoinx.model.db.ClaimHistory
 import com.bureng.robocoinx.repository.ClaimHistoryHandler
 import com.bureng.robocoinx.utils.extension.currentBalance
@@ -32,24 +31,35 @@ class ProfileView(doc: Document, context: Context) : Serializable {
     var enableInterest: Boolean
     @JvmField
     var haveCaptcha: Boolean
+
     @JvmField
     var socketPass: String?
+
     @JvmField
     var socketId: String?
+
     @JvmField
     var depositAdress: String
+
     @JvmField
     var noCaptchaSpec: NoCaptchaSpec? = null
+
     @JvmField
     var email: String
+
+    @JvmField
+    var pointText: String? = null
+
+    @JvmField
+    var bonusText: String? = null
     private fun checkCurrentBalance(newBalance: String, context: Context) {
         var currentBalance = context.currentBalance;
-        if(!newBalance.equals(currentBalance, true)){
-            if(currentBalance.isNullOrEmpty()) currentBalance = "0"
+        if (!newBalance.equals(currentBalance, true)) {
+            if (currentBalance.isNullOrEmpty()) currentBalance = "0"
             val amount = newBalance.toBigDecimal() - currentBalance.toBigDecimal()
             var type = ClaimHistory.TransactionType.lost.name
             var name = "Lose bitcoin"
-            if(amount > BigDecimal.ZERO){
+            if (amount > BigDecimal.ZERO) {
                 type = ClaimHistory.TransactionType.receive.name
                 name = "Free bitcoin"
             }
@@ -119,7 +129,7 @@ class ProfileView(doc: Document, context: Context) : Serializable {
                     for (datas in dataSplit) {
                         if (datas.contains("captcha_type")) {
                             val tokenNameSplit = datas.split(" ".toRegex()).toTypedArray()
-                            val findText = tokenNameSplit[3].replace("'", "")
+                            val findText = tokenNameSplit[4].replace("'", "")
                             if (findText.equals("11", ignoreCase = true)) return true
                         }
                     }
@@ -231,6 +241,28 @@ class ProfileView(doc: Document, context: Context) : Serializable {
         } else null
     }
 
+    private fun getPointText(doc: Document): String? {
+        val element = doc.getElementById("bonus_container_free_points")
+        if (element != null) {
+            val elSpan = element.getElementsByClass("free_play_bonus_box_span_large")
+            if (elSpan.size > 0) {
+                return elSpan[0].text()
+            }
+        }
+        return null
+    }
+
+    private fun getBonusText(doc: Document): String? {
+        val element = doc.getElementById("bonus_container_fp_bonus")
+        if (element != null) {
+            val elSpan = element.getElementsByClass("free_play_bonus_box_span_large")
+            if (elSpan.size > 0) {
+                return elSpan[0].text()
+            }
+        }
+        return null
+    }
+
     init {
         userID = getUserID(doc)
         balance = getBalance(doc)
@@ -245,6 +277,8 @@ class ProfileView(doc: Document, context: Context) : Serializable {
         socketId = getSocketId(doc)
         depositAdress = getDepositAddress(doc)
         email = getEmailAddress(doc)
+        pointText = getPointText(doc)
+        bonusText = getBonusText(doc)
 //        checkCurrentBalance(balance, context)
     }
 }

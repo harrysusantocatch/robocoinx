@@ -3,9 +3,11 @@ package com.bureng.robocoinx.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.ContentValues.TAG
 import android.content.Context
+import android.content.DialogInterface
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -47,6 +49,28 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
         setContentView(R.layout.activity_home)
         presenter = HomePresenter(this)
         setView()
+
+//        auth.createUserWithEmailAndPassword(StaticValues.FIREBASE_EMAIL, StaticValues.FIREBASE_PASS)
+//                .addOnCompleteListener(this) { task ->
+//                    if (task.isSuccessful) {
+//                        // Sign in success, update UI with the signed-in user's information
+//                        Log.d(TAG, "createUserWithEmail:success")
+//                        val user = auth.currentUser
+//                    } else {
+//                        // If sign in fails, display a message to the user.
+//                    }
+//
+//                }
+//        auth.signInWithEmailAndPassword(StaticValues.FIREBASE_EMAIL, StaticValues.FIREBASE_PASS)
+//                .addOnCompleteListener(this) { task ->
+//                    if (task.isSuccessful) {
+//                        Log.d(TAG, "signInWithEmail:success")
+//                        val user = auth.currentUser
+//                    } else {
+//                        // If sign in fails, display a message to the user.
+//                        Log.w(TAG, "signInWithEmail:failure", task.exception)
+//                    }
+//                }
     }
 
     private fun setView() {
@@ -68,6 +92,8 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
         buttonStop.setOnClickListener(this)
         buttonPage.setOnClickListener(this)
         buttonSlideTransaction.setOnClickListener(this)
+        buttonCaptchaResolve.setOnClickListener(this)
+        buttonDepositResolve.setOnClickListener(this)
     }
 
     private fun setValueUI() {
@@ -75,9 +101,9 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
             val pp = intent.getSerializableExtra(StaticValues.PROFILE_VIEW) as ProfileView
             if (pp.haveCaptcha) runManual = true
             depositAddress = pp.depositAdress
-            textViewUserId.text = pp.userID
+            textViewUserId.text = "ID: ${pp.userID}"
             textViewBalance.text = pp.balance
-            textViewRP.text = pp.rewardPoint
+            textViewRP.text = "Poin: ${pp.rewardPoint}"
 
             // show count down for Next Roll
             object : CountDownTimer((pp.nextRollTime * 1000).toLong(), 1000) {
@@ -91,9 +117,9 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
                 }
                 override fun onFinish() {
                     textViewnextRoll!!.setText(R.string.stop_count_hour)
-                    if(runManual) launchManual()
+                    if (runManual) showRunManualDialog()
                     else {
-                        DoAsync{
+                        DoAsync {
                             presenter.callRoll(applicationContext)
                         }.execute()
                     }
@@ -132,8 +158,17 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
             }.start()
 
             var text = "AUTO"
-            if (pp.haveCaptcha) text = "MANUAL (" + pp.noCaptchaSpec!!.lottery + ":" + pp.noCaptchaSpec!!.wager + ":" + pp.noCaptchaSpec!!.deposit + ")"
-            textViewHaveCapcha.text = text
+            if (pp.haveCaptcha) {
+                constraintResolve.visibility = View.VISIBLE
+                pp.noCaptchaSpec?.let {
+                    buttonDepositResolve.text = "Deposit ${it.deposit}"
+                }
+//                text = "MANUAL (" + pp.noCaptchaSpec!!.lottery + ":" + pp.noCaptchaSpec!!.wager + ":" + pp.noCaptchaSpec!!.deposit + ")"
+            } else {
+                constraintResolve.visibility = View.GONE
+            }
+            bonusTextView.text = pp.bonusText
+            pointTextView.text = pp.pointText
         }
     }
 
@@ -233,6 +268,14 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
                 }
                 isUp = !isUp
             }
+            R.id.buttonCaptchaResolve -> {
+                launchManual()
+            }
+            R.id.buttonDepositResolve -> {
+                val depositIntent = Intent(this, DepositActivity::class.java)
+                depositIntent.putExtra(StaticValues.DEPOSIT_ADDRESS, depositAddress)
+                startActivity(depositIntent)
+            }
         }
     }
 
@@ -248,7 +291,7 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
         set.clear(R.id.headerTransaction, ConstraintSet.TOP)
         set.applyTo(layout)
         val layoutParams = headerTransaction.layoutParams as ConstraintLayout.LayoutParams
-        layoutParams.topToBottom = findViewById<View>(R.id.layoutTimeBonus).id
+//        layoutParams.topToBottom = findViewById<View>(R.id.layoutTimeBonus).id
     }
 
     override fun showTransactionList(content: ArrayList<ClaimHistory>) {
@@ -262,6 +305,7 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
     }
 
     override fun goToSplash() {
+        stopService(Intent(baseContext, BackgroundService::class.java))
         val intent = Intent(applicationContext, SplashActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
@@ -311,5 +355,24 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
             Log.v(TAG, "***ACCESSIBILITY IS DISABLED***")
         }
         return false
+    }
+
+    private fun showRunManualDialog() {
+        val positiveButtonClick = { dialog: DialogInterface, _: Int ->
+            dialog.dismiss()
+        }
+        val builder = AlertDialog.Builder(this, R.style.AlertDialogStyle)
+        with(builder)
+        {
+            setTitle("Run Manual")
+            setMessage("Saat ini akun anda dalam posisi manual, " +
+                    "Silahkan lakukan RESOLVE FREE BITCOIN yg ada pada halaman ini " +
+                    "dengan melakukan Deposit atau Resolve Captcha. Terima kasih")
+            setPositiveButton("OK", positiveButtonClick)
+            setOnDismissListener {
+                startActivity(Intent(applicationContext, SplashActivity::class.java))
+            }
+            show()
+        }
     }
 }

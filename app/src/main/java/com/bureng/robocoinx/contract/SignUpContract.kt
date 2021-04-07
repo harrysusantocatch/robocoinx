@@ -1,5 +1,6 @@
 package com.bureng.robocoinx.contract
 
+import android.app.Activity
 import android.content.Context
 import com.bureng.robocoinx.model.request.SignUpRequest
 
@@ -12,7 +13,7 @@ interface SignUpContract {
         fun hideProgressBar()
     }
     interface Presenter{
-        fun signUp(ctx: Context, request: SignUpRequest)
+        fun signUp(act: Activity, ctx: Context, request: SignUpRequest)
         fun getCaptchaNet(fingerprint: String)
     }
 }

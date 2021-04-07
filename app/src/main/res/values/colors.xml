@@ -2,6 +2,7 @@
 <resources>
     <color name="colorPrimary">#2fa4d9</color>
     <color name="colorPrimaryDark">#2fa4d9</color>
+    <color name="colorBlueDark">#2583ad</color>
     <color name="colorAccent">#ffffff</color>
     <color name="white">#ffffff</color>
     <color name="toolBar">#2f9bc1</color>

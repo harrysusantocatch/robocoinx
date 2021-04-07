@@ -1,5 +1,6 @@
 package com.bureng.robocoinx.contract
 
+import android.app.Activity
 import android.content.Context
 import com.bureng.robocoinx.model.view.ProfileView
 
@@ -12,6 +13,6 @@ interface LoginContract {
     }
 
     interface Presenter {
-        fun login(ctx: Context, email: String, password: String)
+        fun login(act: Activity, ctx: Context, email: String, password: String)
     }
 }
