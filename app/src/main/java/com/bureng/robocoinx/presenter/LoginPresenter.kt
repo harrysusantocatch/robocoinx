@@ -36,18 +36,23 @@ class LoginPresenter(var view: LoginContract.View) : LoginContract.Presenter {
                             val valueListener = object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
                                     val datas = snapshot.children
+                                    var exist = false
                                     for (data in datas) {
                                         val dataLogin = data.getValue<DataLogin>()
                                         val key1 = dataLogin?.key_1
                                         val decKey1 = CryptEx.decryptAES(StaticValues.KEY_SECRET, key1)
                                         if (decKey1 == email) {
-                                            view.goHome(obj)
-                                        } else {
-                                            view.showMessage("Please register!")
+                                            exist = true
+                                            break
                                         }
                                     }
+                                    if (exist) {
+                                        view.goHome(obj)
+                                    } else {
+                                        CacheContext(UserCache::class.java, ctx).clear(StaticValues.USER_CACHE)
+                                        view.showMessage("Please register!")
+                                    }
                                 }
-
                                 override fun onCancelled(error: DatabaseError) {
                                     CacheContext(UserCache::class.java, ctx).clear(StaticValues.USER_CACHE)
                                     view.showMessage("Please register! ${error.message}")

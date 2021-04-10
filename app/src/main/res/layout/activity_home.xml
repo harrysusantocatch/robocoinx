@@ -5,335 +5,871 @@
     android:id="@+id/parent"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@color/greyWhite"
     tools:context=".activity.HomeActivity">
 
-    <ImageView
-        android:id="@+id/buttonPage"
-        android:layout_width="23sp"
-        android:layout_height="23sp"
-        android:layout_marginTop="18dp"
-        android:layout_marginEnd="20dp"
-        android:src="@drawable/ic_help"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/labelAccount"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="18dp"
-        android:text="@string/account"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        android:textColor="@color/white"
-        android:textSize="16sp"
-        android:fontFamily="@font/avenir_roman"
-        app:layout_constraintTop_toTopOf="parent" />
-
-    <TextView
-        android:id="@+id/textViewEmail"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text=""
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        android:fontFamily="@font/avenir_roman"
-        app:layout_constraintEnd_toEndOf="@id/parent"
-        app:layout_constraintBottom_toTopOf="@id/constraintBoxBalance"
-        android:layout_marginEnd="22dp"
-        android:layout_marginBottom="5dp"/>
-
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintBoxBalance"
+        android:id="@+id/top_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="50dp"
-        android:layout_marginEnd="20dp"
-        android:padding="10dp"
-        android:background="@drawable/button_up"
+        android:background="@color/brightBlue3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/labelAccount">
+        android:padding="15dp"
+        app:layout_constraintTop_toTopOf="parent">
 
         <ImageView
-            android:id="@+id/iconBitcoin"
-            android:layout_width="15dp"
-            android:layout_height="15dp"
-            android:layout_marginStart="10dp"
-            android:src="@drawable/ic_bitcoin"
-            android:foregroundGravity="center"
+            android:id="@+id/buttonPage"
+            android:layout_width="23sp"
+            android:layout_height="23sp"
+            android:src="@drawable/ic_help"
+            app:layout_constraintEnd_toEndOf="@id/top_layout"
+            app:layout_constraintTop_toTopOf="@id/top_layout" />
+
+        <TextView
+            android:id="@+id/labelAccount"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/account"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:textColor="@color/white"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/textViewBalance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="0dp"
             android:fontFamily="@font/avenir_roman"
-            android:text="balance"
-            android:textColor="@color/white"
-            android:textSize="25sp"
-            app:layout_constraintStart_toEndOf="@id/iconBitcoin"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/labelCurrentBalance"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:fontFamily="@font/avenir_roman"
-            android:text="@string/current_balance"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            app:layout_constraintEnd_toEndOf="@id/textViewBalance"
-            app:layout_constraintTop_toBottomOf="@id/textViewBalance" />
-
-        <Button
-            android:id="@+id/buttonStart"
-            android:layout_width="wrap_content"
-            android:layout_height="38dp"
-            android:layout_marginEnd="15dp"
-            android:background="@drawable/button_green"
-            android:text="@string/start"
-            android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <Button
-            android:id="@+id/buttonStop"
-            android:layout_width="wrap_content"
-            android:layout_height="38dp"
-            android:layout_marginEnd="15dp"
-            android:background="@drawable/button_red"
-            android:textColor="@color/white"
-            android:text="@string/stop"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
-
+            app:layout_constraintTop_toTopOf="@id/top_layout" />
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <TextView
-        android:id="@+id/textViewUserId"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:textColor="@color/white"
-        android:fontFamily="@font/avenir_roman"
-        android:layout_marginStart="25dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="15dp"
-        android:text="userID"
-        app:layout_constraintTop_toBottomOf="@+id/constraintBoxBalance"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textViewRP"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="25dp"
-        android:fontFamily="@font/avenir_roman"
-        android:text="reward poin"
-        android:textColor="@color/white"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/constraintBoxBalance" />
-
-    <View
-        android:id="@+id/separator"
-        android:layout_width="1dp"
-        android:layout_height="0.5dp"
-        android:layout_marginTop="45dp"
-        android:background="@color/white"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewnextRoll" />
-
-    <TextView
-        android:id="@+id/pointTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/avenir_roman"
-        android:text="@string/rp_time"
-        android:textSize="12sp"
-        app:layout_constraintStart_toStartOf="@id/textViewRPBonus"
-        app:layout_constraintTop_toBottomOf="@id/textViewRPBonus" />
-
-    <TextView
-        android:id="@+id/textViewRPBonus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:fontFamily="@font/avenir_roman"
-        android:text="@string/stop_count_hour"
-        android:textColor="@color/white"
-        android:textSize="28sp"
-        app:layout_constraintBottom_toBottomOf="@id/separator"
-        app:layout_constraintEnd_toEndOf="@id/separator"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/bonusTextView"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:fontFamily="@font/avenir_roman"
-        android:text="@string/bonus_time"
-        android:textSize="12sp"
-        app:layout_constraintEnd_toEndOf="@id/textViewBTCBonus"
-        app:layout_constraintTop_toBottomOf="@id/textViewBTCBonus" />
-
-    <TextView
-        android:id="@+id/textViewBTCBonus"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="5dp"
-        android:layout_marginBottom="10dp"
-        android:fontFamily="@font/avenir_roman"
-        android:text="@string/stop_count_hour"
-        android:textColor="@color/white"
-        android:textSize="28sp"
-        app:layout_constraintBottom_toBottomOf="@id/separator"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="@id/separator" />
-
-    <TextView
-        android:id="@+id/labelNextBTC"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textSize="12sp"
-        android:text="@string/next_bitcoin"
-        android:fontFamily="@font/avenir_roman"
-        app:layout_constraintBottom_toTopOf="@+id/textViewnextRoll"
-        app:layout_constraintEnd_toEndOf="@id/textViewnextRoll"
-        app:layout_constraintStart_toStartOf="@+id/textViewnextRoll" />
-
-    <TextView
-        android:id="@+id/textViewnextRoll"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="40dp"
-        android:fontFamily="@font/gotham_bold"
-        android:text="@string/stop_count_hour"
-        android:textColor="@color/white"
-        android:textSize="50sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/constraintBoxBalance" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/constraintResolve"
+        android:id="@+id/layout_balance"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="20dp"
-        android:layout_marginTop="10dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/button_up"
-        android:paddingTop="10dp"
-        android:paddingBottom="10dp"
+        android:layout_margin="10dp"
+        android:background="@drawable/button_card"
+        android:elevation="2dp"
+        android:padding="20dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/separator">
+        app:layout_constraintTop_toBottomOf="@id/top_layout">
 
         <TextView
-            android:id="@+id/labelResolve"
+            android:id="@+id/label_balance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Resolve Free Bitcoin"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Balance"
             android:textColor="@color/white"
-            app:layout_constraintEnd_toEndOf="@id/constraintResolve"
-            app:layout_constraintStart_toStartOf="@id/constraintResolve"
-            app:layout_constraintTop_toTopOf="@id/constraintResolve" />
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="@id/layout_balance"
+            app:layout_constraintTop_toTopOf="@id/layout_balance" />
 
         <TextView
-            android:id="@+id/labelOR"
+            android:id="@+id/value_balance"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="30dp"
+            android:fontFamily="@font/roboto_bold"
+            android:text="2.98887010"
             android:textColor="@color/white"
-            android:text="OR"
-            app:layout_constraintEnd_toEndOf="@id/constraintResolve"
-            app:layout_constraintStart_toStartOf="@id/constraintResolve"
-            app:layout_constraintTop_toBottomOf="@id/labelResolve" />
+            android:textSize="20sp"
+            app:layout_constraintEnd_toStartOf="@id/label_btc"
+            app:layout_constraintTop_toTopOf="@id/layout_balance" />
 
-        <Button
-            android:id="@+id/buttonDepositResolve"
-            android:layout_width="0dp"
+        <TextView
+            android:id="@+id/label_btc"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/button_blue_dark"
-            android:padding="10dp"
-            android:text="Deposit 0.0005"
-            android:textAllCaps="false"
+            android:layout_marginTop="2dp"
+            android:fontFamily="@font/roboto_bold"
+            android:text=" BTC"
             android:textColor="@color/white"
-            app:layout_constraintBottom_toBottomOf="@id/labelOR"
-            app:layout_constraintEnd_toStartOf="@+id/labelOR"
-            app:layout_constraintStart_toStartOf="@id/constraintResolve"
-            app:layout_constraintTop_toTopOf="@id/labelOR" />
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@id/layout_balance"
+            app:layout_constraintTop_toTopOf="@id/layout_balance" />
 
-        <Button
-            android:id="@+id/buttonCaptchaResolve"
-            android:layout_width="0dp"
+        <ImageView
+            android:id="@+id/btnDeposit"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginTop="25dp"
+            android:background="@drawable/bg_circle_transparent"
+            android:padding="15dp"
+            android:src="@drawable/ic_deposit"
+            app:layout_constraintEnd_toEndOf="@id/layout_balance"
+            app:layout_constraintStart_toStartOf="@id/layout_balance"
+            app:layout_constraintTop_toBottomOf="@id/label_balance" />
+
+        <TextView
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="10dp"
-            android:layout_marginEnd="10dp"
-            android:background="@drawable/button_green"
-            android:padding="10dp"
+            android:fontFamily="@font/avenir_roman"
+            android:paddingTop="5dp"
+            android:text="Deposit"
             android:textColor="@color/white"
-            android:text="Resolve Captcha"
-            android:textAllCaps="false"
-            app:layout_constraintBottom_toBottomOf="@id/labelOR"
-            app:layout_constraintEnd_toEndOf="@id/constraintResolve"
-            app:layout_constraintStart_toEndOf="@+id/labelOR"
-            app:layout_constraintTop_toTopOf="@id/labelOR" />
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@id/btnDeposit"
+            app:layout_constraintStart_toStartOf="@id/btnDeposit"
+            app:layout_constraintTop_toBottomOf="@id/btnDeposit" />
 
+        <ImageView
+            android:id="@+id/btnWithdraw"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_circle_transparent"
+            android:padding="15dp"
+            android:src="@drawable/ic_withdraw"
+            app:layout_constraintEnd_toStartOf="@id/btnDeposit"
+            app:layout_constraintStart_toStartOf="@id/layout_balance"
+            app:layout_constraintTop_toTopOf="@id/btnDeposit" />
+
+        <TextView
+            android:id="@+id/label_withdraw"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_roman"
+            android:paddingTop="5dp"
+            android:text="Withdraw"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@id/btnWithdraw"
+            app:layout_constraintStart_toStartOf="@id/btnWithdraw"
+            app:layout_constraintTop_toBottomOf="@id/btnWithdraw" />
+
+        <ImageView
+            android:id="@+id/btnTransaction"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:background="@drawable/bg_circle_transparent"
+            android:padding="13dp"
+            android:src="@drawable/ic_bitcoin"
+            app:layout_constraintEnd_toEndOf="@id/layout_balance"
+            app:layout_constraintStart_toEndOf="@id/btnDeposit"
+            app:layout_constraintTop_toTopOf="@id/btnDeposit" />
+
+        <TextView
+            android:id="@+id/label_transaction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_roman"
+            android:paddingTop="5dp"
+            android:text="Transaction"
+            android:textColor="@color/white"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@id/btnTransaction"
+            app:layout_constraintStart_toStartOf="@id/btnTransaction"
+            app:layout_constraintTop_toBottomOf="@id/btnTransaction" />
+
+        <TextView
+            android:id="@+id/value_user_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/avenir_roman"
+            android:text="#12344569"
+            android:textColor="@color/greyWhite"
+            android:textSize="12sp"
+            app:layout_constraintStart_toStartOf="@id/layout_balance"
+            app:layout_constraintTop_toBottomOf="@id/label_withdraw" />
+
+        <TextView
+            android:id="@+id/label_reward_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/avenir_roman"
+            android:text="Reward Point: "
+            android:textColor="@color/greyWhite"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@id/value_reward_point"
+            app:layout_constraintTop_toBottomOf="@id/label_transaction" />
+
+        <TextView
+            android:id="@+id/value_reward_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:fontFamily="@font/avenir_roman"
+            android:text="1267"
+            android:textColor="@color/greyWhite"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@id/layout_balance"
+            app:layout_constraintTop_toBottomOf="@id/label_transaction" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <LinearLayout
-        android:id="@+id/headerTransaction"
+    <ScrollView
+        android:id="@+id/scroll_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:fillViewport="true"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_marginTop="10dp"
-        android:background="@drawable/button_blue"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/constraintResolve"
-        android:orientation="vertical">
+        app:layout_constraintTop_toBottomOf="@id/layout_balance">
 
-        <TextView
-            android:id="@+id/labelTransactionHeader"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp"
-            android:gravity="center"
-            android:textColor="@color/white"
-            android:textSize="14sp"
-            android:fontFamily="@font/avenir_roman"
-            android:text="@string/transaction_history" />
-        <ListView
-            android:id="@+id/listTransaction"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:divider="@null"
-            android:dividerHeight="0dp"
-            android:paddingBottom="10dp"
-            android:background="@color/greyWhite"/>
-    </LinearLayout>
+            app:layout_constraintEnd_toEndOf="@id/scroll_view"
+            app:layout_constraintStart_toStartOf="@id/scroll_view"
+            app:layout_constraintTop_toBottomOf="@id/scroll_view">
 
-    <ImageButton
-        android:id="@+id/buttonSlideTransaction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="20dp"
-        android:background="@drawable/small_circle_transparent"
-        android:src="@drawable/ic_up"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@id/headerTransaction" />
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_automatic_claim"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/button_radius_white"
+                android:elevation="5dp"
+                android:padding="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/layout_content">
+
+                <TextView
+                    android:id="@+id/label_info_claim"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/avenir_roman"
+                    android:text="Bitcoin automatic claims every hours"
+                    android:textColor="@color/blackTwo"
+                    android:textSize="13sp"
+                    app:layout_constraintEnd_toStartOf="@id/btnStart"
+                    app:layout_constraintStart_toStartOf="@id/layout_automatic_claim"
+                    app:layout_constraintTop_toTopOf="@id/layout_automatic_claim" />
+
+                <TextView
+                    android:id="@+id/label_info_service"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:fontFamily="@font/avenir_roman"
+                    android:text="Click START to run claim service"
+                    android:textColor="@color/greyishBrown"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toStartOf="@id/btnStart"
+                    app:layout_constraintStart_toStartOf="@id/layout_automatic_claim"
+                    app:layout_constraintTop_toBottomOf="@id/label_info_claim" />
+
+                <Button
+                    android:id="@+id/btnStart"
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
+                    android:background="@drawable/button_green"
+                    android:elevation="2dp"
+                    android:text="@string/start"
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="@id/layout_automatic_claim"
+                    app:layout_constraintEnd_toEndOf="@id/layout_automatic_claim"
+                    app:layout_constraintTop_toTopOf="@id/layout_automatic_claim" />
+
+                <Button
+                    android:id="@+id/btnStop"
+                    android:layout_width="wrap_content"
+                    android:layout_height="38dp"
+                    android:background="@drawable/button_red"
+                    android:text="@string/stop"
+                    android:textColor="@color/white"
+                    app:layout_constraintBottom_toBottomOf="@id/layout_automatic_claim"
+                    app:layout_constraintEnd_toEndOf="@id/layout_automatic_claim"
+                    app:layout_constraintTop_toTopOf="@id/layout_automatic_claim" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_next_bitcoin"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/button_radius_white"
+                android:elevation="5dp"
+                android:padding="20dp"
+                app:layout_constraintEnd_toStartOf="@id/layout_reward_point"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_automatic_claim">
+
+                <TextView
+                    android:id="@+id/value_next_bitcoin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/gotham_bold"
+                    android:text="@string/stop_count_hour"
+                    android:textColor="@color/blackTwo"
+                    android:textSize="15sp"
+                    app:layout_constraintEnd_toEndOf="@id/layout_next_bitcoin"
+                    app:layout_constraintStart_toStartOf="@id/layout_next_bitcoin"
+                    app:layout_constraintTop_toTopOf="@id/layout_next_bitcoin" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/avenir_roman"
+                    android:text="Next Bitcoin"
+                    android:textColor="@color/blackTwo"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="@id/value_next_bitcoin"
+                    app:layout_constraintStart_toStartOf="@id/value_next_bitcoin"
+                    app:layout_constraintTop_toBottomOf="@id/value_next_bitcoin" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_reward_point"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/button_radius_white"
+                android:elevation="5dp"
+                android:padding="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_automatic_claim">
+
+                <TextView
+                    android:id="@+id/value_reward_point_counter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/gotham_bold"
+                    android:text="@string/stop_count_hour"
+                    android:textColor="@color/blackTwo"
+                    android:textSize="15sp"
+                    app:layout_constraintEnd_toEndOf="@id/layout_reward_point"
+                    app:layout_constraintStart_toStartOf="@id/layout_reward_point"
+                    app:layout_constraintTop_toTopOf="@id/layout_reward_point" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/avenir_roman"
+                    android:text="Reward Point"
+                    android:textColor="@color/blackTwo"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="@id/value_reward_point_counter"
+                    app:layout_constraintStart_toStartOf="@id/value_reward_point_counter"
+                    app:layout_constraintTop_toBottomOf="@id/value_reward_point_counter" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_extra_bonus"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/button_radius_white"
+                android:elevation="5dp"
+                android:padding="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toEndOf="@id/layout_reward_point"
+                app:layout_constraintTop_toBottomOf="@id/layout_automatic_claim">
+
+                <TextView
+                    android:id="@+id/value_extra_bonus"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/gotham_bold"
+                    android:text="@string/stop_count_hour"
+                    android:textColor="@color/blackTwo"
+                    android:textSize="15sp"
+                    app:layout_constraintEnd_toEndOf="@id/layout_extra_bonus"
+                    app:layout_constraintStart_toStartOf="@id/layout_extra_bonus"
+                    app:layout_constraintTop_toTopOf="@id/layout_extra_bonus" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/avenir_roman"
+                    android:text="Extra Bonus"
+                    android:textColor="@color/blackTwo"
+                    android:textSize="12sp"
+                    app:layout_constraintEnd_toEndOf="@id/value_extra_bonus"
+                    app:layout_constraintStart_toStartOf="@id/value_extra_bonus"
+                    app:layout_constraintTop_toBottomOf="@id/value_extra_bonus" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_manual_claim"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/button_radius_white"
+                android:elevation="5dp"
+                android:padding="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_reward_point">
+
+                <TextView
+                    android:id="@+id/label_manual_claim"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="Manual Claims"
+                    android:textColor="@color/bottomIcon"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="@id/layout_manual_claim"
+                    app:layout_constraintTop_toTopOf="@id/layout_manual_claim" />
+
+                <View
+                    android:id="@+id/line_claim"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.4dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/greyishBrown"
+                    app:layout_constraintTop_toBottomOf="@id/label_manual_claim" />
+
+                <TextView
+                    android:id="@+id/label_desc_manual"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/avenir_roman"
+                    android:text="Get bitcoin by filling in a captcha every hours"
+                    android:textColor="@color/blackGrey"
+                    app:layout_constraintEnd_toEndOf="@id/layout_manual_claim"
+                    app:layout_constraintStart_toStartOf="@id/layout_manual_claim"
+                    app:layout_constraintTop_toTopOf="@id/line_claim" />
+
+                <Button
+                    android:id="@+id/btnManualClaim"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:background="@drawable/button_orange"
+                    android:elevation="5dp"
+                    android:text="Claim Now"
+                    android:textColor="@color/white"
+                    app:layout_constraintStart_toStartOf="@id/layout_manual_claim"
+                    app:layout_constraintTop_toBottomOf="@id/label_desc_manual" />
+
+                <TextView
+                    android:id="@+id/label_want_claim"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="Do you want automatic claims?"
+                    android:textColor="@color/bottomIcon"
+                    app:layout_constraintStart_toStartOf="@id/layout_manual_claim"
+                    app:layout_constraintTop_toBottomOf="@id/btnManualClaim" />
+
+                <TextView
+                    android:id="@+id/label_desc_autoclaim"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/avenir_roman"
+                    android:text="You don't need to fill out a captcha every hour. Let the system work. You will get bitcoin every hour to your wallet"
+                    android:textColor="@color/greyishBrown"
+                    app:layout_constraintStart_toStartOf="@id/layout_manual_claim"
+                    app:layout_constraintTop_toBottomOf="@id/label_want_claim" />
+
+                <TextView
+                    android:id="@+id/label_how_work"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="How this works?"
+                    android:textColor="@color/bottomIcon"
+                    app:layout_constraintStart_toStartOf="@id/layout_manual_claim"
+                    app:layout_constraintTop_toBottomOf="@id/label_desc_autoclaim" />
+
+                <TextView
+                    android:id="@+id/label_desc_how_work"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/avenir_roman"
+                    android:text="Only by holding bitcoin, you can make automatic claims. the amount of bitcoins to hold is #amount"
+                    android:textColor="@color/greyishBrown"
+                    app:layout_constraintStart_toStartOf="@id/layout_manual_claim"
+                    app:layout_constraintTop_toBottomOf="@id/label_how_work" />
+
+                <Button
+                    android:id="@+id/btnHold"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:background="@drawable/button_blue"
+                    android:text="Hold Bitcoin Now"
+                    android:textColor="@color/white"
+                    android:textSize="16sp"
+                    app:layout_constraintTop_toBottomOf="@id/label_desc_how_work" />
+
+                <TextView
+                    android:id="@+id/label_hold_btc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="20dp"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="Why should hold bitcoin?"
+                    android:textColor="@color/bottomIcon"
+                    app:layout_constraintStart_toStartOf="@id/layout_manual_claim"
+                    app:layout_constraintTop_toBottomOf="@id/btnHold" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:fontFamily="@font/avenir_roman"
+                    android:text="HTML"
+                    android:textColor="@color/greyishBrown"
+                    app:layout_constraintStart_toStartOf="@id/layout_manual_claim"
+                    app:layout_constraintTop_toBottomOf="@id/label_hold_btc" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_header_transaction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/button_header_transaction"
+                android:padding="15dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_manual_claim">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/gotham_bold"
+                    android:text="Last 10 Transaction History"
+                    android:textColor="@color/white"
+                    android:textSize="18sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/layout_header_transaction" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_content_transaction"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="10dp"
+                android:layout_marginBottom="10dp"
+                android:background="@drawable/button_content_transaction"
+                android:padding="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_header_transaction">
+
+                <ListView
+                    android:id="@+id/listTransaction"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/greyWhite"
+                    android:divider="@null"
+                    android:dividerHeight="0dp"
+                    android:paddingBottom="10dp"
+                    app:layout_constraintTop_toBottomOf="@id/layout_content_transaction" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/textViewEmail"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:text=""-->
+    <!--        android:textColor="@color/white"-->
+    <!--        android:textSize="12sp"-->
+    <!--        android:fontFamily="@font/avenir_roman"-->
+    <!--        app:layout_constraintEnd_toEndOf="@id/parent"-->
+    <!--        app:layout_constraintBottom_toTopOf="@id/constraintBoxBalance"-->
+    <!--        android:layout_marginEnd="22dp"-->
+    <!--        android:layout_marginBottom="5dp"/>-->
+
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--        android:id="@+id/constraintBoxBalance"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="20dp"-->
+    <!--        android:layout_marginTop="50dp"-->
+    <!--        android:layout_marginEnd="20dp"-->
+    <!--        android:padding="10dp"-->
+    <!--        android:background="@drawable/button_up"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/layout_balance">-->
+
+    <!--        <ImageView-->
+    <!--            android:id="@+id/iconBitcoin"-->
+    <!--            android:layout_width="15dp"-->
+    <!--            android:layout_height="15dp"-->
+    <!--            android:layout_marginStart="10dp"-->
+    <!--            android:src="@drawable/ic_bitcoin"-->
+    <!--            android:foregroundGravity="center"-->
+    <!--            app:layout_constraintStart_toStartOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/textViewBalance"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginStart="0dp"-->
+    <!--            android:fontFamily="@font/avenir_roman"-->
+    <!--            android:text="balance"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:textSize="25sp"-->
+    <!--            app:layout_constraintStart_toEndOf="@id/iconBitcoin"-->
+    <!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/labelCurrentBalance"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:fontFamily="@font/avenir_roman"-->
+    <!--            android:text="@string/current_balance"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:textSize="12sp"-->
+    <!--            app:layout_constraintEnd_toEndOf="@id/textViewBalance"-->
+    <!--            app:layout_constraintTop_toBottomOf="@id/textViewBalance" />-->
+
+    <!--        <Button-->
+    <!--            android:id="@+id/buttonStart"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="38dp"-->
+    <!--            android:layout_marginEnd="15dp"-->
+    <!--            android:background="@drawable/button_green"-->
+    <!--            android:text="@string/start"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="parent" />-->
+
+    <!--        <Button-->
+    <!--            android:id="@+id/buttonStop"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="38dp"-->
+    <!--            android:layout_marginEnd="15dp"-->
+    <!--            android:background="@drawable/button_red"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:text="@string/stop"-->
+    <!--            app:layout_constraintBottom_toBottomOf="parent"-->
+    <!--            app:layout_constraintEnd_toEndOf="parent"-->
+    <!--            app:layout_constraintTop_toTopOf="parent"/>-->
+
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/textViewUserId"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:textSize="12sp"-->
+    <!--        android:textColor="@color/white"-->
+    <!--        android:fontFamily="@font/avenir_roman"-->
+    <!--        android:layout_marginStart="25dp"-->
+    <!--        android:layout_marginTop="10dp"-->
+    <!--        android:layout_marginEnd="15dp"-->
+    <!--        android:text="userID"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/constraintBoxBalance"-->
+    <!--        app:layout_constraintStart_toStartOf="parent" />-->
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/textViewRP"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="10dp"-->
+    <!--        android:layout_marginEnd="25dp"-->
+    <!--        android:fontFamily="@font/avenir_roman"-->
+    <!--        android:text="reward poin"-->
+    <!--        android:textColor="@color/white"-->
+    <!--        android:textSize="12sp"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@+id/constraintBoxBalance" />-->
+
+    <!--    <View-->
+    <!--        android:id="@+id/separator"-->
+    <!--        android:layout_width="1dp"-->
+    <!--        android:layout_height="0.5dp"-->
+    <!--        android:layout_marginTop="45dp"-->
+    <!--        android:background="@color/white"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/textViewnextRoll" />-->
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/pointTextView"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:fontFamily="@font/avenir_roman"-->
+    <!--        android:text="@string/rp_time"-->
+    <!--        android:textSize="12sp"-->
+    <!--        app:layout_constraintStart_toStartOf="@id/textViewRPBonus"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/textViewRPBonus" />-->
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/textViewRPBonus"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginBottom="10dp"-->
+    <!--        android:fontFamily="@font/avenir_roman"-->
+    <!--        android:text="@string/stop_count_hour"-->
+    <!--        android:textColor="@color/white"-->
+    <!--        android:textSize="28sp"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@id/separator"-->
+    <!--        app:layout_constraintEnd_toEndOf="@id/separator"-->
+    <!--        app:layout_constraintStart_toStartOf="parent" />-->
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/bonusTextView"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:fontFamily="@font/avenir_roman"-->
+    <!--        android:text="@string/bonus_time"-->
+    <!--        android:textSize="12sp"-->
+    <!--        app:layout_constraintEnd_toEndOf="@id/textViewBTCBonus"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/textViewBTCBonus" />-->
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/textViewBTCBonus"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="5dp"-->
+    <!--        android:layout_marginBottom="10dp"-->
+    <!--        android:fontFamily="@font/avenir_roman"-->
+    <!--        android:text="@string/stop_count_hour"-->
+    <!--        android:textColor="@color/white"-->
+    <!--        android:textSize="28sp"-->
+    <!--        app:layout_constraintBottom_toBottomOf="@id/separator"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="@id/separator" />-->
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/labelNextBTC"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:textSize="12sp"-->
+    <!--        android:text="@string/next_bitcoin"-->
+    <!--        android:fontFamily="@font/avenir_roman"-->
+    <!--        app:layout_constraintBottom_toTopOf="@+id/textViewnextRoll"-->
+    <!--        app:layout_constraintEnd_toEndOf="@id/textViewnextRoll"-->
+    <!--        app:layout_constraintStart_toStartOf="@+id/textViewnextRoll" />-->
+
+    <!--    <TextView-->
+    <!--        android:id="@+id/textViewnextRoll"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="40dp"-->
+    <!--        android:fontFamily="@font/gotham_bold"-->
+    <!--        android:text="@string/stop_count_hour"-->
+    <!--        android:textColor="@color/white"-->
+    <!--        android:textSize="50sp"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/constraintBoxBalance" />-->
+
+    <!--    <androidx.constraintlayout.widget.ConstraintLayout-->
+    <!--        android:id="@+id/constraintResolve"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginStart="20dp"-->
+    <!--        android:layout_marginTop="10dp"-->
+    <!--        android:layout_marginEnd="20dp"-->
+    <!--        android:background="@drawable/button_up"-->
+    <!--        android:paddingTop="10dp"-->
+    <!--        android:paddingBottom="10dp"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/separator">-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/labelResolve"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:text="Resolve Free Bitcoin"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            app:layout_constraintEnd_toEndOf="@id/constraintResolve"-->
+    <!--            app:layout_constraintStart_toStartOf="@id/constraintResolve"-->
+    <!--            app:layout_constraintTop_toTopOf="@id/constraintResolve" />-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/labelOR"-->
+    <!--            android:layout_width="wrap_content"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginTop="30dp"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:text="OR"-->
+    <!--            app:layout_constraintEnd_toEndOf="@id/constraintResolve"-->
+    <!--            app:layout_constraintStart_toStartOf="@id/constraintResolve"-->
+    <!--            app:layout_constraintTop_toBottomOf="@id/labelResolve" />-->
+
+    <!--        <Button-->
+    <!--            android:id="@+id/buttonDepositResolve"-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginStart="10dp"-->
+    <!--            android:layout_marginEnd="10dp"-->
+    <!--            android:background="@drawable/button_blue_dark"-->
+    <!--            android:padding="10dp"-->
+    <!--            android:text="Deposit 0.0005"-->
+    <!--            android:textAllCaps="false"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            app:layout_constraintBottom_toBottomOf="@id/labelOR"-->
+    <!--            app:layout_constraintEnd_toStartOf="@+id/labelOR"-->
+    <!--            app:layout_constraintStart_toStartOf="@id/constraintResolve"-->
+    <!--            app:layout_constraintTop_toTopOf="@id/labelOR" />-->
+
+    <!--        <Button-->
+    <!--            android:id="@+id/buttonCaptchaResolve"-->
+    <!--            android:layout_width="0dp"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:layout_marginStart="10dp"-->
+    <!--            android:layout_marginEnd="10dp"-->
+    <!--            android:background="@drawable/button_green"-->
+    <!--            android:padding="10dp"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:text="Resolve Captcha"-->
+    <!--            android:textAllCaps="false"-->
+    <!--            app:layout_constraintBottom_toBottomOf="@id/labelOR"-->
+    <!--            app:layout_constraintEnd_toEndOf="@id/constraintResolve"-->
+    <!--            app:layout_constraintStart_toEndOf="@+id/labelOR"-->
+    <!--            app:layout_constraintTop_toTopOf="@id/labelOR" />-->
+
+    <!--    </androidx.constraintlayout.widget.ConstraintLayout>-->
+
+    <!--    <LinearLayout-->
+    <!--        android:id="@+id/headerTransaction"-->
+    <!--        android:layout_width="match_parent"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_marginTop="10dp"-->
+    <!--        android:background="@drawable/button_blue"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintStart_toStartOf="parent"-->
+    <!--        app:layout_constraintTop_toBottomOf="@id/constraintResolve"-->
+    <!--        android:orientation="vertical">-->
+
+    <!--        <TextView-->
+    <!--            android:id="@+id/labelTransactionHeader"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:paddingTop="15dp"-->
+    <!--            android:paddingBottom="15dp"-->
+    <!--            android:gravity="center"-->
+    <!--            android:textColor="@color/white"-->
+    <!--            android:textSize="14sp"-->
+    <!--            android:fontFamily="@font/avenir_roman"-->
+    <!--            android:text="@string/transaction_history" />-->
+    <!--        <ListView-->
+    <!--            android:id="@+id/listTransaction"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="wrap_content"-->
+    <!--            android:divider="@null"-->
+    <!--            android:dividerHeight="0dp"-->
+    <!--            android:paddingBottom="10dp"-->
+    <!--            android:background="@color/greyWhite"/>-->
+    <!--    </LinearLayout>-->
+
+    <!--    <ImageButton-->
+    <!--        android:id="@+id/buttonSlideTransaction"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_gravity="center_vertical"-->
+    <!--        android:layout_marginTop="12dp"-->
+    <!--        android:layout_marginEnd="20dp"-->
+    <!--        android:background="@drawable/small_circle_transparent"-->
+    <!--        android:src="@drawable/ic_up"-->
+    <!--        app:layout_constraintEnd_toEndOf="parent"-->
+    <!--        app:layout_constraintTop_toTopOf="@id/headerTransaction" />-->
 </androidx.constraintlayout.widget.ConstraintLayout>
