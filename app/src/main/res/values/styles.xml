@@ -18,6 +18,10 @@
         <item name="colorAccent">@color/midBlue</item>
     </style>
 
+    <style name="GreenAccent">
+        <item name="colorAccent">@color/transacGreen</item>
+    </style>
+
     <style name="WhiteAccent">
         <item name="colorAccent">@color/white</item>
     </style>

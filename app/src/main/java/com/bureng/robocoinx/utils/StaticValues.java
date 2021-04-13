@@ -32,6 +32,7 @@ public class StaticValues {
     public static final String FINGERPRINT = "FINGERPRINT";
     public static final String STATE_BEFORE_SIGNUP = "Before Sign Up";
     public static final String DEPOSIT_ADDRESS = "Deposit Address";
+    public static final String DEPOSIT_AMOUNT = "Deposit Amount";
     public static String URL_KEY_B = "aHR0cHM6Ly9mcmVlYml0Y28uaW4v";
     public static String URL_KEY_H = "aHR0cHM6Ly9mcmVlYml0Y28uaW4vP29wPWhvbWU=";
     public static String URL_KEY_S = "aHR0cHM6Ly9mcmVlYml0Y28uaW4vP29wPXNpZ251cF9wYWdl";

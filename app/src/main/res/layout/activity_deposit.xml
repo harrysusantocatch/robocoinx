@@ -4,136 +4,187 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@color/greyWhite"
     tools:context=".activity.DepositActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_root_deposit"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <ImageView
-            android:id="@+id/imageBack"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:src="?attr/actionModeCloseDrawable"
-            android:tint="@color/white"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="18dp"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintStart_toStartOf="parent"/>
-
-        <TextView
-            android:id="@+id/header"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="32dp"
-            android:layout_marginTop="20dp"
-            android:layout_marginEnd="32dp"
-            android:text="My Deposit Address"
-            android:textColor="@color/white"
-            android:textSize="16sp"
-            android:fontFamily="@font/avenir_roman"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent"
+        android:paddingBottom="20dp">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/layoutDeposit"
+            android:id="@+id/layout_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:layout_constraintTop_toBottomOf="@id/header"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginStart="15dp"
-            android:layout_marginEnd="15dp"
-            android:layout_marginTop="30dp"
-            android:paddingTop="20dp"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
+            android:background="@color/colorPrimary"
             android:paddingBottom="20dp"
-            android:background="@drawable/button_up">
-            <LinearLayout
-                android:id="@+id/layoutAddress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/imageBack"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="@id/layoutDeposit"
-                app:layout_constraintTop_toTopOf="@id/layoutDeposit"
-                app:layout_constraintEnd_toEndOf="@id/layoutDeposit"
-                android:orientation="horizontal">
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="18dp"
+                android:src="@drawable/ic_back"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-                <Button
-                    android:id="@+id/btcAddress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/btc_address"
-                    android:textAllCaps="false"
-                    android:fontFamily="@font/avenir_roman"
-                    android:textColor="@color/white"
-                    android:textSize="12sp"
-                    android:background="@drawable/button_up"
-                    android:paddingStart="10dp"
-                    android:paddingEnd="10dp"/>
+            <TextView
+                android:id="@+id/header"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="20dp"
+                android:layout_marginEnd="32dp"
+                android:fontFamily="@font/avenir_roman"
+                android:text="My Deposit Address"
+                android:textColor="@color/white"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layoutDeposit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="20dp"
+                android:background="@drawable/button_up"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/header">
+
+                <ImageView
+                    android:id="@+id/qrCodeImage"
+                    android:layout_width="250dp"
+                    android:layout_height="250dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/greyWhite"
+                    app:layout_constraintEnd_toEndOf="@id/layoutDeposit"
+                    app:layout_constraintStart_toStartOf="@id/layoutDeposit"
+                    app:layout_constraintTop_toTopOf="@id/layoutDeposit" />
+
+                <View
+                    android:id="@+id/line_vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="2dp"
+                    android:layout_marginTop="20dp"
+                    android:background="@color/colorPrimary"
+                    app:layout_constraintTop_toBottomOf="@id/qrCodeImage" />
 
                 <ImageView
                     android:id="@+id/buttonCopy"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="20dp"
+                    android:paddingBottom="15dp"
                     android:src="@drawable/ic_copy"
-                    android:layout_marginStart="10dp"/>
-            </LinearLayout>
+                    app:layout_constraintEnd_toEndOf="@id/layoutDeposit"
+                    app:layout_constraintTop_toBottomOf="@id/line_vertical" />
 
+                <View
+                    android:id="@+id/line_horizontal"
+                    android:layout_width="2dp"
+                    android:layout_height="0dp"
+                    android:layout_marginEnd="20dp"
+                    android:background="@color/colorPrimary"
+                    app:layout_constraintBottom_toBottomOf="@id/layoutDeposit"
+                    app:layout_constraintEnd_toStartOf="@id/buttonCopy"
+                    app:layout_constraintTop_toTopOf="@id/line_vertical" />
 
-            <ImageView
-                android:id="@+id/qrCodeImage"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:background="@color/greyWhite"
-                app:layout_constraintTop_toBottomOf="@id/layoutAddress"
-                android:layout_marginTop="20dp"
-                app:layout_constraintStart_toStartOf="@id/layoutDeposit"
-                app:layout_constraintEnd_toEndOf="@id/layoutDeposit"/>
+                <TextView
+                    android:id="@+id/btcAddress"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:text="@string/btc_address"
+                    android:layout_marginStart="20dp"
+                    android:layout_marginTop="15dp"
+                    android:layout_marginEnd="20dp"
+                    android:paddingBottom="15dp"
+                    android:fontFamily="@font/avenir_roman"
+                    android:textSize="12sp"
+                    android:textColor="@color/white"
+                    app:layout_constraintEnd_toStartOf="@id/line_horizontal"
+                    app:layout_constraintStart_toStartOf="@id/layoutDeposit"
+                    app:layout_constraintTop_toBottomOf="@id/line_vertical" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-        <TextView
-            android:id="@+id/note"
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_note"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:text="Note :"
-            android:textColor="@color/blackTwo"
-            app:layout_constraintTop_toBottomOf="@id/layoutDeposit"
-            android:layout_marginTop="20dp"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="15dp"/>
+            android:background="@color/white"
+            android:elevation="5dp"
+            android:padding="20dp"
+            app:layout_constraintEnd_toEndOf="@id/layout_top"
+            app:layout_constraintStart_toStartOf="@id/layout_top"
+            app:layout_constraintTop_toBottomOf="@id/layout_top">
 
-        <TextView
-            android:id="@+id/note1"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:fontFamily="@font/avenir_roman"
-            android:text="@string/note1"
-            android:textColor="@color/blackTwo"
-            app:layout_constraintTop_toBottomOf="@id/note"
-            android:layout_marginTop="5dp"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="25dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="20dp"/>
-        <TextView
-            android:id="@+id/note2"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:textSize="13sp"
-            android:fontFamily="@font/avenir_roman"
-            android:text="@string/note2"
-            android:textColor="@color/blackTwo"
-            app:layout_constraintTop_toBottomOf="@id/note1"
-            android:layout_marginTop="5dp"
-            app:layout_constraintStart_toStartOf="parent"
-            android:layout_marginStart="25dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_marginEnd="20dp"/>
+            <TextView
+                android:id="@+id/label_note"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/gotham_bold"
+                android:text="Note"
+                android:textColor="@color/blackGrey"
+                android:textSize="16sp"
+                app:layout_constraintStart_toStartOf="@id/layout_note"
+                app:layout_constraintTop_toTopOf="@id/layout_note" />
+
+            <View
+                android:id="@+id/line_vertical_note"
+                android:layout_width="match_parent"
+                android:layout_height="0.4dp"
+                android:layout_marginTop="8dp"
+                android:background="@color/greyishBrown"
+                app:layout_constraintTop_toBottomOf="@id/label_note" />
+
+            <TextView
+                android:id="@+id/note_hold"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/avenir_roman"
+                android:text="@string/note1"
+                android:textColor="@color/greyishBrown"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@id/layout_note"
+                app:layout_constraintStart_toStartOf="@id/layout_note"
+                app:layout_constraintTop_toBottomOf="@id/line_vertical_note" />
+
+            <TextView
+                android:id="@+id/note1"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/avenir_roman"
+                android:text="@string/note1"
+                android:textColor="@color/greyishBrown"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@id/layout_note"
+                app:layout_constraintStart_toStartOf="@id/layout_note"
+                app:layout_constraintTop_toBottomOf="@id/note_hold" />
+
+            <TextView
+                android:id="@+id/note2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/avenir_roman"
+                android:text="@string/note2"
+                android:textColor="@color/greyishBrown"
+                android:textSize="12sp"
+                app:layout_constraintEnd_toEndOf="@id/layout_note"
+                app:layout_constraintStart_toStartOf="@id/layout_note"
+                app:layout_constraintTop_toBottomOf="@id/note1" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 </ScrollView>

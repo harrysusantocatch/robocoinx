@@ -20,9 +20,9 @@
 
         <ImageView
             android:id="@+id/buttonPage"
-            android:layout_width="23sp"
-            android:layout_height="23sp"
-            android:src="@drawable/ic_help"
+            android:layout_width="28sp"
+            android:layout_height="28sp"
+            android:src="@drawable/ic_person_pin"
             app:layout_constraintEnd_toEndOf="@id/top_layout"
             app:layout_constraintTop_toTopOf="@id/top_layout" />
 
@@ -302,7 +302,7 @@
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/avenir_roman"
                     android:text="Next Bitcoin"
-                    android:textColor="@color/blackTwo"
+                    android:textColor="@color/blackGrey"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="@id/value_next_bitcoin"
                     app:layout_constraintStart_toStartOf="@id/value_next_bitcoin"
@@ -339,7 +339,7 @@
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/avenir_roman"
                     android:text="Reward Point"
-                    android:textColor="@color/blackTwo"
+                    android:textColor="@color/blackGrey"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="@id/value_reward_point_counter"
                     app:layout_constraintStart_toStartOf="@id/value_reward_point_counter"
@@ -376,7 +376,7 @@
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/avenir_roman"
                     android:text="Extra Bonus"
-                    android:textColor="@color/blackTwo"
+                    android:textColor="@color/blackGrey"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="@id/value_extra_bonus"
                     app:layout_constraintStart_toStartOf="@id/value_extra_bonus"
@@ -420,7 +420,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="10dp"
                     android:fontFamily="@font/avenir_roman"
-                    android:text="Get bitcoin by filling in a captcha every hours"
+                    android:text="Bitcoin already to claim"
                     android:textColor="@color/blackGrey"
                     app:layout_constraintEnd_toEndOf="@id/layout_manual_claim"
                     app:layout_constraintStart_toStartOf="@id/layout_manual_claim"
@@ -438,6 +438,40 @@
                     app:layout_constraintStart_toStartOf="@id/layout_manual_claim"
                     app:layout_constraintTop_toBottomOf="@id/label_desc_manual" />
 
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_info_automatic_claim"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/button_radius_white"
+                android:elevation="5dp"
+                android:padding="20dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_manual_claim">
+
+                <TextView
+                    android:id="@+id/label_info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/roboto_bold"
+                    android:text="Automatic Claims"
+                    android:textColor="@color/bottomIcon"
+                    android:textSize="16sp"
+                    app:layout_constraintStart_toStartOf="@id/layout_info_automatic_claim"
+                    app:layout_constraintTop_toTopOf="@id/layout_info_automatic_claim" />
+
+                <View
+                    android:id="@+id/line_info"
+                    android:layout_width="match_parent"
+                    android:layout_height="0.4dp"
+                    android:layout_marginTop="5dp"
+                    android:background="@color/greyishBrown"
+                    app:layout_constraintTop_toBottomOf="@id/label_info" />
+
                 <TextView
                     android:id="@+id/label_want_claim"
                     android:layout_width="wrap_content"
@@ -446,8 +480,8 @@
                     android:fontFamily="@font/roboto_bold"
                     android:text="Do you want automatic claims?"
                     android:textColor="@color/bottomIcon"
-                    app:layout_constraintStart_toStartOf="@id/layout_manual_claim"
-                    app:layout_constraintTop_toBottomOf="@id/btnManualClaim" />
+                    app:layout_constraintStart_toStartOf="@id/layout_info_automatic_claim"
+                    app:layout_constraintTop_toBottomOf="@id/line_info" />
 
                 <TextView
                     android:id="@+id/label_desc_autoclaim"
@@ -457,7 +491,7 @@
                     android:fontFamily="@font/avenir_roman"
                     android:text="You don't need to fill out a captcha every hour. Let the system work. You will get bitcoin every hour to your wallet"
                     android:textColor="@color/greyishBrown"
-                    app:layout_constraintStart_toStartOf="@id/layout_manual_claim"
+                    app:layout_constraintStart_toStartOf="@id/layout_info_automatic_claim"
                     app:layout_constraintTop_toBottomOf="@id/label_want_claim" />
 
                 <TextView
@@ -468,7 +502,7 @@
                     android:fontFamily="@font/roboto_bold"
                     android:text="How this works?"
                     android:textColor="@color/bottomIcon"
-                    app:layout_constraintStart_toStartOf="@id/layout_manual_claim"
+                    app:layout_constraintStart_toStartOf="@id/layout_info_automatic_claim"
                     app:layout_constraintTop_toBottomOf="@id/label_desc_autoclaim" />
 
                 <TextView
@@ -477,9 +511,9 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/avenir_roman"
-                    android:text="Only by holding bitcoin, you can make automatic claims. the amount of bitcoins to hold is #amount"
+                    android:text="Only by holding bitcoin, you can make automatic claims. the amount of bitcoin to be deposited is #amount"
                     android:textColor="@color/greyishBrown"
-                    app:layout_constraintStart_toStartOf="@id/layout_manual_claim"
+                    app:layout_constraintStart_toStartOf="@id/layout_info_automatic_claim"
                     app:layout_constraintTop_toBottomOf="@id/label_how_work" />
 
                 <Button
@@ -501,19 +535,19 @@
                     android:fontFamily="@font/roboto_bold"
                     android:text="Why should hold bitcoin?"
                     android:textColor="@color/bottomIcon"
-                    app:layout_constraintStart_toStartOf="@id/layout_manual_claim"
+                    app:layout_constraintStart_toStartOf="@id/layout_info_automatic_claim"
                     app:layout_constraintTop_toBottomOf="@id/btnHold" />
 
                 <TextView
+                    android:id="@+id/desc_advantage_automatic"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="5dp"
                     android:fontFamily="@font/avenir_roman"
                     android:text="HTML"
                     android:textColor="@color/greyishBrown"
-                    app:layout_constraintStart_toStartOf="@id/layout_manual_claim"
+                    app:layout_constraintStart_toStartOf="@id/layout_info_automatic_claim"
                     app:layout_constraintTop_toBottomOf="@id/label_hold_btc" />
-
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -525,7 +559,7 @@
                 android:padding="15dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_manual_claim">
+                app:layout_constraintTop_toBottomOf="@id/layout_info_automatic_claim">
 
                 <TextView
                     android:layout_width="wrap_content"

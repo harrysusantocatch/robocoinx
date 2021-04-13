@@ -3,7 +3,6 @@ package com.bureng.robocoinx.activity
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ActivityManager
-import android.app.Dialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
@@ -11,13 +10,10 @@ import android.os.Bundle
 import android.os.CountDownTimer
 import android.os.PowerManager
 import android.provider.Settings
+import android.text.Html
 import android.view.View
-import android.view.ViewGroup
-import android.view.Window
-import android.widget.Button
-import android.widget.ImageView
 import androidx.annotation.RequiresApi
-import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.text.HtmlCompat
 import com.bureng.robocoinx.R
 import com.bureng.robocoinx.adapter.TransactionAdapter
 import com.bureng.robocoinx.contract.HomeContract
@@ -34,6 +30,7 @@ import java.util.concurrent.TimeUnit
 class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
     private var runManual = false
     private lateinit var depositAddress: String
+    private lateinit var depositAmount: String
     private lateinit var presenter: HomeContract.Presenter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -90,7 +87,7 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
                 override fun onFinish() {
                     value_next_bitcoin!!.setText(R.string.stop_count_hour)
                     if (runManual) {
-                        layout_automatic_claim.visibility = View.GONE
+//                        layout_automatic_claim.visibility = View.GONE
 //                        showRunManualDialog()
                     } else {
                         DoAsync {
@@ -132,13 +129,26 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
             }.start()
 
             if (pp.haveCaptcha) {
-                layout_automatic_claim.visibility = View.VISIBLE
+//                layout_automatic_claim.visibility = View.GONE
+                if (pp.nextRollTime > 0) {
+                    layout_manual_claim.visibility = View.GONE
+                } else {
+                    layout_manual_claim.visibility = View.VISIBLE
+                }
                 pp.noCaptchaSpec?.let {
                     val depositDesc = "Only by holding bitcoin, you can make automatic claims. the amount of bitcoins to hold is ${it.deposit}"
+                    depositAmount = it.deposit
                     label_desc_how_work.text = depositDesc
                 }
             } else {
+//                layout_automatic_claim.visibility = View.VISIBLE
                 layout_manual_claim.visibility = View.GONE
+            }
+            val html = getString(R.string.desc_advantage_automatic)
+            desc_advantage_automatic.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
+            } else {
+                HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
             }
 //            bonusTextView.text = pp.bonusText
 //            pointTextView.text = pp.pointText
@@ -207,29 +217,30 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
                 btnStop!!.visibility = View.GONE
             }
             R.id.buttonPage -> {
-                val dialog = Dialog(this)
-                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
-                dialog.setContentView(R.layout.menu_option)
-                dialog.window?.setLayout(this.resources.displayMetrics.widthPixels, ViewGroup.LayoutParams.WRAP_CONTENT)
-                val closeDialog = dialog.findViewById<ImageView>(R.id.imageClose)
-                val layoutWithdraw: ConstraintLayout = dialog.findViewById(R.id.layoutWithdraw)
-                val layoutDeposit: ConstraintLayout = dialog.findViewById(R.id.layoutDeposit)
-                val layoutNotify: ConstraintLayout = dialog.findViewById(R.id.layoutChangePassword)
-                val btnLogout = dialog.findViewById<Button>(R.id.buttonLogout)
-                closeDialog.setOnClickListener { dialog.dismiss() }
-                layoutWithdraw.setOnClickListener {
-                    dialog.dismiss()
-                    startActivity(Intent(this, WithdrawActivity::class.java))
-                }
-                layoutDeposit.setOnClickListener {
-                    dialog.dismiss()
-                    val newIntent = Intent(this, DepositActivity::class.java)
-                    newIntent.putExtra(StaticValues.DEPOSIT_ADDRESS, depositAddress)
-                    startActivity(newIntent)
-                }
-                layoutNotify.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }
-                btnLogout.setOnClickListener { presenter.logout(applicationContext) }
-                dialog.show()
+                startActivity(Intent(this, SettingActivity::class.java))
+//                val dialog = Dialog(this)
+//                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
+//                dialog.setContentView(R.layout.menu_option)
+//                dialog.window?.setLayout(this.resources.displayMetrics.widthPixels, ViewGroup.LayoutParams.WRAP_CONTENT)
+//                val closeDialog = dialog.findViewById<ImageView>(R.id.imageClose)
+//                val layoutWithdraw: ConstraintLayout = dialog.findViewById(R.id.layoutWithdraw)
+//                val layoutDeposit: ConstraintLayout = dialog.findViewById(R.id.layoutDeposit)
+//                val layoutNotify: ConstraintLayout = dialog.findViewById(R.id.layoutChangePassword)
+//                val btnLogout = dialog.findViewById<Button>(R.id.buttonLogout)
+//                closeDialog.setOnClickListener { dialog.dismiss() }
+//                layoutWithdraw.setOnClickListener {
+//                    dialog.dismiss()
+//                    startActivity(Intent(this, WithdrawActivity::class.java))
+//                }
+//                layoutDeposit.setOnClickListener {
+//                    dialog.dismiss()
+//                    val newIntent = Intent(this, DepositActivity::class.java)
+//                    newIntent.putExtra(StaticValues.DEPOSIT_ADDRESS, depositAddress)
+//                    startActivity(newIntent)
+//                }
+//                layoutNotify.setOnClickListener { startActivity(Intent(this, ChangePasswordActivity::class.java)) }
+//                btnLogout.setOnClickListener { presenter.logout(applicationContext) }
+//                dialog.show()
             }
             R.id.btnManualClaim -> {
                 launchManual()
@@ -237,6 +248,7 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
             R.id.btnDeposit -> {
                 val depositIntent = Intent(this, DepositActivity::class.java)
                 depositIntent.putExtra(StaticValues.DEPOSIT_ADDRESS, depositAddress)
+                depositIntent.putExtra(StaticValues.DEPOSIT_AMOUNT, depositAmount)
                 startActivity(depositIntent)
             }
             R.id.btnWithdraw -> {
@@ -245,6 +257,7 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
             R.id.btnHold -> {
                 val depositIntent = Intent(this, DepositActivity::class.java)
                 depositIntent.putExtra(StaticValues.DEPOSIT_ADDRESS, depositAddress)
+                depositIntent.putExtra(StaticValues.DEPOSIT_AMOUNT, depositAmount)
                 startActivity(depositIntent)
             }
             R.id.btnTransaction -> {
@@ -254,8 +267,13 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
     }
 
     override fun showTransactionList(content: ArrayList<ClaimHistory>) {
-        val adapter = TransactionAdapter(applicationContext, content)
-        listTransaction.adapter = adapter
+        if (content.size > 0) {
+            val adapter = TransactionAdapter(applicationContext, content)
+            listTransaction.adapter = adapter
+        } else {
+            layout_header_transaction.visibility = View.GONE
+            layout_content_transaction.visibility = View.GONE
+        }
     }
 
     override fun goToSplash() {

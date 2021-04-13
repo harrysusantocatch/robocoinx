@@ -51,6 +51,15 @@
     <string name="label_change">Change</string>
 
     <string name="label_withdraw">Withdraw</string>
+
+    <string name="desc_advantage_automatic"><ul>
+				<li>Automatic bitcoin claim</li>
+				<li>Bitcoin price is always going up</li>
+				<li>Your bitcoin assets will continue to grow</li>
+				<li>Additional reward points</li>
+				<li>Additional extra bonus</li>
+				</ul>
+    </string>
     <string name="label_fee">Transaction Fees: 0.00000000 BTC</string>
     <string name="label_amount_deducted">Amount Deducted: 0.00000000 BTC</string>
 

@@ -25,6 +25,7 @@ class WithdrawActivity : Activity(), View.OnClickListener, WithdrawContract.View
 
     private lateinit var presenter: WithdrawContract.Presenter
     private var initFee: BigDecimal = BigDecimal.ZERO
+    private var totalBalance: Double = 0.0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_withdraw)
@@ -36,15 +37,19 @@ class WithdrawActivity : Activity(), View.OnClickListener, WithdrawContract.View
     }
 
     private fun setOnListener() {
+        btn100.setOnClickListener(this)
+        btn75.setOnClickListener(this)
+        btn50.setOnClickListener(this)
+        btn25.setOnClickListener(this)
         buttonWithdrawWD.setOnClickListener(this)
         imageBackWD.setOnClickListener(this)
-        editTextAmount.addTextChangedListener(object : TextWatcher{
+        editTextAmount.addTextChangedListener(object : TextWatcher {
             override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 
             @SuppressLint("SetTextI18n")
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
                 s?.let {
-                    if(it.isNotEmpty()){
+                    if (it.isNotEmpty()) {
                         var total: BigDecimal = BigDecimal.ZERO
                         total += it.toString().toBigDecimal() + initFee
                         labelAmountDeducted.text = "Amount Deducted: $total BTC"
@@ -69,7 +74,28 @@ class WithdrawActivity : Activity(), View.OnClickListener, WithdrawContract.View
                 R.id.imageBackWD -> {
                     onBackPressed()
                 }
-                else ->{}
+                R.id.btn100 -> {
+                    var value = totalBalance.minus(initFee.toDouble())
+                    val valueStr = value.toBigDecimal().toString()
+                    editTextAmount.setText(valueStr)
+                }
+                R.id.btn75 -> {
+                    var value = totalBalance * 75 / 100
+                    val valueStr = value.toBigDecimal().toString()
+                    editTextAmount.setText(valueStr)
+                }
+                R.id.btn50 -> {
+                    var value = totalBalance * 50 / 100
+                    val valueStr = value.toBigDecimal().toString()
+                    editTextAmount.setText(valueStr)
+                }
+                R.id.btn25 -> {
+                    var value = totalBalance * 25 / 100
+                    val valueStr = value.toBigDecimal().toString()
+                    editTextAmount.setText(valueStr)
+                }
+                else -> {
+                }
             }
         }
     }
@@ -78,9 +104,11 @@ class WithdrawActivity : Activity(), View.OnClickListener, WithdrawContract.View
     override fun setData(initWithdraw: InitWithdrawResponse) {
         runOnUiThread {
             val fee = initWithdraw.fee
-            textViewBalanceWD.text = initWithdraw.balance
+            val balance = initWithdraw.balance
+            textViewBalanceWD.text = balance
             labelFeesWD.text = "Transaction Fees: $fee BTC"
             initFee = fee.toBigDecimal()
+            totalBalance = balance.toDouble()
         }
     }
 
