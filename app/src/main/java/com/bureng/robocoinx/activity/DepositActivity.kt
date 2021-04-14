@@ -7,6 +7,7 @@ import android.content.Context
 import android.os.Build
 import android.os.Bundle
 import android.text.Html
+import android.view.View
 import android.widget.Toast
 import androidmads.library.qrgenearator.QRGContents
 import androidmads.library.qrgenearator.QRGEncoder
@@ -28,11 +29,15 @@ class DepositActivity : Activity() {
         val depositAddress = intent.extras?.get(StaticValues.DEPOSIT_ADDRESS) as String
         val depositAmount = intent.extras?.get(StaticValues.DEPOSIT_AMOUNT) as String
         btcAddress.text = depositAddress
-        val html = "If you want to hold bitcoin for <b>automatic claim</b>, please deposit <b>$depositAmount</b> BTC"
-        note_hold.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
+        if (depositAmount == "0") {
+            note_hold.visibility = View.GONE
         } else {
-            HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            val html = "If you want to hold bitcoin for <b>automatic claim</b>, please deposit <b>$depositAmount</b> BTC"
+            note_hold.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
+            } else {
+                HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+            }
         }
         val qrgEncoder = QRGEncoder(depositAddress, null, QRGContents.Type.TEXT, 200)
         qrCodeImage.setImageBitmap(qrgEncoder.encodeAsBitmap())

@@ -17,7 +17,7 @@
             android:id="@+id/layout_top"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
+            android:background="@color/brightBlue"
             android:paddingBottom="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -73,7 +73,7 @@
                     android:layout_width="match_parent"
                     android:layout_height="2dp"
                     android:layout_marginTop="20dp"
-                    android:background="@color/colorPrimary"
+                    android:background="@color/brightBlue"
                     app:layout_constraintTop_toBottomOf="@id/qrCodeImage" />
 
                 <ImageView
@@ -93,7 +93,7 @@
                     android:layout_width="2dp"
                     android:layout_height="0dp"
                     android:layout_marginEnd="20dp"
-                    android:background="@color/colorPrimary"
+                    android:background="@color/brightBlue"
                     app:layout_constraintBottom_toBottomOf="@id/layoutDeposit"
                     app:layout_constraintEnd_toStartOf="@id/buttonCopy"
                     app:layout_constraintTop_toTopOf="@id/line_vertical" />
@@ -128,16 +128,26 @@
             app:layout_constraintStart_toStartOf="@id/layout_top"
             app:layout_constraintTop_toBottomOf="@id/layout_top">
 
+            <ImageView
+                android:id="@+id/img_note"
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:paddingTop="4dp"
+                android:src="@drawable/ic_event_note"
+                android:tint="@color/brightBlue"
+                app:layout_constraintStart_toStartOf="@id/layout_note"
+                app:layout_constraintTop_toTopOf="@id/layout_note" />
+
             <TextView
                 android:id="@+id/label_note"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/gotham_bold"
                 android:text="Note"
-                android:textColor="@color/blackGrey"
-                android:textSize="16sp"
-                app:layout_constraintStart_toStartOf="@id/layout_note"
-                app:layout_constraintTop_toTopOf="@id/layout_note" />
+                android:textColor="@color/brightBlue"
+                android:textSize="18sp"
+                app:layout_constraintStart_toEndOf="@id/img_note"
+                app:layout_constraintTop_toTopOf="@id/img_note" />
 
             <View
                 android:id="@+id/line_vertical_note"
@@ -145,7 +155,7 @@
                 android:layout_height="0.4dp"
                 android:layout_marginTop="8dp"
                 android:background="@color/greyishBrown"
-                app:layout_constraintTop_toBottomOf="@id/label_note" />
+                app:layout_constraintTop_toBottomOf="@id/img_note" />
 
             <TextView
                 android:id="@+id/note_hold"
@@ -155,7 +165,7 @@
                 android:fontFamily="@font/avenir_roman"
                 android:text="@string/note1"
                 android:textColor="@color/greyishBrown"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 app:layout_constraintEnd_toEndOf="@id/layout_note"
                 app:layout_constraintStart_toStartOf="@id/layout_note"
                 app:layout_constraintTop_toBottomOf="@id/line_vertical_note" />
@@ -168,7 +178,7 @@
                 android:fontFamily="@font/avenir_roman"
                 android:text="@string/note1"
                 android:textColor="@color/greyishBrown"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 app:layout_constraintEnd_toEndOf="@id/layout_note"
                 app:layout_constraintStart_toStartOf="@id/layout_note"
                 app:layout_constraintTop_toBottomOf="@id/note_hold" />
@@ -181,7 +191,7 @@
                 android:fontFamily="@font/avenir_roman"
                 android:text="@string/note2"
                 android:textColor="@color/greyishBrown"
-                android:textSize="12sp"
+                android:textSize="13sp"
                 app:layout_constraintEnd_toEndOf="@id/layout_note"
                 app:layout_constraintStart_toStartOf="@id/layout_note"
                 app:layout_constraintTop_toBottomOf="@id/note1" />

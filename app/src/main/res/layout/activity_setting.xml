@@ -1,8 +1,347 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/greyWhite"
     tools:context=".activity.SettingActivity">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/brightBlue"
+        android:padding="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_back"
+            app:layout_constraintBottom_toBottomOf="@id/layout_header"
+            app:layout_constraintStart_toStartOf="@id/layout_header"
+            app:layout_constraintTop_toTopOf="@id/layout_header" />
+
+        <TextView
+            android:id="@+id/header"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_roman"
+            android:text="Profile"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            app:layout_constraintBottom_toBottomOf="@id/layout_header"
+            app:layout_constraintEnd_toEndOf="@id/layout_header"
+            app:layout_constraintStart_toStartOf="@id/layout_header"
+            app:layout_constraintTop_toTopOf="@id/layout_header" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_top"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/white"
+        android:padding="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_header">
+
+        <TextView
+            android:id="@+id/label_contract_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_roman"
+            android:text="Contract ID"
+            android:textColor="@color/greyishBrown"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@id/layout_top"
+            app:layout_constraintTop_toTopOf="@id/layout_top" />
+
+        <TextView
+            android:id="@+id/value_contract_id"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="#78967821"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@id/layout_top"
+            app:layout_constraintTop_toBottomOf="@id/label_contract_id" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_email"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:background="@color/white"
+        android:padding="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_top">
+
+        <ImageView
+            android:id="@+id/img_email"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_email"
+            android:tint="@color/softBlue"
+            app:layout_constraintStart_toStartOf="@id/layout_email"
+            app:layout_constraintTop_toTopOf="@id/layout_email" />
+
+        <TextView
+            android:id="@+id/label_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Email"
+            android:textColor="@color/blackGrey"
+            android:textSize="13sp"
+            app:layout_constraintStart_toEndOf="@id/img_email"
+            app:layout_constraintTop_toTopOf="@id/layout_email" />
+
+        <TextView
+            android:id="@+id/value_email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_roman"
+            android:text="harrysusanto13@gmail.com"
+            android:textColor="@color/blackGrey"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@id/layout_email"
+            app:layout_constraintTop_toTopOf="@id/layout_email" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_claim_type"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:background="@color/white"
+        android:padding="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_email">
+
+        <ImageView
+            android:id="@+id/img_claim"
+            android:layout_width="19dp"
+            android:layout_height="19dp"
+            android:src="@drawable/ic_claim"
+            android:tint="@color/softBlue"
+            app:layout_constraintStart_toStartOf="@id/layout_claim_type"
+            app:layout_constraintTop_toTopOf="@id/layout_claim_type" />
+
+        <TextView
+            android:id="@+id/label_claim_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Claim Type"
+            android:textColor="@color/blackGrey"
+            android:textSize="13sp"
+            app:layout_constraintStart_toEndOf="@id/img_claim"
+            app:layout_constraintTop_toTopOf="@id/layout_claim_type" />
+
+        <TextView
+            android:id="@+id/value_claim_type"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_roman"
+            android:text="Automatic"
+            android:textColor="@color/blackGrey"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@id/layout_claim_type"
+            app:layout_constraintTop_toTopOf="@id/layout_claim_type" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_reward_point"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:background="@color/white"
+        android:padding="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_claim_type">
+
+        <ImageView
+            android:id="@+id/img_reward"
+            android:layout_width="19dp"
+            android:layout_height="19dp"
+            android:src="@drawable/ic_reward"
+            android:tint="@color/softBlue"
+            app:layout_constraintStart_toStartOf="@id/layout_reward_point"
+            app:layout_constraintTop_toTopOf="@id/layout_reward_point" />
+
+        <TextView
+            android:id="@+id/label_reward_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Reward Point"
+            android:textColor="@color/blackGrey"
+            android:textSize="13sp"
+            app:layout_constraintStart_toEndOf="@id/img_reward"
+            app:layout_constraintTop_toTopOf="@id/layout_reward_point" />
+
+        <TextView
+            android:id="@+id/value_reward_point"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_roman"
+            android:text="ON"
+            android:textColor="@color/blackGrey"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@id/layout_reward_point"
+            app:layout_constraintTop_toTopOf="@id/layout_reward_point" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_extra_bonus"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:background="@color/white"
+        android:padding="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_reward_point">
+
+        <ImageView
+            android:id="@+id/img_bonus"
+            android:layout_width="19dp"
+            android:layout_height="19dp"
+            android:src="@drawable/ic_paid"
+            android:tint="@color/softBlue"
+            app:layout_constraintStart_toStartOf="@id/layout_extra_bonus"
+            app:layout_constraintTop_toTopOf="@id/layout_extra_bonus" />
+
+        <TextView
+            android:id="@+id/label_extra_bonus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Extra Bonus"
+            android:textColor="@color/blackGrey"
+            android:textSize="13sp"
+            app:layout_constraintStart_toEndOf="@id/img_bonus"
+            app:layout_constraintTop_toTopOf="@id/layout_extra_bonus" />
+
+        <TextView
+            android:id="@+id/value_extra_bonus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_roman"
+            android:text="OFF"
+            android:textColor="@color/blackGrey"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toEndOf="@id/layout_extra_bonus"
+            app:layout_constraintTop_toTopOf="@id/layout_extra_bonus" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
+        android:id="@+id/label_action"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:fontFamily="@font/avenir_roman"
+        android:text="Action"
+        android:textColor="@color/blackGrey"
+        android:textSize="14sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_extra_bonus" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_change_password"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="15dp"
+        android:background="@color/white"
+        android:padding="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label_action">
+
+        <ImageView
+            android:id="@+id/img_change_password"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_lock"
+            android:tint="@color/softBlue"
+            app:layout_constraintStart_toStartOf="@id/layout_change_password"
+            app:layout_constraintTop_toTopOf="@id/layout_change_password" />
+
+        <TextView
+            android:id="@+id/label_change_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Change Password"
+            android:textColor="@color/blackGrey"
+            android:textSize="13sp"
+            app:layout_constraintStart_toEndOf="@id/img_change_password"
+            app:layout_constraintTop_toTopOf="@id/layout_change_password" />
+
+        <ImageView
+            android:id="@+id/arrow_change_password"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_roman"
+            android:src="@drawable/ic_right"
+            android:textColor="@color/blackGrey"
+            android:textSize="13sp"
+            android:tint="@color/softBlue"
+            app:layout_constraintEnd_toEndOf="@id/layout_change_password"
+            app:layout_constraintTop_toTopOf="@id/layout_change_password" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/layout_logout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:background="@color/white"
+        android:padding="20dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/layout_change_password">
+
+        <ImageView
+            android:id="@+id/img_logout"
+            android:layout_width="18dp"
+            android:layout_height="18dp"
+            android:src="@drawable/ic_logout"
+            android:tint="@color/transacRed"
+            app:layout_constraintStart_toStartOf="@id/layout_logout"
+            app:layout_constraintTop_toTopOf="@id/layout_logout" />
+
+        <TextView
+            android:id="@+id/label_logout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Logout"
+            android:textColor="@color/blackGrey"
+            android:textSize="13sp"
+            app:layout_constraintStart_toEndOf="@id/img_logout"
+            app:layout_constraintTop_toTopOf="@id/layout_logout" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

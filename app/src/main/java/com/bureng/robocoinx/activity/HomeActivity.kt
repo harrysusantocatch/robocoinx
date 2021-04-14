@@ -15,10 +15,8 @@ import android.view.View
 import androidx.annotation.RequiresApi
 import androidx.core.text.HtmlCompat
 import com.bureng.robocoinx.R
-import com.bureng.robocoinx.adapter.TransactionAdapter
 import com.bureng.robocoinx.contract.HomeContract
 import com.bureng.robocoinx.model.common.DoAsync
-import com.bureng.robocoinx.model.db.ClaimHistory
 import com.bureng.robocoinx.model.view.ProfileView
 import com.bureng.robocoinx.presenter.HomePresenter
 import com.bureng.robocoinx.service.BackgroundService
@@ -42,7 +40,6 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
     private fun setView() {
         setOnClickListener()
         setValueUI()
-        presenter.getTransactionList(applicationContext)
         val running = isMyServiceRunning
         if (running) {
             btnStart.visibility = View.GONE
@@ -54,6 +51,7 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
     }
 
     private fun setOnClickListener() {
+        buttonRefresh.setOnClickListener(this)
         btnStart.setOnClickListener(this)
         btnStop.setOnClickListener(this)
         buttonPage.setOnClickListener(this)
@@ -129,7 +127,6 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
             }.start()
 
             if (pp.haveCaptcha) {
-//                layout_automatic_claim.visibility = View.GONE
                 if (pp.nextRollTime > 0) {
                     layout_manual_claim.visibility = View.GONE
                 } else {
@@ -141,7 +138,8 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
                     label_desc_how_work.text = depositDesc
                 }
             } else {
-//                layout_automatic_claim.visibility = View.VISIBLE
+                depositAmount = "0"
+                layout_info_automatic_claim.visibility = View.GONE
                 layout_manual_claim.visibility = View.GONE
             }
             val html = getString(R.string.desc_advantage_automatic)
@@ -261,18 +259,11 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
                 startActivity(depositIntent)
             }
             R.id.btnTransaction -> {
-                // TODO
+                startActivity(Intent(this, HistoryActivity::class.java))
             }
-        }
-    }
-
-    override fun showTransactionList(content: ArrayList<ClaimHistory>) {
-        if (content.size > 0) {
-            val adapter = TransactionAdapter(applicationContext, content)
-            listTransaction.adapter = adapter
-        } else {
-            layout_header_transaction.visibility = View.GONE
-            layout_content_transaction.visibility = View.GONE
+            R.id.buttonRefresh -> {
+                goToSplash()
+            }
         }
     }
 

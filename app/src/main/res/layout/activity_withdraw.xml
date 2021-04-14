@@ -26,7 +26,7 @@
             android:id="@+id/overview"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/colorPrimary"
+            android:background="@color/brightBlue"
             app:layout_constraintTop_toTopOf="parent">
 
             <ImageView
@@ -140,7 +140,7 @@
 
         <ImageButton
             android:id="@+id/btnScanQR"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="45dp"
             android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
@@ -158,19 +158,18 @@
             app:layout_constraintTop_toBottomOf="@id/editTextBitcoinAddress"
             app:layout_constraintStart_toStartOf="parent"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="30dp" />
+            android:layout_marginTop="20dp" />
 
         <EditText
             android:id="@+id/editTextAmount"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="35dp"
             android:inputType="numberDecimal"
             android:textSize="13sp"
             android:background="@drawable/edit_text_grey"
             android:fontFamily="@font/roboto_bold"
             android:layout_marginStart="10dp"
-            android:layout_marginTop="15dp"
-            android:layout_marginEnd="12dp"
+            android:layout_marginTop="10dp"
             android:paddingStart="10dp"
             android:hint="@string/label_enter_amount"
             android:textAllCaps="false"
@@ -178,52 +177,22 @@
             android:textColorHint="@color/greyishBrown"
             app:layout_constraintTop_toBottomOf="@+id/labelAmount"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent" />
+            app:layout_constraintEnd_toStartOf="@id/btnMax" />
 
         <Button
-            android:id="@+id/btn100"
-            android:layout_width="55dp"
-            android:layout_height="wrap_content"
+            android:id="@+id/btnMax"
+            android:layout_width="50dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="10dp"
             android:backgroundTint="@color/colorPrimary"
-            android:text="100%"
+            android:text="Max"
             android:textColor="@color/white"
             android:textSize="12sp"
-            app:layout_constraintBottom_toTopOf="@+id/editTextAmount"
+            app:layout_constraintTop_toBottomOf="@+id/labelAmount"
             app:layout_constraintEnd_toEndOf="parent" />
 
-        <Button
-            android:id="@+id/btn75"
-            android:layout_width="55dp"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorPrimary"
-            android:text="75%"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toTopOf="@+id/editTextAmount"
-            app:layout_constraintEnd_toStartOf="@id/btn100" />
 
-        <Button
-            android:id="@+id/btn50"
-            android:layout_width="55dp"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorPrimary"
-            android:text="50%"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toTopOf="@+id/editTextAmount"
-            app:layout_constraintEnd_toStartOf="@id/btn75" />
-
-        <Button
-            android:id="@+id/btn25"
-            android:layout_width="55dp"
-            android:layout_height="wrap_content"
-            android:backgroundTint="@color/colorPrimary"
-            android:text="25%"
-            android:textColor="@color/white"
-            android:textSize="12sp"
-            app:layout_constraintBottom_toTopOf="@+id/editTextAmount"
-            app:layout_constraintEnd_toStartOf="@id/btn50" />
 
         <TextView
             android:id="@+id/labelFeesWD"

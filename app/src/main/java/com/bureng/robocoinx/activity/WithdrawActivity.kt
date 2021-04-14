@@ -11,14 +11,17 @@ import android.text.TextWatcher
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.annotation.Nullable
 import androidx.core.text.HtmlCompat
 import com.bureng.robocoinx.R
 import com.bureng.robocoinx.contract.WithdrawContract
 import com.bureng.robocoinx.model.common.DoAsync
 import com.bureng.robocoinx.model.response.InitWithdrawResponse
 import com.bureng.robocoinx.presenter.WithdrawPresenter
+import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_withdraw.*
 import java.math.BigDecimal
+import kotlin.math.floor
 
 
 class WithdrawActivity : Activity(), View.OnClickListener, WithdrawContract.View{
@@ -37,10 +40,8 @@ class WithdrawActivity : Activity(), View.OnClickListener, WithdrawContract.View
     }
 
     private fun setOnListener() {
-        btn100.setOnClickListener(this)
-        btn75.setOnClickListener(this)
-        btn50.setOnClickListener(this)
-        btn25.setOnClickListener(this)
+        btnScanQR.setOnClickListener(this)
+        btnMax.setOnClickListener(this)
         buttonWithdrawWD.setOnClickListener(this)
         imageBackWD.setOnClickListener(this)
         editTextAmount.addTextChangedListener(object : TextWatcher {
@@ -74,29 +75,35 @@ class WithdrawActivity : Activity(), View.OnClickListener, WithdrawContract.View
                 R.id.imageBackWD -> {
                     onBackPressed()
                 }
-                R.id.btn100 -> {
+                R.id.btnMax -> {
                     var value = totalBalance.minus(initFee.toDouble())
-                    val valueStr = value.toBigDecimal().toString()
+                    val valueDouble = floor(value * 100000000) / 100000000;
+                    val valueStr = valueDouble.toBigDecimal().toString()
                     editTextAmount.setText(valueStr)
                 }
-                R.id.btn75 -> {
-                    var value = totalBalance * 75 / 100
-                    val valueStr = value.toBigDecimal().toString()
-                    editTextAmount.setText(valueStr)
-                }
-                R.id.btn50 -> {
-                    var value = totalBalance * 50 / 100
-                    val valueStr = value.toBigDecimal().toString()
-                    editTextAmount.setText(valueStr)
-                }
-                R.id.btn25 -> {
-                    var value = totalBalance * 25 / 100
-                    val valueStr = value.toBigDecimal().toString()
-                    editTextAmount.setText(valueStr)
+                R.id.btnScanQR -> {
+                    val intentIntegrator = IntentIntegrator(this)
+                    intentIntegrator.setPrompt("Scan QR Code")
+                    intentIntegrator.setOrientationLocked(true)
+                    intentIntegrator.initiateScan()
                 }
                 else -> {
                 }
             }
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, @Nullable data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        val intentResult = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
+        if (intentResult != null) {
+            if (intentResult.contents == null) {
+                Toast.makeText(baseContext, "Cancelled", Toast.LENGTH_SHORT).show()
+            } else {
+                editTextBitcoinAddress.setText(intentResult.contents)
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data)
         }
     }
 

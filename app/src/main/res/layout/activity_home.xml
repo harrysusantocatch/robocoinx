@@ -12,11 +12,19 @@
         android:id="@+id/top_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/brightBlue3"
+        android:background="@color/brightBlue"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:padding="15dp"
         app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/buttonRefresh"
+            android:layout_width="28sp"
+            android:layout_height="28sp"
+            android:src="@drawable/ic_sync"
+            app:layout_constraintStart_toStartOf="@id/top_layout"
+            app:layout_constraintTop_toTopOf="@id/top_layout" />
 
         <ImageView
             android:id="@+id/buttonPage"
@@ -290,7 +298,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/gotham_bold"
                     android:text="@string/stop_count_hour"
-                    android:textColor="@color/blackTwo"
+                    android:textColor="@color/transacGreen"
                     android:textSize="15sp"
                     app:layout_constraintEnd_toEndOf="@id/layout_next_bitcoin"
                     app:layout_constraintStart_toStartOf="@id/layout_next_bitcoin"
@@ -327,7 +335,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/gotham_bold"
                     android:text="@string/stop_count_hour"
-                    android:textColor="@color/blackTwo"
+                    android:textColor="@color/transacGreen"
                     android:textSize="15sp"
                     app:layout_constraintEnd_toEndOf="@id/layout_reward_point"
                     app:layout_constraintStart_toStartOf="@id/layout_reward_point"
@@ -364,7 +372,7 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/gotham_bold"
                     android:text="@string/stop_count_hour"
-                    android:textColor="@color/blackTwo"
+                    android:textColor="@color/transacGreen"
                     android:textSize="15sp"
                     app:layout_constraintEnd_toEndOf="@id/layout_extra_bonus"
                     app:layout_constraintStart_toStartOf="@id/layout_extra_bonus"
@@ -548,53 +556,6 @@
                     android:textColor="@color/greyishBrown"
                     app:layout_constraintStart_toStartOf="@id/layout_info_automatic_claim"
                     app:layout_constraintTop_toBottomOf="@id/label_hold_btc" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_header_transaction"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@drawable/button_header_transaction"
-                android:padding="15dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_info_automatic_claim">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/gotham_bold"
-                    android:text="Last 10 Transaction History"
-                    android:textColor="@color/white"
-                    android:textSize="18sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/layout_header_transaction" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_content_transaction"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
-                android:background="@drawable/button_content_transaction"
-                android:padding="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_header_transaction">
-
-                <ListView
-                    android:id="@+id/listTransaction"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="@color/greyWhite"
-                    android:divider="@null"
-                    android:dividerHeight="0dp"
-                    android:paddingBottom="10dp"
-                    app:layout_constraintTop_toBottomOf="@id/layout_content_transaction" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
