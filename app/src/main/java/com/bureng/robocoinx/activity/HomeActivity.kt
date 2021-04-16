@@ -12,6 +12,7 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.text.Html
 import android.view.View
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.text.HtmlCompat
 import com.bureng.robocoinx.R
@@ -215,7 +216,9 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
                 btnStop!!.visibility = View.GONE
             }
             R.id.buttonPage -> {
-                startActivity(Intent(this, SettingActivity::class.java))
+                DoAsync {
+                    presenter.loadProfile(applicationContext)
+                }.execute()
 //                val dialog = Dialog(this)
 //                dialog.requestWindowFeature(Window.FEATURE_NO_TITLE)
 //                dialog.setContentView(R.layout.menu_option)
@@ -272,6 +275,16 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
         val intent = Intent(applicationContext, SplashActivity::class.java)
         intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
+    }
+
+    override fun goProfile(profileView: ProfileView) {
+        val intent = Intent(baseContext, ProfileActivity::class.java)
+        intent.putExtra(StaticValues.PROFILE_VIEW, profileView)
+        startActivity(intent)
+    }
+
+    override fun showMessage(message: String?) {
+        runOnUiThread { Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show() }
     }
 
     @Suppress("DEPRECATION")

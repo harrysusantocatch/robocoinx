@@ -3,6 +3,7 @@
     <color name="colorPrimary">#3090FA</color>
     <color name="colorPrimaryDark">#007aff</color>
     <color name="colorBlueDark">#1A71CF</color>
+    <color name="boxProfile">#D1DFE2</color>
     <color name="colorAccent">#ffffff</color>
     <color name="white">#ffffff</color>
     <color name="toolBar">#2f9bc1</color>
@@ -26,5 +27,7 @@
     <color name="transacRed">#ce3a3a</color>
     <color name="transacGreen">#3ace3a</color>
     <color name="softBlue">#71c1e5</color>
+    <color name="chocolate">#8f7565</color>
+    <color name="chocolate2">#80695a</color>
 
 </resources>

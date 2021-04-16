@@ -4,7 +4,9 @@ import android.content.Context
 import com.bureng.robocoinx.contract.HomeContract
 import com.bureng.robocoinx.logic.NotificationRoll
 import com.bureng.robocoinx.model.common.UserCache
+import com.bureng.robocoinx.model.view.ProfileView
 import com.bureng.robocoinx.utils.CacheContext
+import com.bureng.robocoinx.utils.RoboHandler
 import com.bureng.robocoinx.utils.StaticValues
 import java.util.*
 
@@ -19,5 +21,15 @@ class HomePresenter(val view: HomeContract.View): HomeContract.Presenter {
         NotificationRoll(ctx)
         NotificationRoll.executeMainTask(ctx, Calendar.getInstance())
     }
+
+    override fun loadProfile(ctx: Context) {
+        val resp = RoboHandler.parsingHomeResponse(ctx)
+        if (resp is ProfileView) {
+            view.goProfile(resp)
+        } else {
+            view.showMessage(resp as String)
+        }
+    }
+
 
 }
