@@ -5,14 +5,15 @@ import android.content.Intent
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.View
-import android.view.WindowManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.bureng.robocoinx.R
 import com.bureng.robocoinx.contract.LoginContract
 import com.bureng.robocoinx.model.common.DoAsync
 import com.bureng.robocoinx.model.request.SignUpRequest
 import com.bureng.robocoinx.model.view.ProfileView
 import com.bureng.robocoinx.presenter.LoginPresenter
+import com.bureng.robocoinx.utils.LoadingUtils
 import com.bureng.robocoinx.utils.StaticValues
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
@@ -26,6 +27,7 @@ class LoginActivity : Activity(), LoginContract.View, View.OnClickListener {
     lateinit var database: DatabaseReference
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.blackTwo)
         setContentView(R.layout.activity_login)
         presenter = LoginPresenter(this)
         database = Firebase.database.reference
@@ -33,7 +35,7 @@ class LoginActivity : Activity(), LoginContract.View, View.OnClickListener {
     }
 
     private fun setOnClickListener() {
-        buttonSignUpLG.setOnClickListener(this)
+        btn_signUp.setOnClickListener(this)
         buttonLoginLG.setOnClickListener(this)
         textViewForgotPass.setOnClickListener(this)
         imageVisibilityPassLG.setOnClickListener(this)
@@ -60,7 +62,7 @@ class LoginActivity : Activity(), LoginContract.View, View.OnClickListener {
                     presenter.login(this, applicationContext, email, password)
                 }.execute()
             }
-            R.id.buttonSignUpLG -> {
+            R.id.btn_signUp -> {
                 val signUpRequest = (intent.getSerializableExtra(StaticValues.SIGNUP_REQ) as SignUpRequest)
                 val intent = Intent(baseContext, SignUpActivity::class.java)
                 intent.putExtra(StaticValues.SIGNUP_REQ, signUpRequest)
@@ -90,16 +92,13 @@ class LoginActivity : Activity(), LoginContract.View, View.OnClickListener {
 
     override fun showProgressBar() {
         runOnUiThread {
-            progressBarLG.visibility = View.VISIBLE
-            window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            LoadingUtils.showDialog(this, false)
         }
     }
 
     override fun hideProgressBar() {
         runOnUiThread {
-            progressBarLG.visibility = View.GONE
-            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            LoadingUtils.hideDialog()
         }
     }
 

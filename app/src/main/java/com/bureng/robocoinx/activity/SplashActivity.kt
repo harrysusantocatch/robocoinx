@@ -14,6 +14,7 @@ import android.webkit.JavascriptInterface
 import android.webkit.WebView
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 import com.bureng.robocoinx.R
 import com.bureng.robocoinx.contract.SplashContract
 import com.bureng.robocoinx.model.common.DoAsync
@@ -31,6 +32,7 @@ class SplashActivity : Activity(), SplashContract.View {
     private lateinit var presenter: SplashContract.Presenter
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.blackTwo)
         setContentView(R.layout.splash_main)
         if (ActivityCompat.checkSelfPermission(applicationContext, Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) ActivityCompat.requestPermissions(this, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE), 10)
         presenter = SplashPresenter(this, this)

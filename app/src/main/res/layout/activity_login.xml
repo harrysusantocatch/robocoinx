@@ -4,12 +4,13 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorPrimary"
+    android:background="@color/blackTwo"
     tools:context=".activity.LoginActivity">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:padding="40dp">
 
         <ProgressBar
             android:id="@+id/progressBarLG"
@@ -23,152 +24,131 @@
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="40dp"
-            android:layout_marginBottom="50dp"
-            android:orientation="vertical"
-            android:gravity="center"
-            app:layout_constraintBottom_toTopOf="@+id/header"
-            app:layout_constraintEnd_toEndOf="parent">
-
-            <TextView
-                android:id="@+id/labelAction"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="4dp"
-                android:textSize="12sp"
-                android:text="@string/no_account"
-                android:fontFamily="@font/avenir_roman" />
-
-            <Button
-                android:id="@+id/buttonSignUpLG"
-                android:layout_width="wrap_content"
-                android:layout_height="25dp"
-                android:textColor="@color/white"
-                android:textSize="12sp"
-                android:textAllCaps="false"
-                android:fontFamily="@font/avenir_roman"
-                android:text="@string/label_sign_up"
-                android:background="@drawable/button_up" />
-        </LinearLayout>
-
         <TextView
-            android:id="@+id/header"
+            android:id="@+id/label_h1"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="60dp"
-            android:textSize="35sp"
+            android:layout_marginTop="20dp"
             android:textColor="@color/white"
             android:fontFamily="@font/gotham_bold"
-            android:textAllCaps="true"
-            android:text="@string/header"
-            app:layout_constraintBottom_toTopOf="@+id/layout"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
+            android:text="Welcome,"
+            android:textSize="28sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-        <LinearLayout
-            android:id="@+id/layout"
+        <TextView
+            android:id="@+id/label_h2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/avenir_roman"
+            android:text="Sign in to continue!"
+            android:textColor="@color/greyishBrown"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/label_h1" />
+
+        <EditText
+            android:id="@+id/editTextEmailLG"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="40dp"
-            android:layout_marginTop="80dp"
-            android:layout_marginEnd="40dp"
-            android:layout_marginBottom="8dp"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_marginTop="40dp"
+            android:background="@drawable/edit_text_rounded_white"
+            android:ems="10"
+            android:fontFamily="@font/avenir_roman"
+            android:hint="Enter email"
+            android:inputType="textEmailAddress"
+            android:padding="15dp"
+            android:textColor="@color/white"
+            android:textColorHint="@color/greyishBrown"
+            android:textSize="14sp"
+            app:layout_constraintTop_toBottomOf="@id/label_h2" />
 
-            <TextView
-                android:id="@+id/labelEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="12sp"
-                android:textColor="@color/textHint"
-                android:fontFamily="@font/avenir_roman"
-                android:text="@string/label_email" />
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/layout_pass"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@id/editTextEmailLG">
 
             <EditText
-                android:id="@+id/editTextEmailLG"
+                android:id="@+id/editTextPassLG"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/edit_text_rounded_white"
                 android:ems="10"
-                android:textSize="16sp"
                 android:fontFamily="@font/avenir_roman"
-                android:background="@drawable/line_edit_text"
-                android:inputType="textEmailAddress"
-                android:textColorHint="@color/white"
-                android:textColor="@color/white" />
-
-            <TextView
-                android:id="@+id/labelPass"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="25dp"
-                android:textSize="12sp"
-                android:textColor="@color/textHint"
-                android:fontFamily="@font/avenir_roman"
-                android:text="@string/label_password" />
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-                <EditText
-                    android:id="@+id/editTextPassLG"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:ems="10"
-                    android:textSize="16sp"
-                    android:fontFamily="@font/avenir_roman"
-                    android:background="@drawable/line_edit_text"
-                    android:inputType="textPassword"
-                    android:textColorHint="@color/white"
-                    android:textColor="@color/white"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"/>
-                <ImageView
-                    android:id="@+id/imageVisibilityPassLG"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_visibility_off"
-                    app:tint="@color/white"
-                    android:paddingBottom="5sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintBottom_toBottomOf="parent"/>
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-            <Button
-                android:id="@+id/buttonLoginLG"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="30dp"
-                android:textSize="18sp"
-                android:text="@string/label_login"
-                android:fontFamily="@font/gotham_bold"
+                android:hint="Enter password"
+                android:inputType="textPassword"
+                android:padding="15dp"
                 android:textColor="@color/white"
-                android:background="@drawable/button_radius" />
+                android:textColorHint="@color/greyishBrown"
+                android:textSize="14sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
-        </LinearLayout>
+            <ImageView
+                android:id="@+id/imageVisibilityPassLG"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:paddingEnd="10dp"
+                android:src="@drawable/ic_visibility_off"
+                android:tint="@color/greyishBrown"
+                app:layout_constraintBottom_toBottomOf="@id/editTextPassLG"
+                app:layout_constraintEnd_toEndOf="@id/editTextPassLG"
+                app:layout_constraintTop_toTopOf="@id/editTextPassLG" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <TextView
             android:id="@+id/textViewForgotPass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
-            android:layout_marginEnd="40dp"
             android:layout_weight="1"
-            android:fontFamily="@font/avenir_roman"
+            android:fontFamily="@font/roboto_bold"
             android:text="@string/label_forgot_pass"
-            android:textColor="@color/white"
             android:textAlignment="textEnd"
+            android:textColor="@color/white"
             android:textSize="12sp"
+            app:layout_constraintEnd_toEndOf="@id/layout_pass"
+            app:layout_constraintTop_toBottomOf="@id/layout_pass" />
+
+        <Button
+            android:id="@+id/buttonLoginLG"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="40dp"
+            android:background="@drawable/button_blue_dark"
+            android:fontFamily="@font/gotham_bold"
+            android:text="@string/label_login"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            app:layout_constraintTop_toBottomOf="@id/textViewForgotPass" />
+
+        <TextView
+            android:id="@+id/label_signUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:text="I'm a new user,"
+            android:textColor="@color/greyishBrown"
+            android:textSize="13sp"
             app:layout_constraintEnd_toEndOf="parent"
+            android:fontFamily="@font/avenir_roman"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/layout" />
+            app:layout_constraintTop_toBottomOf="@id/buttonLoginLG" />
+
+        <TextView
+            android:id="@+id/btn_signUp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginTop="10dp"
+            android:fontFamily="@font/gotham_bold"
+            android:textColor="@color/white"
+            android:text="Sign Up"
+            android:textSize="13sp"
+            app:layout_constraintStart_toEndOf="@id/label_signUp"
+            app:layout_constraintTop_toBottomOf="@id/buttonLoginLG" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </ScrollView>

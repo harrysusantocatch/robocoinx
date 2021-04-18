@@ -10,6 +10,7 @@ import android.text.method.PasswordTransformationMethod
 import android.view.View
 import android.view.WindowManager
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.bureng.robocoinx.R
 import com.bureng.robocoinx.contract.SignUpContract
 import com.bureng.robocoinx.model.common.DoAsync
@@ -31,6 +32,7 @@ class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
     private lateinit var captchaNets: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.blackTwo)
         setContentView(R.layout.activity_signup)
         setOnClickListener()
         presenter = SignUpPresenter(this)
@@ -41,7 +43,7 @@ class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
     }
 
     private fun setOnClickListener() {
-        buttonLoginSG.setOnClickListener(this)
+        btn_signIn.setOnClickListener(this)
         buttonSignUpSG.setOnClickListener(this)
         buttonRefreshCaptcha.setOnClickListener(this)
         imageVisibilityPassSG.setOnClickListener(this)
@@ -50,7 +52,7 @@ class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
     override fun onClick(v: View?) {
         v?.let {
             when(it.id){
-                R.id.buttonLoginSG -> {
+                R.id.btn_signIn -> {
                     val signUpRequest = (intent.getSerializableExtra(StaticValues.SIGNUP_REQ) as SignUpRequest)
                     val loginIntent = Intent(applicationContext, LoginActivity::class.java)
                     loginIntent.putExtra(StaticValues.SIGNUP_REQ, signUpRequest)

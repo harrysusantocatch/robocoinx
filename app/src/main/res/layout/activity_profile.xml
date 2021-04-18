@@ -92,13 +92,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="15dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:fontFamily="@font/roboto_bold"
                 android:text="0.97890452"
                 android:textColor="@color/blackTwo"
                 android:textSize="22sp"
                 app:layout_constraintStart_toEndOf="@id/card_profile"
-                app:layout_constraintTop_toTopOf="@id/layout_top" />
+                app:layout_constraintTop_toBottomOf="@id/layout_box_profile" />
 
             <ImageView
                 android:id="@+id/img_btc"
@@ -113,10 +113,9 @@
                 android:id="@+id/layout_box_profile"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="15dp"
-                android:layout_marginTop="22dp"
+                android:layout_marginStart="10dp"
                 android:background="@drawable/box_profile"
-                app:layout_constraintBottom_toBottomOf="@id/card_profile"
+                app:layout_constraintTop_toTopOf="@id/layout_top"
                 app:layout_constraintEnd_toEndOf="@id/layout_top"
                 app:layout_constraintStart_toEndOf="@id/card_profile">
 
@@ -149,7 +148,7 @@
                     android:fontFamily="@font/avenir_roman"
                     android:paddingBottom="12dp"
                     android:text="Reward Point"
-                    android:textColor="@color/chocolate2"
+                    android:textColor="@color/greyishBrown"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="@id/layout_box_profile"
                     app:layout_constraintStart_toEndOf="@id/line_horizontal"
@@ -175,7 +174,7 @@
                     android:fontFamily="@font/avenir_roman"
                     android:paddingBottom="12dp"
                     android:text="Contract ID"
-                    android:textColor="@color/chocolate"
+                    android:textColor="@color/greyishBrown"
                     android:textSize="12sp"
                     app:layout_constraintEnd_toEndOf="@id/line_horizontal"
                     app:layout_constraintStart_toStartOf="@id/layout_box_profile"
@@ -190,7 +189,7 @@
                 android:tint="@color/transacGreen"
                 app:layout_constraintEnd_toEndOf="@id/layout_box_profile"
                 app:layout_constraintStart_toEndOf="@id/value_balance"
-                app:layout_constraintTop_toTopOf="@id/layout_top" />
+                app:layout_constraintTop_toBottomOf="@id/layout_box_profile" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout

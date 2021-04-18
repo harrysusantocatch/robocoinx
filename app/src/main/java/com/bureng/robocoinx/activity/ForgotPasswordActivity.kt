@@ -8,6 +8,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import com.bureng.robocoinx.R
 import com.bureng.robocoinx.contract.ForgotPasswordContract
 import com.bureng.robocoinx.model.common.DoAsync
@@ -26,6 +27,7 @@ class ForgotPasswordActivity : Activity(), View.OnClickListener, ForgotPasswordC
     private lateinit var fingerprint: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        window.statusBarColor = ContextCompat.getColor(this, R.color.blackTwo)
         setContentView(R.layout.activity_forgot_password)
         setOnClickListener()
         presenter = ForgotPasswordPresenter( this)
@@ -36,7 +38,7 @@ class ForgotPasswordActivity : Activity(), View.OnClickListener, ForgotPasswordC
     }
 
     private fun setOnClickListener() {
-        buttonLoginFP.setOnClickListener(this)
+        imageBack.setOnClickListener(this)
         buttonRefreshCaptchaFP.setOnClickListener(this)
         buttonResetFP.setOnClickListener(this)
     }
@@ -76,15 +78,15 @@ class ForgotPasswordActivity : Activity(), View.OnClickListener, ForgotPasswordC
     override fun onClick(v: View?) {
         v?.let {
             when(it.id){
-                R.id.buttonLoginFP ->{
+                R.id.imageBack -> {
                     val signUpRequest = (intent.getSerializableExtra(StaticValues.SIGNUP_REQ) as SignUpRequest)
                     val loginIntent = Intent(applicationContext, LoginActivity::class.java)
                     loginIntent.putExtra(StaticValues.SIGNUP_REQ, signUpRequest)
                     startActivity(loginIntent)
                 }
-                R.id.buttonRefreshCaptchaFP ->{
+                R.id.buttonRefreshCaptchaFP -> {
                     editTextCaptchaFP.setText("")
-                    DoAsync{
+                    DoAsync {
                         presenter.getCaptchaNet(fingerprint)
                     }.execute()
                 }

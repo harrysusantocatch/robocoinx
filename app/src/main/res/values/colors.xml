@@ -29,5 +29,6 @@
     <color name="softBlue">#71c1e5</color>
     <color name="chocolate">#8f7565</color>
     <color name="chocolate2">#80695a</color>
+    <color name="black_transparent">#33000000</color>
 
 </resources>
