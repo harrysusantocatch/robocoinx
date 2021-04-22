@@ -2,14 +2,10 @@ package com.bureng.robocoinx.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.View
-import android.view.WindowManager
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.bureng.robocoinx.R
 import com.bureng.robocoinx.contract.SignUpContract
@@ -18,11 +14,10 @@ import com.bureng.robocoinx.model.db.Fingerprint
 import com.bureng.robocoinx.model.request.SignUpRequest
 import com.bureng.robocoinx.presenter.SignUpPresenter
 import com.bureng.robocoinx.utils.CacheContext
+import com.bureng.robocoinx.utils.LoadingUtils
 import com.bureng.robocoinx.utils.StaticValues
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.ktx.Firebase
+import com.bureng.robocoinx.utils.extension.showMessage
 import com.squareup.picasso.Picasso
-import kotlinx.android.synthetic.main.activity_login.*
 import kotlinx.android.synthetic.main.activity_signup.*
 
 class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
@@ -49,6 +44,7 @@ class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
         imageVisibilityPassSG.setOnClickListener(this)
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onClick(v: View?) {
         v?.let {
             when(it.id){
@@ -97,30 +93,11 @@ class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
         }
     }
 
-    override fun showSuccessMessage(message: String) {
-        runOnUiThread {
-            Firebase.auth.signOut()
-            val positiveButtonClick = { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-
-            val builder = AlertDialog.Builder(this, R.style.AlertDialogStyle)
-            with(builder)
-            {
-                setTitle("Success!!")
-                setMessage(message)
-                setPositiveButton("OK", positiveButtonClick)
-                setOnDismissListener {
-                    startActivity(Intent(applicationContext, SplashActivity::class.java))
-                }
-                show()
-            }
-        }
-    }
-
     @SuppressLint("ShowToast")
-    override fun showMessage(message: String) {
-        runOnUiThread { Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show() }
+    override fun showMessage(message: String, type: Int) {
+        runOnUiThread {
+            applicationContext.showMessage(buttonSignUpSG, message, type)
+        }
         DoAsync {
             presenter.getCaptchaNet(fingerprint)
         }.execute()
@@ -134,18 +111,15 @@ class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
         }
     }
 
-    override fun showProgressBar() {
+    override fun showProgressBar(rawLoading: Int?) {
         runOnUiThread {
-            progressBarLG.visibility = View.VISIBLE
-            window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            LoadingUtils.showDialog(this, false, rawLoading)
         }
     }
 
     override fun hideProgressBar() {
         runOnUiThread {
-            progressBarLG.visibility = View.GONE
-            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            LoadingUtils.hideDialog()
         }
     }
 }

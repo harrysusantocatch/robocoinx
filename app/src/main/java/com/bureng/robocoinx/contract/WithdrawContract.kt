@@ -6,9 +6,8 @@ import com.bureng.robocoinx.model.response.InitWithdrawResponse
 interface WithdrawContract {
     interface View{
         fun setData(initWithdraw: InitWithdrawResponse)
-        fun showMessage(message: String)
-        fun showMessageSuccess(message: String)
-        fun showProgressBar()
+        fun showMessage(message: String, type: Int)
+        fun showProgressBar(rawLoading: Int?)
         fun hideProgressBar()
     }
     interface Presenter{

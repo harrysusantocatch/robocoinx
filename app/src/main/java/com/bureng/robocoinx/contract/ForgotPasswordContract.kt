@@ -2,8 +2,9 @@ package com.bureng.robocoinx.contract
 
 interface ForgotPasswordContract {
     interface View{
-        fun showSuccessMessage(message: String)
-        fun showMessage(message: String)
+        fun showProgressBar(rawLoading: Int?)
+        fun hideProgressBar()
+        fun showMessage(message: String, type: Int)
         fun setCaptchaNet(captchaNet: String)
     }
     interface Presenter{

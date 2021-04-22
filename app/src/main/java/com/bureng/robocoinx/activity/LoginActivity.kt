@@ -1,11 +1,11 @@
 package com.bureng.robocoinx.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.bureng.robocoinx.R
 import com.bureng.robocoinx.contract.LoginContract
@@ -15,6 +15,7 @@ import com.bureng.robocoinx.model.view.ProfileView
 import com.bureng.robocoinx.presenter.LoginPresenter
 import com.bureng.robocoinx.utils.LoadingUtils
 import com.bureng.robocoinx.utils.StaticValues
+import com.bureng.robocoinx.utils.extension.showMessage
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
@@ -41,8 +42,10 @@ class LoginActivity : Activity(), LoginContract.View, View.OnClickListener {
         imageVisibilityPassLG.setOnClickListener(this)
     }
 
-    override fun showMessage(message: String) {
-        runOnUiThread { Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show() }
+    override fun showMessage(message: String, type: Int) {
+        runOnUiThread {
+            applicationContext.showMessage(buttonLoginLG, message, type)
+        }
     }
 
     override fun goHome(profileView: ProfileView) {
@@ -53,6 +56,7 @@ class LoginActivity : Activity(), LoginContract.View, View.OnClickListener {
         startActivity(intent)
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onClick(view: View) {
         val email = editTextEmailLG.text.toString()
         val password = editTextPassLG.text.toString()
@@ -90,9 +94,9 @@ class LoginActivity : Activity(), LoginContract.View, View.OnClickListener {
         }
     }
 
-    override fun showProgressBar() {
+    override fun showProgressBar(rawLoading: Int?) {
         runOnUiThread {
-            LoadingUtils.showDialog(this, false)
+            LoadingUtils.showDialog(this, false, rawLoading)
         }
     }
 

@@ -1,18 +1,16 @@
 package com.bureng.robocoinx.activity
 
+import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
-import android.content.DialogInterface
-import android.content.Intent
 import android.os.Bundle
 import android.text.method.PasswordTransformationMethod
 import android.view.View
-import android.view.WindowManager
-import android.widget.Toast
 import com.bureng.robocoinx.R
 import com.bureng.robocoinx.contract.ChangePasswordContract
 import com.bureng.robocoinx.model.common.DoAsync
 import com.bureng.robocoinx.presenter.ChangePasswordPresenter
+import com.bureng.robocoinx.utils.LoadingUtils
+import com.bureng.robocoinx.utils.extension.showMessage
 import kotlinx.android.synthetic.main.activity_change_password.*
 
 class ChangePasswordActivity : Activity(), View.OnClickListener, ChangePasswordContract.View {
@@ -36,6 +34,7 @@ class ChangePasswordActivity : Activity(), View.OnClickListener, ChangePasswordC
         imageBackCP.setOnClickListener(this)
     }
 
+    @SuppressLint("UseCompatLoadingForDrawables")
     override fun onClick(v: View?) {
         v?.let {
             when (it.id) {
@@ -92,42 +91,21 @@ class ChangePasswordActivity : Activity(), View.OnClickListener, ChangePasswordC
         }
     }
 
-    override fun showMessage(message: String) {
-        runOnUiThread { Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show() }
-    }
-
-    override fun showSuccessMessage(message: String) {
+    override fun showMessage(message: String, type: Int) {
         runOnUiThread {
-            val positiveButtonClick = { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-
-            val builder = AlertDialog.Builder(this, R.style.AlertDialogStyle)
-            with(builder)
-            {
-                setTitle("Success!!")
-                setMessage(message)
-                setPositiveButton("OK", positiveButtonClick)
-                setOnDismissListener {
-                    startActivity(Intent(applicationContext, SplashActivity::class.java))
-                }
-                show()
-            }
+            applicationContext.showMessage(buttonChangePassword, message, type)
         }
     }
 
-    override fun showProgressBar() {
+    override fun showProgressBar(rawLoading: Int?) {
         runOnUiThread {
-            progressBarWD.visibility = View.VISIBLE
-            window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            LoadingUtils.showDialog(this, false, rawLoading)
         }
     }
 
     override fun hideProgressBar() {
         runOnUiThread {
-            progressBarWD.visibility = View.GONE
-            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            LoadingUtils.hideDialog()
         }
     }
 }

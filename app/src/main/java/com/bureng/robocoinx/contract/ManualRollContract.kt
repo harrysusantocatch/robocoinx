@@ -1,18 +1,18 @@
 package com.bureng.robocoinx.contract
 
-import android.app.Activity
 import android.content.Context
 import com.bureng.robocoinx.model.view.ProfileView
 
-interface LoginContract {
+interface ManualRollContract {
     interface View {
-        fun showMessage(message: String, type: Int)
         fun goHome(profileView: ProfileView)
+        fun showMessage(message: String, type: Int)
         fun showProgressBar(rawLoading: Int?)
         fun hideProgressBar()
     }
 
     interface Presenter {
-        fun login(act: Activity, ctx: Context, email: String, password: String)
+        fun loadHome(ctx: Context)
     }
+
 }

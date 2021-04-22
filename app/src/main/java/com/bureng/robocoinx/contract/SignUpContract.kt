@@ -6,10 +6,9 @@ import com.bureng.robocoinx.model.request.SignUpRequest
 
 interface SignUpContract {
     interface View{
-        fun showSuccessMessage(message: String)
-        fun showMessage(message: String)
+        fun showMessage(message: String, type: Int)
         fun setCaptchaNet(captchaNet: String)
-        fun showProgressBar()
+        fun showProgressBar(rawLoading: Int?)
         fun hideProgressBar()
     }
     interface Presenter{

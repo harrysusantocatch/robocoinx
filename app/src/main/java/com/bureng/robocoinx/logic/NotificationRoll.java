@@ -10,6 +10,7 @@ import android.os.Build;
 import androidx.core.app.NotificationCompat;
 
 import com.bureng.robocoinx.R;
+import com.bureng.robocoinx.activity.SplashActivity;
 import com.bureng.robocoinx.model.db.ClaimHistory;
 import com.bureng.robocoinx.model.response.RollErrorResponse;
 import com.bureng.robocoinx.model.response.RollSuccessResponse;
@@ -76,12 +77,16 @@ public class NotificationRoll {
         new Thread(() -> sendNotifyRestart(context)).start();
     }
 
+    private static void manualClaimNotificationListener(Context context) {
+        new Thread(() -> sendNotifyManualClaim(context)).start();
+    }
+
     private static void sendNotifyStop(Context context, String additionalMessage) {
         NotificationCompat.Builder builder =
                 new NotificationCompat.Builder(context, "stop")
                         .setSmallIcon(R.drawable.ic_notif_bitcoin)
                         .setContentTitle("Service Stop")
-                        .setContentText(additionalMessage+"Click the start button below to run the service");
+                        .setContentText(additionalMessage + ". Start again");
 
         builder.setAutoCancel(true);
         Intent yesReceive = new Intent();
@@ -101,10 +106,11 @@ public class NotificationRoll {
                         .setContentTitle("New Bitcoin")
                         .setContentText("You got "+claim+" & current balance is "+balance);
 
-        Intent notificationIntent = new Intent();
+        Intent notificationIntent = new Intent(context, SplashActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(contentIntent);
+        builder.setAutoCancel(true);
 
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         assert manager != null;
@@ -117,12 +123,36 @@ public class NotificationRoll {
                 new NotificationCompat.Builder(context, "start")
                         .setSmallIcon(R.drawable.ic_notif_bitcoin)
                         .setContentTitle("Restart Service")
-                        .setContentText("service will run again at "+currentTime);
+                        .setContentText("service will run again at " + currentTime);
 
-        Intent notificationIntent = new Intent();
+        Intent notificationIntent = new Intent(context, SplashActivity.class);
         PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
                 PendingIntent.FLAG_UPDATE_CURRENT);
         builder.setContentIntent(contentIntent);
+        builder.setAutoCancel(true);
+
+        NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
+        assert manager != null;
+        manager.notify(0, builder.build());
+    }
+
+    private static void sendNotifyManualClaim(Context context) {
+        String currentTime = new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date(System.currentTimeMillis() + interval));
+        String contentTex = "Bitcoin already claim now";
+        if (interval > 0) {
+            contentTex = "Bitcoin already claim at " + currentTime;
+        }
+        NotificationCompat.Builder builder =
+                new NotificationCompat.Builder(context, "start")
+                        .setSmallIcon(R.drawable.ic_notif_bitcoin)
+                        .setContentTitle("Manual Claim")
+                        .setContentText(contentTex);
+
+        Intent notificationIntent = new Intent(context, SplashActivity.class);
+        PendingIntent contentIntent = PendingIntent.getActivity(context, 0, notificationIntent,
+                PendingIntent.FLAG_UPDATE_CURRENT);
+        builder.setContentIntent(contentIntent);
+        builder.setAutoCancel(true);
 
         NotificationManager manager = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);
         assert manager != null;
@@ -146,13 +176,10 @@ public class NotificationRoll {
                     FileManager.getInstance().InsertOrUpdate(context, StaticValues.LAST_DATE, String.valueOf(System.currentTimeMillis()));
                 }else if(obj instanceof RollErrorResponse) {
                     RollErrorResponse err = (RollErrorResponse) obj;
-                    if (err.countDown == 0) {
-//                        isStop = true;
-                        interval = 30000;
-                        FileManager.getInstance().appendLog(err.message);
-                        stopNotificationListener(context, "Stop with error and run again");
-                    } else {
-                        if (!err.message.equalsIgnoreCase("resolve captcha")) {
+                    if (err.message.equalsIgnoreCase("resolve captcha")) {
+                        if (err.countDown == 0) {
+                            interval = err.countDown;
+                        } else {
                             interval = (err.countDown) * 1000;
                             if (interval / 60000 > 59) {
                                 interval = 30000;
@@ -160,8 +187,23 @@ public class NotificationRoll {
                             } else {
                                 FileManager.getInstance().appendLog("claim wait " + (interval / 60000) + " minutes");
                             }
-                        }else interval = err.countDown;
-                        restartNotificationListener(context);
+                        }
+                        manualClaimNotificationListener(context);
+                    } else {
+                        if (err.countDown == 0) {
+                            interval = 30000;
+                            FileManager.getInstance().appendLog(err.message);
+                            stopNotificationListener(context, "Stop with error and run again");
+                        } else {
+                            interval = (err.countDown) * 1000;
+                            if (interval / 60000 > 59) {
+                                interval = 30000;
+                                FileManager.getInstance().appendLog("claim wait " + interval / 1000 + " seconds");
+                            } else {
+                                FileManager.getInstance().appendLog("claim wait " + (interval / 60000) + " minutes");
+                            }
+                            restartNotificationListener(context);
+                        }
                     }
                 }else {
                     interval = 30000;

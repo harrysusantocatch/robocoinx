@@ -12,7 +12,6 @@ import android.os.PowerManager
 import android.provider.Settings
 import android.text.Html
 import android.view.View
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.core.text.HtmlCompat
 import com.bureng.robocoinx.R
@@ -21,7 +20,9 @@ import com.bureng.robocoinx.model.common.DoAsync
 import com.bureng.robocoinx.model.view.ProfileView
 import com.bureng.robocoinx.presenter.HomePresenter
 import com.bureng.robocoinx.service.BackgroundService
+import com.bureng.robocoinx.utils.LoadingUtils
 import com.bureng.robocoinx.utils.StaticValues
+import com.bureng.robocoinx.utils.extension.showMessage
 import kotlinx.android.synthetic.main.activity_home.*
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -86,8 +87,7 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
                 override fun onFinish() {
                     value_next_bitcoin!!.setText(R.string.stop_count_hour)
                     if (runManual) {
-//                        layout_automatic_claim.visibility = View.GONE
-//                        showRunManualDialog()
+                        layout_manual_claim.visibility = View.VISIBLE
                     } else {
                         DoAsync {
                             presenter.callRoll(applicationContext)
@@ -140,7 +140,7 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
                 }
             } else {
                 depositAmount = "0"
-                layout_info_automatic_claim.visibility = View.GONE
+                layout_info_automatic_claim.visibility = View.VISIBLE
                 layout_manual_claim.visibility = View.GONE
             }
             val html = getString(R.string.desc_advantage_automatic)
@@ -160,6 +160,7 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
 
     @SuppressLint("BatteryLife")
     private fun startRollService(){
+        label_info_service.text = "Service is running"
         val packageName = applicationContext.packageName
         val pm = applicationContext.getSystemService(POWER_SERVICE) as PowerManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -180,6 +181,7 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
             btnStart!!.visibility = View.GONE
             btnStop!!.visibility = View.VISIBLE
         }
+
     }
 
     @SuppressLint("BatteryLife")
@@ -208,12 +210,17 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
     override fun onClick(view: View) {
         when (view.id) {
             R.id.btnStart -> {
+//                DoAsync {
+//                    NotificationRoll(applicationContext)
+//                    NotificationRoll.executeMainTask(applicationContext, Calendar.getInstance())
+//                }.execute()
                 startRollService()
             }
             R.id.btnStop -> {
                 stopService(Intent(baseContext, BackgroundService::class.java))
                 btnStart!!.visibility = View.VISIBLE
                 btnStop!!.visibility = View.GONE
+                label_info_service.text = "Click START to run claim service"
             }
             R.id.buttonPage -> {
                 DoAsync {
@@ -265,7 +272,9 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
                 startActivity(Intent(this, HistoryActivity::class.java))
             }
             R.id.buttonRefresh -> {
-                goToSplash()
+                DoAsync {
+                    presenter.reload(baseContext)
+                }.execute()
             }
         }
     }
@@ -283,8 +292,29 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
         startActivity(intent)
     }
 
-    override fun showMessage(message: String?) {
-        runOnUiThread { Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show() }
+    override fun reload(profileView: ProfileView) {
+        val intent = Intent(applicationContext, HomeActivity::class.java)
+        intent.putExtra(StaticValues.PROFILE_VIEW, profileView)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+        startActivity(intent)
+    }
+
+    override fun showProgressBar(rawLoading: Int?) {
+        runOnUiThread {
+            LoadingUtils.showDialog(this, false, rawLoading)
+        }
+    }
+
+    override fun hideProgressBar() {
+        runOnUiThread {
+            LoadingUtils.hideDialog()
+        }
+    }
+
+    override fun showMessage(message: String, type: Int) {
+        runOnUiThread {
+            applicationContext.showMessage(buttonPage, message, type)
+        }
     }
 
     @Suppress("DEPRECATION")

@@ -2,6 +2,7 @@ package com.bureng.robocoinx.presenter
 
 import android.app.Activity
 import android.content.Context
+import com.bureng.robocoinx.R
 import com.bureng.robocoinx.contract.LoginContract
 import com.bureng.robocoinx.model.common.UserCache
 import com.bureng.robocoinx.model.firebase.DataLogin
@@ -24,7 +25,7 @@ class LoginPresenter(var view: LoginContract.View) : LoginContract.Presenter {
     private var database: DatabaseReference = Firebase.database.reference
     private lateinit var auth: FirebaseAuth
     override fun login(act: Activity, ctx: Context, email: String, password: String) {
-        view.showProgressBar()
+        view.showProgressBar(R.raw.loading_rocket)
         val obj = RoboHandler.parsingLoginResponse(ctx, email, password)
         view.hideProgressBar()
         if (obj is ProfileView) {
@@ -50,21 +51,21 @@ class LoginPresenter(var view: LoginContract.View) : LoginContract.Presenter {
                                         view.goHome(obj)
                                     } else {
                                         CacheContext(UserCache::class.java, ctx).clear(StaticValues.USER_CACHE)
-                                        view.showMessage("Please register!")
+                                        view.showMessage("Please register!", 2)
                                     }
                                 }
                                 override fun onCancelled(error: DatabaseError) {
                                     CacheContext(UserCache::class.java, ctx).clear(StaticValues.USER_CACHE)
-                                    view.showMessage("Please register! ${error.message}")
+                                    view.showMessage("Please register! ${error.message}", 2)
                                 }
                             }
                             dbGlass.addValueEventListener(valueListener)
                         } else {
-                            view.showMessage("Sorry, please try again later..")
+                            view.showMessage("Sorry, please try again later..", 2)
                         }
                     }
         } else if (obj is String) {
-            view.showMessage(obj)
+            view.showMessage(obj, 2)
         }
     }
 

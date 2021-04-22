@@ -4,8 +4,8 @@ import android.app.Service;
 import android.content.Intent;
 import android.os.IBinder;
 
-import com.bureng.robocoinx.utils.FileManager;
 import com.bureng.robocoinx.logic.NotificationRoll;
+import com.bureng.robocoinx.utils.FileManager;
 
 import java.util.Calendar;
 
@@ -38,7 +38,7 @@ public class BackgroundService extends Service {
     @Override
     public void onDestroy() {
         if(NotificationRoll.getAlarmManager() != null) NotificationRoll.getAlarmManager().cancel(NotificationRoll.getPendingIntent());
-        NotificationRoll.stopNotificationListener(getApplicationContext(), "");
+        NotificationRoll.stopNotificationListener(getApplicationContext(), "Grant background service access in the battery menu (Setting)");
         FileManager.getInstance().appendLog("stop service");
         instance = null;
         super.onDestroy();

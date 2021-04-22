@@ -2,12 +2,9 @@
 package com.bureng.robocoinx.activity
 
 import android.app.Activity
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
-import android.widget.Toast
 import androidx.core.content.ContextCompat
 import com.bureng.robocoinx.R
 import com.bureng.robocoinx.contract.ForgotPasswordContract
@@ -16,7 +13,9 @@ import com.bureng.robocoinx.model.db.Fingerprint
 import com.bureng.robocoinx.model.request.SignUpRequest
 import com.bureng.robocoinx.presenter.ForgotPasswordPresenter
 import com.bureng.robocoinx.utils.CacheContext
+import com.bureng.robocoinx.utils.LoadingUtils
 import com.bureng.robocoinx.utils.StaticValues
+import com.bureng.robocoinx.utils.extension.showMessage
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_forgot_password.*
 
@@ -43,28 +42,16 @@ class ForgotPasswordActivity : Activity(), View.OnClickListener, ForgotPasswordC
         buttonResetFP.setOnClickListener(this)
     }
 
-    override fun showMessage(message: String) {
-        runOnUiThread { Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show() }
+    override fun showProgressBar(rawLoading: Int?) {
+        runOnUiThread { LoadingUtils.showDialog(this, false, rawLoading) }
     }
 
-    override fun showSuccessMessage(message: String) {
-        runOnUiThread {
-            val positiveButtonClick = { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
+    override fun hideProgressBar() {
+        runOnUiThread { LoadingUtils.hideDialog() }
+    }
 
-            val builder = AlertDialog.Builder(this, R.style.AlertDialogStyle)
-            with(builder)
-            {
-                setTitle("Success!!")
-                setMessage(message)
-                setPositiveButton("OK", positiveButtonClick)
-                setOnDismissListener {
-                    startActivity(Intent(applicationContext, SplashActivity::class.java))
-                }
-                show()
-            }
-        }
+    override fun showMessage(message: String, type: Int) {
+        runOnUiThread { applicationContext.showMessage(buttonResetFP, message, type) }
     }
 
     override fun setCaptchaNet(captchaNet: String) {

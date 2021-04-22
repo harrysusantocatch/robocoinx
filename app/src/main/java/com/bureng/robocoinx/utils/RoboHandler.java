@@ -3,7 +3,6 @@ package com.bureng.robocoinx.utils;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Build;
 import android.webkit.ValueCallback;
 import android.webkit.WebView;
@@ -21,7 +20,6 @@ import com.bureng.robocoinx.model.response.RollSuccessResponse;
 import com.bureng.robocoinx.model.view.NoCaptchaSpec;
 import com.bureng.robocoinx.model.view.ProfileView;
 import com.bureng.robocoinx.repository.ClaimHistoryHandler;
-import com.bureng.robocoinx.service.BackgroundService;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -230,8 +228,8 @@ public class RoboHandler {
             ProfileView pp = new ProfileView(doc, context);
             if(pp.haveCaptcha){
 //                resolveCaptchaWithPlay(context, pp, cookies);
-                context.stopService(new Intent(context.getApplicationContext(), BackgroundService.class));
-                return new RollErrorResponse("resolve captcha", 30000);
+//                context.stopService(new Intent(context.getApplicationContext(), BackgroundService.class));
+                return new RollErrorResponse("resolve captcha", pp.nextRollTime);
             }
             if(pp.nextRollTime > 0) return new RollErrorResponse("",pp.nextRollTime);
 

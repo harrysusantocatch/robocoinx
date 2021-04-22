@@ -5,6 +5,7 @@ import android.app.AlertDialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.view.LayoutInflater
+import com.airbnb.lottie.LottieAnimationView
 import com.bureng.robocoinx.R
 
 class LoadingUtils {
@@ -12,12 +13,18 @@ class LoadingUtils {
         private var dialog: AlertDialog? = null
         fun showDialog(
                 activity: Activity?,
-                isCancelable: Boolean
+                isCancelable: Boolean,
+                rawLoading: Int?
         ) {
             if (activity != null) {
                 val builder = AlertDialog.Builder(activity)
                 val inflater: LayoutInflater = activity.layoutInflater
-                builder.setView(inflater.inflate(R.layout.dialog_loader, null))
+                val view = inflater.inflate(R.layout.dialog_loader, null)
+                if (rawLoading != null) {
+                    val lottieAnimationView = view.findViewById<LottieAnimationView>(R.id.animate_loading)
+                    lottieAnimationView.setAnimation(rawLoading)
+                }
+                builder.setView(view)
                 builder.setCancelable(isCancelable)
                 dialog = builder.create()
                 dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))

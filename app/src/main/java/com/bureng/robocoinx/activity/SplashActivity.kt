@@ -56,8 +56,8 @@ class SplashActivity : Activity(), SplashContract.View {
         startActivity(intent)
     }
 
-    override fun showMessage(message: String?) {
-        runOnUiThread { Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show()}
+    override fun showMessage(message: String, type: Int) {
+        runOnUiThread { Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show() }
     }
 
     @SuppressLint("SetJavaScriptEnabled")
@@ -83,7 +83,7 @@ class SplashActivity : Activity(), SplashContract.View {
         }
     }
 
-    override fun showProgressBar() {
+    override fun showProgressBar(rawLoading: Int?) {
         runOnUiThread {
             progressBarSP.visibility = View.VISIBLE
             window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,

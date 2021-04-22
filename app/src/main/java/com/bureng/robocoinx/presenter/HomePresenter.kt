@@ -1,6 +1,7 @@
 package com.bureng.robocoinx.presenter
 
 import android.content.Context
+import com.bureng.robocoinx.R
 import com.bureng.robocoinx.contract.HomeContract
 import com.bureng.robocoinx.logic.NotificationRoll
 import com.bureng.robocoinx.model.common.UserCache
@@ -23,12 +24,25 @@ class HomePresenter(val view: HomeContract.View): HomeContract.Presenter {
     }
 
     override fun loadProfile(ctx: Context) {
+        view.showProgressBar(R.raw.loading_monkey)
         val resp = RoboHandler.parsingHomeResponse(ctx)
         if (resp is ProfileView) {
             view.goProfile(resp)
         } else {
-            view.showMessage(resp as String)
+            view.showMessage(resp as String, 2)
         }
+        view.hideProgressBar()
+    }
+
+    override fun reload(ctx: Context) {
+        view.showProgressBar(R.raw.loading_rocket)
+        val resp = RoboHandler.parsingHomeResponse(ctx)
+        if (resp is ProfileView) {
+            view.reload(resp)
+        } else {
+            view.showMessage(resp as String, 2)
+        }
+        view.hideProgressBar()
     }
 
 

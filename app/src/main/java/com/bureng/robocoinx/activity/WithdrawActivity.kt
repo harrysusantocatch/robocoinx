@@ -2,22 +2,20 @@ package com.bureng.robocoinx.activity
 
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.app.AlertDialog
-import android.content.DialogInterface
 import android.content.Intent
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
-import android.view.WindowManager
 import android.widget.Toast
 import androidx.annotation.Nullable
-import androidx.core.text.HtmlCompat
 import com.bureng.robocoinx.R
 import com.bureng.robocoinx.contract.WithdrawContract
 import com.bureng.robocoinx.model.common.DoAsync
 import com.bureng.robocoinx.model.response.InitWithdrawResponse
 import com.bureng.robocoinx.presenter.WithdrawPresenter
+import com.bureng.robocoinx.utils.LoadingUtils
+import com.bureng.robocoinx.utils.extension.showMessage
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_withdraw.*
 import java.math.BigDecimal
@@ -76,8 +74,8 @@ class WithdrawActivity : Activity(), View.OnClickListener, WithdrawContract.View
                     onBackPressed()
                 }
                 R.id.btnMax -> {
-                    var value = totalBalance.minus(initFee.toDouble())
-                    val valueDouble = floor(value * 100000000) / 100000000;
+                    val value = totalBalance.minus(initFee.toDouble())
+                    val valueDouble = floor(value * 100000000) / 100000000
                     val valueStr = valueDouble.toBigDecimal().toString()
                     editTextAmount.setText(valueStr)
                 }
@@ -119,42 +117,19 @@ class WithdrawActivity : Activity(), View.OnClickListener, WithdrawContract.View
         }
     }
 
-    override fun showMessage(message: String) {
-        runOnUiThread { Toast.makeText(applicationContext, message, Toast.LENGTH_SHORT).show() }
+    override fun showMessage(message: String, type: Int) {
+        runOnUiThread { applicationContext.showMessage(buttonWithdrawWD, message, type) }
     }
 
-    override fun showMessageSuccess(message: String) {
+    override fun showProgressBar(rawLoading: Int?) {
         runOnUiThread {
-            val positiveButtonClick = { dialog: DialogInterface, _: Int ->
-                dialog.dismiss()
-            }
-
-            val builder = AlertDialog.Builder(this, R.style.AlertDialogStyle)
-            with(builder)
-            {
-                setTitle("Success!!")
-                setMessage(HtmlCompat.fromHtml(message, HtmlCompat.FROM_HTML_MODE_COMPACT))
-                setPositiveButton("OK", positiveButtonClick)
-                setOnDismissListener {
-                    startActivity(Intent(applicationContext, SplashActivity::class.java))
-                }
-                show()
-            }
-        }
-    }
-
-    override fun showProgressBar() {
-        runOnUiThread {
-            progressBarWD.visibility = View.VISIBLE
-            window.setFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-                    WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            LoadingUtils.showDialog(this, false, rawLoading)
         }
     }
 
     override fun hideProgressBar() {
         runOnUiThread {
-            progressBarWD.visibility = View.GONE
-            window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+            LoadingUtils.hideDialog()
         }
     }
 
