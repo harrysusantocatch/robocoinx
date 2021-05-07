@@ -14,6 +14,7 @@ import com.bureng.robocoinx.model.db.Fingerprint
 import com.bureng.robocoinx.model.request.SignUpRequest
 import com.bureng.robocoinx.presenter.SignUpPresenter
 import com.bureng.robocoinx.utils.CacheContext
+import com.bureng.robocoinx.utils.CryptEx
 import com.bureng.robocoinx.utils.LoadingUtils
 import com.bureng.robocoinx.utils.StaticValues
 import com.bureng.robocoinx.utils.extension.showMessage
@@ -106,7 +107,7 @@ class SignUpActivity : Activity(), View.OnClickListener, SignUpContract.View {
     override fun setCaptchaNet(captchaNet: String) {
         runOnUiThread {
             captchaNets = captchaNet
-            val path = "https://captchas.freebitco.in/botdetect/e/live/images/$captchaNet.jpeg"
+            val path = CryptEx.toBaseDecode(StaticValues.URL_KEY_BTI) + captchaNet + ".jpeg"
             Picasso.get().load(path).into(captcha)
         }
     }

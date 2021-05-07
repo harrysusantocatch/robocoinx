@@ -15,6 +15,7 @@ import com.bureng.robocoinx.contract.ManualRollContract
 import com.bureng.robocoinx.model.common.DoAsync
 import com.bureng.robocoinx.model.view.ProfileView
 import com.bureng.robocoinx.presenter.ManualRollPresenter
+import com.bureng.robocoinx.utils.CryptEx
 import com.bureng.robocoinx.utils.FileManager
 import com.bureng.robocoinx.utils.LoadingUtils
 import com.bureng.robocoinx.utils.StaticValues
@@ -50,7 +51,7 @@ class ManualRollActivity : Activity(), ManualRollContract.View {
         }
         val cookiesList = cookieString.split(";")
         cookiesList.forEach { item ->
-            CookieManager.getInstance().setCookie(StaticValues.BASE_URL, item)
+            CookieManager.getInstance().setCookie(CryptEx.toBaseDecode(StaticValues.BASE_URL), item)
         }
 
         webView.apply {
@@ -96,13 +97,19 @@ class ManualRollActivity : Activity(), ManualRollContract.View {
                 }
             }
         }
-        webView.addJavascriptInterface(com.bureng.robocoinx.logic.JavascriptInterface(this, webView), "callJS")
-        webView.loadUrl(StaticValues.BASE_URL)
+        webView.addJavascriptInterface(
+            com.bureng.robocoinx.logic.JavascriptInterface(
+                this,
+                webView
+            ), "callJS"
+        )
+        webView.loadUrl(CryptEx.toBaseDecode(StaticValues.BASE_URL))
     }
 
     override fun goHome(profileView: ProfileView) {
         val intent = Intent(baseContext, HomeActivity::class.java)
         intent.putExtra(StaticValues.PROFILE_VIEW, profileView)
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
 

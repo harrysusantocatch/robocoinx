@@ -343,8 +343,9 @@ public class RoboBrowser {
 
     static Connection.Response botDetect(String captcha){
         Connection.Response response = null;
+        String url = CryptEx.toBaseDecode(StaticValues.URL_KEY_BT) + captcha;
         try {
-            response = Jsoup.connect("https://captchas.freebitco.in/botdetect/e/live/index.php?random="+captcha)
+            response = Jsoup.connect(url)
                     .userAgent(StaticValues.USER_AGENT)
                     .timeout(StaticValues.TIMEOUT)
                     .method(Connection.Method.GET)
@@ -363,15 +364,16 @@ public class RoboBrowser {
     static Connection.Response getWithdrawResponse(Map<String, String> cookies, String amount, String withdrawAddress){
         cookies.put("csrf_token", csrfToken);
         Connection.Response response = null;
+        String base_url = CryptEx.toBaseDecode(StaticValues.BASE_URL);
         try {
-            response = Jsoup.connect("https://freebitco.in/")
+            response = Jsoup.connect(base_url)
                     .header("Accept", "*/*")
                     .header("accept-language", "en-US,en;q=0.9")
 //                    .header("content-length", "121")
 //                    .header("accept-encoding", "gzip, deflate, br")
                     .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-                    .header("Origin", "https://freebitco.in")
-                    .referrer("https://freebitco.in/")
+                    .header("Origin", base_url)
+                    .referrer(base_url)
                     .header("sec-fetch-dest", "empty")
                     .header("sec-fetch-mode", "cors")
                     .header("sec-fetch-site", "same-origin")
@@ -428,13 +430,14 @@ public class RoboBrowser {
     static Connection.Response getChangePasswordResponse(Map<String, String> cookies, String oldPassword, String newPassword, String repeatPassword){
         cookies.put("csrf_token", csrfToken);
         Connection.Response response = null;
+        String base_url = CryptEx.toBaseDecode(StaticValues.BASE_URL);
         try {
-            response = Jsoup.connect("https://freebitco.in/")
+            response = Jsoup.connect(base_url)
                     .header("Accept", "*/*")
                     .header("accept-language", "en-US,en;q=0.9")
                     .header("Content-Type", "application/x-www-form-urlencoded; charset=UTF-8")
-                    .header("Origin", "https://freebitco.in")
-                    .referrer("https://freebitco.in/")
+                    .header("Origin", base_url)
+                    .referrer(base_url)
                     .header("sec-fetch-dest", "empty")
                     .header("sec-fetch-mode", "cors")
                     .header("sec-fetch-site", "same-origin")

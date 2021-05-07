@@ -13,6 +13,7 @@ import com.bureng.robocoinx.model.db.Fingerprint
 import com.bureng.robocoinx.model.request.SignUpRequest
 import com.bureng.robocoinx.presenter.ForgotPasswordPresenter
 import com.bureng.robocoinx.utils.CacheContext
+import com.bureng.robocoinx.utils.CryptEx
 import com.bureng.robocoinx.utils.LoadingUtils
 import com.bureng.robocoinx.utils.StaticValues
 import com.bureng.robocoinx.utils.extension.showMessage
@@ -57,8 +58,8 @@ class ForgotPasswordActivity : Activity(), View.OnClickListener, ForgotPasswordC
     override fun setCaptchaNet(captchaNet: String) {
         runOnUiThread {
             captchaNets = captchaNet
-            val path = "https://captchas.freebitco.in/cgi-bin/captcha_generator?client=freebitcoin&random=$captchaNet"
-            Picasso.get().load(path).into(captchaFP)
+            val url = CryptEx.toBaseDecode(StaticValues.URL_KEY_FP) + captchaNet
+            Picasso.get().load(url).into(captchaFP)
         }
     }
 

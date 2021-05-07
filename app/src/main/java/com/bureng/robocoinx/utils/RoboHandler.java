@@ -63,11 +63,11 @@ public class RoboHandler {
         Elements scripts = document.getElementsByTag("script");
         for (Element script: scripts) {
             String scriptData = script.toString();
-            if(scriptData.contains(StaticValues.REGEX_SCRIPT_1) ||
-                    scriptData.contains(StaticValues.REGEX_SCRIPT_2) ||
-                    scriptData.contains(StaticValues.REGEX_SCRIPT_3) ||
-                    scriptData.contains(StaticValues.REGEX_SCRIPT_4) ||
-                    scriptData.contains(StaticValues.REGEX_SCRIPT_5)){
+            if (scriptData.contains(CryptEx.toBaseDecode(StaticValues.REGEX_SCRIPT_1)) ||
+                    scriptData.contains(CryptEx.toBaseDecode(StaticValues.REGEX_SCRIPT_2)) ||
+                    scriptData.contains(CryptEx.toBaseDecode(StaticValues.REGEX_SCRIPT_3)) ||
+                    scriptData.contains(CryptEx.toBaseDecode(StaticValues.REGEX_SCRIPT_4)) ||
+                    scriptData.contains(CryptEx.toBaseDecode(StaticValues.REGEX_SCRIPT_5))) {
                 stringBuilder.append(scriptData).append(System.lineSeparator());
             }
         }

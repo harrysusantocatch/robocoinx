@@ -52,6 +52,25 @@ class ProfileView(doc: Document, context: Context) : Serializable {
 
     @JvmField
     var bonusText: String? = null
+    var pendingWithdraws: ArrayList<PendingWithdraw> = arrayListOf()
+    private fun getPendingWithdraws(doc: Document): ArrayList<PendingWithdraw> {
+        val result = arrayListOf<PendingWithdraw>()
+        val element = doc.getElementById("pending_payout_table")
+        if (element != null) {
+            val divElement =
+                element.getElementsByClass("large-12 small-12 columns center lottery_winner_table_box_container effect2")
+            val size = divElement.size
+            if (size > 1) {
+                for (i in 1 until size - 1) {
+                    val divValue = divElement[i].getElementsByTag("div")
+                    val pendingWithdraw = PendingWithdraw(divValue[0].text(), divValue[1].text())
+                    result.add(pendingWithdraw)
+                }
+            }
+        }
+        return result
+    }
+
     private fun checkCurrentBalance(newBalance: String, context: Context) {
         var currentBalance = context.currentBalance;
         if (!newBalance.equals(currentBalance, true)) {
@@ -279,6 +298,7 @@ class ProfileView(doc: Document, context: Context) : Serializable {
         email = getEmailAddress(doc)
         pointText = getPointText(doc)
         bonusText = getBonusText(doc)
+        pendingWithdraws = getPendingWithdraws(doc)
 //        checkCurrentBalance(balance, context)
     }
 }

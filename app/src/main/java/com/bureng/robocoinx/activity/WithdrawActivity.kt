@@ -51,7 +51,7 @@ class WithdrawActivity : Activity(), View.OnClickListener, WithdrawContract.View
                     if (it.isNotEmpty()) {
                         var total: BigDecimal = BigDecimal.ZERO
                         total += it.toString().toBigDecimal() + initFee
-                        labelAmountDeducted.text = "Amount Deducted: $total BTC"
+                        labelAmountDeducted.text = "$total BTC"
                     }
                 }
             }
@@ -111,7 +111,7 @@ class WithdrawActivity : Activity(), View.OnClickListener, WithdrawContract.View
             val fee = initWithdraw.fee
             val balance = initWithdraw.balance
             textViewBalanceWD.text = balance
-            labelFeesWD.text = "Transaction Fees: $fee BTC"
+            labelFeesWD.text = "$fee BTC"
             initFee = fee.toBigDecimal()
             totalBalance = balance.toDouble()
         }

@@ -20,6 +20,7 @@ import com.bureng.robocoinx.model.common.DoAsync
 import com.bureng.robocoinx.model.view.ProfileView
 import com.bureng.robocoinx.presenter.HomePresenter
 import com.bureng.robocoinx.service.BackgroundService
+import com.bureng.robocoinx.utils.HtmlTagHandler
 import com.bureng.robocoinx.utils.LoadingUtils
 import com.bureng.robocoinx.utils.StaticValues
 import com.bureng.robocoinx.utils.extension.showMessage
@@ -145,9 +146,9 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
             }
             val html = getString(R.string.desc_advantage_automatic)
             desc_advantage_automatic.text = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-                Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT)
+                Html.fromHtml(html, Html.FROM_HTML_MODE_COMPACT, null, HtmlTagHandler())
             } else {
-                HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY)
+                HtmlCompat.fromHtml(html, HtmlCompat.FROM_HTML_MODE_LEGACY, null, HtmlTagHandler())
             }
 //            bonusTextView.text = pp.bonusText
 //            pointTextView.text = pp.pointText
@@ -295,7 +296,7 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
     override fun reload(profileView: ProfileView) {
         val intent = Intent(applicationContext, HomeActivity::class.java)
         intent.putExtra(StaticValues.PROFILE_VIEW, profileView)
-        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK
+        intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         startActivity(intent)
     }
 

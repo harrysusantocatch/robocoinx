@@ -181,31 +181,57 @@
             app:layout_constraintTop_toBottomOf="@+id/labelAmount"
             app:layout_constraintEnd_toEndOf="parent" />
 
-
+        <TextView
+            android:id="@+id/labelFeesWD1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="5dp"
+            android:fontFamily="@font/avenir_roman"
+            android:text="Transaction Fees:"
+            android:textColor="@color/greyishBrown"
+            android:textSize="12sp"
+            app:layout_constraintEnd_toStartOf="@id/labelFeesWD"
+            app:layout_constraintTop_toBottomOf="@id/editTextAmount" />
 
         <TextView
             android:id="@+id/labelFeesWD"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_fee"
+            android:text="0.00000000 BTC"
             app:layout_constraintTop_toBottomOf="@id/editTextAmount"
             android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="20dp"
             android:fontFamily="@font/avenir_roman"
-            android:textSize="12sp"/>
+            android:textColor="@color/transacRed"
+            android:textSize="12sp" />
+
+        <TextView
+            android:id="@+id/labelAmountDeducted1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:layout_marginEnd="5dp"
+            android:fontFamily="@font/roboto_bold"
+            android:text="Amount Deducted:"
+            android:textColor="@color/greyishBrown"
+            android:textSize="13sp"
+            app:layout_constraintEnd_toStartOf="@id/labelAmountDeducted"
+            app:layout_constraintTop_toBottomOf="@id/labelFeesWD" />
+
         <TextView
             android:id="@+id/labelAmountDeducted"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/label_amount_deducted"
+            android:text="0.00000000 BTC"
             app:layout_constraintTop_toBottomOf="@id/labelFeesWD"
             android:layout_marginTop="20dp"
             app:layout_constraintEnd_toEndOf="parent"
             android:layout_marginEnd="20dp"
             android:fontFamily="@font/roboto_bold"
             android:textSize="13sp"
-            android:textColor="@color/transacRed" />
+            android:textColor="@color/transacGreen" />
         <Button
             android:id="@+id/buttonWithdrawWD"
             android:layout_width="match_parent"
