@@ -149,7 +149,9 @@ class ProfileView(doc: Document, context: Context) : Serializable {
                         if (datas.contains("captcha_type")) {
                             val tokenNameSplit = datas.split(" ".toRegex()).toTypedArray()
                             val findText = tokenNameSplit[4].replace("'", "")
-                            if (findText.equals("11", ignoreCase = true)) return true
+                            if (findText.equals("1", ignoreCase = true)){
+                                return true
+                            }
                         }
                     }
                 }

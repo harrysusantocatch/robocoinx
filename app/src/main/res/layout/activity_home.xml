@@ -238,7 +238,8 @@
                     android:fontFamily="@font/avenir_roman"
                     android:text="Bitcoin automatic claims every hours"
                     android:textColor="@color/blackTwo"
-                    android:textSize="13sp"
+                    android:textSize="12sp"
+                    android:layout_marginEnd="10dp"
                     app:layout_constraintEnd_toStartOf="@id/btnStart"
                     app:layout_constraintStart_toStartOf="@id/layout_automatic_claim"
                     app:layout_constraintTop_toTopOf="@id/layout_automatic_claim" />
@@ -252,6 +253,7 @@
                     android:text="Click START to run claim service"
                     android:textColor="@color/greyishBrown"
                     android:textSize="12sp"
+                    android:layout_marginEnd="10dp"
                     app:layout_constraintEnd_toStartOf="@id/btnStart"
                     app:layout_constraintStart_toStartOf="@id/layout_automatic_claim"
                     app:layout_constraintTop_toBottomOf="@id/label_info_claim" />
@@ -287,71 +289,42 @@
                 android:layout_margin="10dp"
                 android:background="@drawable/button_radius_white"
                 android:elevation="5dp"
-                android:padding="20dp"
-                app:layout_constraintEnd_toStartOf="@id/layout_reward_point"
+                android:padding="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/layout_automatic_claim">
-
+                <ImageButton
+                    android:id="@+id/icon_next_bitcoin"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/ic_bitcoin"
+                    android:background="@drawable/small_button_home1"
+                    app:layout_constraintStart_toStartOf="@id/layout_next_bitcoin"
+                    app:layout_constraintTop_toTopOf="@id/layout_next_bitcoin"/>
                 <TextView
                     android:id="@+id/value_next_bitcoin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/gotham_bold"
                     android:text="@string/stop_count_hour"
-                    android:textColor="@color/transacGreen"
-                    android:textSize="15sp"
+                    android:textColor="@color/brightBlue2"
+                    android:textSize="16sp"
+                    android:layout_marginEnd="10dp"
                     app:layout_constraintEnd_toEndOf="@id/layout_next_bitcoin"
-                    app:layout_constraintStart_toStartOf="@id/layout_next_bitcoin"
-                    app:layout_constraintTop_toTopOf="@id/layout_next_bitcoin" />
+                    app:layout_constraintTop_toTopOf="@id/icon_next_bitcoin"
+                    app:layout_constraintBottom_toBottomOf="@id/icon_next_bitcoin"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:fontFamily="@font/avenir_roman"
                     android:text="Next Bitcoin"
                     android:textColor="@color/blackGrey"
-                    android:textSize="12sp"
-                    app:layout_constraintEnd_toEndOf="@id/value_next_bitcoin"
-                    app:layout_constraintStart_toStartOf="@id/value_next_bitcoin"
-                    app:layout_constraintTop_toBottomOf="@id/value_next_bitcoin" />
-            </androidx.constraintlayout.widget.ConstraintLayout>
-
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layout_reward_point"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="10dp"
-                android:background="@drawable/button_radius_white"
-                android:elevation="5dp"
-                android:padding="20dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/layout_automatic_claim">
-
-                <TextView
-                    android:id="@+id/value_reward_point_counter"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/gotham_bold"
-                    android:text="@string/stop_count_hour"
-                    android:textColor="@color/transacGreen"
-                    android:textSize="15sp"
-                    app:layout_constraintEnd_toEndOf="@id/layout_reward_point"
-                    app:layout_constraintStart_toStartOf="@id/layout_reward_point"
-                    app:layout_constraintTop_toTopOf="@id/layout_reward_point" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
-                    android:fontFamily="@font/avenir_roman"
-                    android:text="Reward Point"
-                    android:textColor="@color/blackGrey"
-                    android:textSize="12sp"
-                    app:layout_constraintEnd_toEndOf="@id/value_reward_point_counter"
-                    app:layout_constraintStart_toStartOf="@id/value_reward_point_counter"
-                    app:layout_constraintTop_toBottomOf="@id/value_reward_point_counter" />
+                    android:textSize="14sp"
+                    android:layout_marginStart="10dp"
+                    app:layout_constraintStart_toEndOf="@id/icon_next_bitcoin"
+                    app:layout_constraintTop_toTopOf="@id/icon_next_bitcoin"
+                    app:layout_constraintBottom_toBottomOf="@id/icon_next_bitcoin"/>
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout
@@ -361,10 +334,19 @@
                 android:layout_margin="10dp"
                 android:background="@drawable/button_radius_white"
                 android:elevation="5dp"
-                android:padding="20dp"
+                android:padding="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toEndOf="@id/layout_reward_point"
-                app:layout_constraintTop_toBottomOf="@id/layout_automatic_claim">
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_next_bitcoin">
+
+                <ImageButton
+                    android:id="@+id/icon_extra_bonus"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/ic_bitcoin"
+                    android:background="@drawable/small_button_home2"
+                    app:layout_constraintStart_toStartOf="@id/layout_extra_bonus"
+                    app:layout_constraintTop_toTopOf="@id/layout_extra_bonus"/>
 
                 <TextView
                     android:id="@+id/value_extra_bonus"
@@ -372,23 +354,72 @@
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/gotham_bold"
                     android:text="@string/stop_count_hour"
-                    android:textColor="@color/transacGreen"
-                    android:textSize="15sp"
+                    android:textColor="@color/brightBlue2"
+                    android:textSize="16sp"
+                    android:layout_marginEnd="10dp"
                     app:layout_constraintEnd_toEndOf="@id/layout_extra_bonus"
-                    app:layout_constraintStart_toStartOf="@id/layout_extra_bonus"
-                    app:layout_constraintTop_toTopOf="@id/layout_extra_bonus" />
+                    app:layout_constraintTop_toTopOf="@id/icon_extra_bonus"
+                    app:layout_constraintBottom_toBottomOf="@id/icon_extra_bonus" />
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="5dp"
                     android:fontFamily="@font/avenir_roman"
                     android:text="Extra Bonus"
                     android:textColor="@color/blackGrey"
-                    android:textSize="12sp"
-                    app:layout_constraintEnd_toEndOf="@id/value_extra_bonus"
-                    app:layout_constraintStart_toStartOf="@id/value_extra_bonus"
-                    app:layout_constraintTop_toBottomOf="@id/value_extra_bonus" />
+                    android:textSize="14sp"
+                    android:layout_marginStart="10dp"
+                    app:layout_constraintStart_toEndOf="@id/icon_extra_bonus"
+                    app:layout_constraintTop_toTopOf="@id/icon_extra_bonus"
+                    app:layout_constraintBottom_toBottomOf="@id/icon_extra_bonus"/>
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/layout_reward_point"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_margin="10dp"
+                android:background="@drawable/button_radius_white"
+                android:elevation="5dp"
+                android:padding="8dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/layout_extra_bonus">
+
+                <ImageButton
+                    android:id="@+id/icon_reward_point"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:src="@drawable/ic_claim"
+                    android:tint="@color/white"
+                    android:background="@drawable/small_button_home3"
+                    app:layout_constraintStart_toStartOf="@id/icon_reward_point"
+                    app:layout_constraintTop_toTopOf="@id/icon_reward_point"/>
+
+                <TextView
+                    android:id="@+id/value_reward_point_counter"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/gotham_bold"
+                    android:text="@string/stop_count_hour"
+                    android:textColor="@color/brightBlue2"
+                    android:textSize="16sp"
+                    android:layout_marginEnd="10dp"
+                    app:layout_constraintEnd_toEndOf="@id/layout_reward_point"
+                    app:layout_constraintTop_toTopOf="@id/icon_reward_point"
+                    app:layout_constraintBottom_toBottomOf="@id/icon_reward_point" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="10dp"
+                    android:fontFamily="@font/avenir_roman"
+                    android:text="Reward Point"
+                    android:textColor="@color/blackGrey"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toEndOf="@id/icon_reward_point"
+                    app:layout_constraintTop_toTopOf="@id/icon_reward_point"
+                    app:layout_constraintBottom_toBottomOf="@id/icon_reward_point" />
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <androidx.constraintlayout.widget.ConstraintLayout

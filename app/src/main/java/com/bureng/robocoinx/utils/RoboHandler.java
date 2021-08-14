@@ -84,11 +84,12 @@ public class RoboHandler {
             if(dataLogin.length < 3) return dataLogin[1];
             UserCache userCache = new UserCache(dataLogin);
             Map<String, String> firstHomeCookies = setForFirstHomeCookies(RoboBrowser.baseCookies, userCache);
-            Connection.Response homeResponse = RoboBrowser.getFirstHomeResponse(firstHomeCookies);
-            if(homeResponse == null) return StaticValues.ERROR_GENERAL;
-            updateCsrfToken(context, homeResponse);
-            userCache.loginAuth = homeResponse.cookie("login_auth");
-            ProfileView profileView = new ProfileView(homeResponse.parse(), context);
+            RoboBrowser.homeCookies = firstHomeCookies;
+//            Connection.Response homeResponse = RoboBrowser.getFirstHomeResponse();
+//            if(homeResponse == null) return StaticValues.ERROR_GENERAL;
+//            updateCsrfToken(context, homeResponse);
+//            userCache.loginAuth = homeResponse.cookie("login_auth");
+//            ProfileView profileView = new ProfileView(homeResponse.parse(), context);
             new CacheContext<>(UserCache.class, context).save(userCache, StaticValues.USER_CACHE);
             Map<String, String> cookies = new HashMap<>();
             cookies.put("login_auth", userCache.loginAuth);
@@ -97,9 +98,9 @@ public class RoboHandler {
             cookies.put("have_account", "1");
             FileManager.getInstance().writeFile(context, StaticValues.AUTH_COOKIES, new Gson().toJson(cookies));
 
-            if (setInterestAndLottery(profileView, cookies, homeResponse)) return StaticValues.ERROR_GENERAL;
+//            if (setInterestAndLottery(profileView, cookies, homeResponse)) return StaticValues.ERROR_GENERAL;
 
-            return profileView;
+            return StaticValues.PROFILE_VIEW;
         } catch (IOException e) {
             FileManager.getInstance().appendLog(e);
             return StaticValues.ERROR_GENERAL;
@@ -122,9 +123,10 @@ public class RoboHandler {
             Document doc = signUpResponse.parse();
             String contentBody = doc.body().html();
             String[] result = contentBody.split(":");
+//            String[] result = {"s", "registered"};
             if(result.length == 0) return StaticValues.ERROR_GENERAL;
             if(result[0].equalsIgnoreCase("s")){
-                return parsingLoginResponse(context, request.email, request.password);
+                return new MessageResponse(result[0], "Registration Successful, Please Sign into access your account");
             }else if(result[0].equalsIgnoreCase("e")){
                 String msg = result[1];
                 String ms1 = "email";
@@ -312,7 +314,7 @@ public class RoboHandler {
             String[] pendingPayoutStr = payoutStr.split(" ");
             ProfileView profileView = new ProfileView(doc, context);
             profileView.noCaptchaSpec = getCaptchaSpec(profileView);
-            if (setInterestAndLottery(profileView, cookies, homeResponse)) return StaticValues.ERROR_GENERAL;
+//            if (setInterestAndLottery(profileView, cookies, homeResponse)) return StaticValues.ERROR_GENERAL;
             return profileView;
         } catch (IOException | JSONException e) {
             FileManager.getInstance().appendLog(e);

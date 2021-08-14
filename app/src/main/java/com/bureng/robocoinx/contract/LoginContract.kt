@@ -7,6 +7,7 @@ import com.bureng.robocoinx.model.view.ProfileView
 interface LoginContract {
     interface View {
         fun showMessage(message: String, type: Int)
+        fun flagHome()
         fun goHome(profileView: ProfileView)
         fun showProgressBar(rawLoading: Int?)
         fun hideProgressBar()
@@ -14,5 +15,6 @@ interface LoginContract {
 
     interface Presenter {
         fun login(act: Activity, ctx: Context, email: String, password: String)
+        fun getHomeResponse(ctx: Context)
     }
 }

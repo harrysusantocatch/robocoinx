@@ -9,7 +9,6 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.bureng.robocoinx.R
 import com.bureng.robocoinx.contract.LoginContract
-import com.bureng.robocoinx.model.common.DoAsync
 import com.bureng.robocoinx.model.request.SignUpRequest
 import com.bureng.robocoinx.model.view.ProfileView
 import com.bureng.robocoinx.presenter.LoginPresenter
@@ -21,6 +20,7 @@ import com.google.firebase.database.DatabaseReference
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_login.*
+import org.jetbrains.anko.doAsync
 
 class LoginActivity : Activity(), LoginContract.View, View.OnClickListener {
     private var visibilityPass = false
@@ -48,6 +48,12 @@ class LoginActivity : Activity(), LoginContract.View, View.OnClickListener {
         }
     }
 
+    override fun flagHome() {
+        doAsync {
+            presenter.getHomeResponse(this@LoginActivity)
+        }
+    }
+
     override fun goHome(profileView: ProfileView) {
         Firebase.auth.signOut()
         val intent = Intent(baseContext, HomeActivity::class.java)
@@ -62,9 +68,9 @@ class LoginActivity : Activity(), LoginContract.View, View.OnClickListener {
         val password = editTextPassLG.text.toString()
         when (view.id) {
             R.id.buttonLoginLG -> {
-                DoAsync {
-                    presenter.login(this, applicationContext, email, password)
-                }.execute()
+                doAsync {
+                    presenter.login(this@LoginActivity, applicationContext, email, password)
+                }
             }
             R.id.btn_signUp -> {
                 val signUpRequest = (intent.getSerializableExtra(StaticValues.SIGNUP_REQ) as SignUpRequest)

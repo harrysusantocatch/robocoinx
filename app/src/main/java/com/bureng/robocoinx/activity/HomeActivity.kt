@@ -47,6 +47,7 @@ class HomeActivity : Activity(), HomeContract.View, View.OnClickListener {
         if (running) {
             btnStart.visibility = View.GONE
             btnStop.visibility = View.VISIBLE
+            label_info_service.text = "Service is running"
         } else {
             btnStart.visibility = View.VISIBLE
             btnStop.visibility = View.GONE

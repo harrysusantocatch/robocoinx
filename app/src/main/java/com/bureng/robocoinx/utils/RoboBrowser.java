@@ -13,6 +13,7 @@ public class RoboBrowser {
 
     static Map<String, String> baseCookies;
     static String csrfToken;
+    static Map<String, String> homeCookies;
 
     static Connection.Response getFirstResponse(){
         Connection.Response response = null;
@@ -59,7 +60,7 @@ public class RoboBrowser {
         return response;
     }
 
-    static Connection.Response getFirstHomeResponse(Map<String, String> cookies){
+    static Connection.Response getFirstHomeResponse(){
         Connection.Response response = null;
         try {
             response = Jsoup.connect(CryptEx.toBaseDecode(StaticValues.URL_KEY_H))
@@ -73,7 +74,7 @@ public class RoboBrowser {
                     .header("Connection", "Keep-Alive")
                     .timeout(StaticValues.TIMEOUT)
                     .method(Connection.Method.GET)
-                    .cookies(cookies)
+                    .cookies(homeCookies)
                     .execute();
         } catch (IOException e) {
             FileManager.getInstance().appendLog(e);

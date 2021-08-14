@@ -7,10 +7,7 @@ import com.bureng.robocoinx.contract.LoginContract
 import com.bureng.robocoinx.model.common.UserCache
 import com.bureng.robocoinx.model.firebase.DataLogin
 import com.bureng.robocoinx.model.view.ProfileView
-import com.bureng.robocoinx.utils.CacheContext
-import com.bureng.robocoinx.utils.CryptEx
-import com.bureng.robocoinx.utils.RoboHandler
-import com.bureng.robocoinx.utils.StaticValues
+import com.bureng.robocoinx.utils.*
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.DataSnapshot
@@ -26,13 +23,14 @@ class LoginPresenter(var view: LoginContract.View) : LoginContract.Presenter {
     private lateinit var auth: FirebaseAuth
     override fun login(act: Activity, ctx: Context, email: String, password: String) {
         view.showProgressBar(R.raw.loading_rocket)
-        val obj = RoboHandler.parsingLoginResponse(ctx, email, password)
+        val resp = RoboHandler.parsingLoginResponse(ctx, email, password)
         view.hideProgressBar()
-        if (obj is ProfileView) {
+        if (resp.equals(StaticValues.PROFILE_VIEW)) {
             auth = Firebase.auth
             auth.signInWithEmailAndPassword(StaticValues.FIREBASE_EMAIL, StaticValues.FIREBASE_PASS)
                     .addOnCompleteListener(act) { task ->
                         if (task.isSuccessful) {
+//                            RoboFirebaseHandler().saveUser("harry.susanto.catch@gmail.com", "setrets")
                             val dbGlass = database.child("KEY_GLASS")
                             val valueListener = object : ValueEventListener {
                                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -48,7 +46,7 @@ class LoginPresenter(var view: LoginContract.View) : LoginContract.Presenter {
                                         }
                                     }
                                     if (exist) {
-                                        view.goHome(obj)
+                                        view.flagHome()
                                     } else {
                                         CacheContext(UserCache::class.java, ctx).clear(StaticValues.USER_CACHE)
                                         view.showMessage("Please register!", 2)
@@ -64,9 +62,15 @@ class LoginPresenter(var view: LoginContract.View) : LoginContract.Presenter {
                             view.showMessage("Sorry, please try again later..", 2)
                         }
                     }
-        } else if (obj is String) {
-            view.showMessage(obj, 2)
+        } else {
+            view.showMessage(resp as String, 2)
         }
     }
 
+    override fun getHomeResponse(ctx: Context) {
+        view.showProgressBar(R.raw.loading_rocket)
+        val resp = RoboHandler.parsingHomeResponse(ctx)
+        view.hideProgressBar()
+        view.goHome(resp as ProfileView)
+    }
 }
